@@ -1,0 +1,11 @@
+<div class="metrics">
+  <div>
+    <span ng-bind="caption"></span>
+    <help ng-if="help" text="{{help}}"></help>
+  </div>
+  <h3 class="metrics-value">
+    <span ng-bind="value"></span>
+    <small ng-bind="unit"></small>
+  </h3>
+  <small ng-if="smallText" class="metrics-small-text" ng-bind="smallText"></small>
+</div>

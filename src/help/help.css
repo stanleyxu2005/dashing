@@ -1,0 +1,12 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.help-icon {
+  color: #bbb;
+}
+
+.help-icon:hover {
+  color: #888;
+}

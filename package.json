@@ -1,0 +1,30 @@
+{
+  "name": "dashing",
+  "description": "Dashing widgets for (AngularJS based) webapps",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "keywords": ["angular", "bootstrap", "table", "chart"],
+  "homepage": "https://github.com/stanleyxu2005/dashing",
+  "author": {
+    "name": "Qian Xu",
+    "url": "https://github.com/stanleyxu2005"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stanleyxu2005/dashing.git"
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-angular-templatecache": "*",
+    "gulp-concat-util": "*",
+    "gulp-git": "*",
+    "gulp-htmlmin": "*",
+    "gulp-minify-css": "*",
+    "gulp-remove-empty-lines": "*",
+    "gulp-rename": "*",
+    "gulp-replace": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-strip-comments": "*",
+    "gulp-uglify": "*"
+  }
+}

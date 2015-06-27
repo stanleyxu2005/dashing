@@ -1,0 +1,21 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.metrics {
+  white-space: nowrap;
+}
+
+.metrics > .metrics-value {
+  margin-top: 0;
+  margin-bottom: 2px;
+
+}
+
+.metrics > .metrics-small-text {
+  display: block;
+  margin-top: -2px;
+  margin-bottom: 2px;
+  color: #a8a8a8;
+}

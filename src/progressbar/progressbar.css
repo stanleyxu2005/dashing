@@ -1,0 +1,27 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.progress-tiny {
+  height: 3px;
+  border-style: none;
+  background-color: rgb(235, 235, 235);
+  padding: 0;
+  margin: 1px 0 0 0;
+}
+
+.progress-bar-blue {
+  background-color: rgb(66, 139, 202);
+  background-image: none;
+}
+
+.progress-bar-yellow {
+  background-color: rgb(240, 173, 79);
+  background-image: none;
+}
+
+.progress-bar-red {
+  background-color: rgb(202, 24, 30);
+  background-image: none;
+}

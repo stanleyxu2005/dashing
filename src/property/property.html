@@ -1,0 +1,26 @@
+<div ng-switch="renderer">
+  <!-- link -->
+  <a
+    ng-switch-when="Link"
+    ng-href="{{href}}" ng-bind="text"></a>
+  <!-- state -->
+  <state
+    ng-switch-when="State"
+    text="{{text}}" condition="{{condition}}"></state>
+  <!-- indicator -->
+  <indicator
+    ng-switch-when="Indicator"
+    text="{{text}}" condition="{{condition}}"></indicator>
+  <!-- progress bar -->
+  <progressbar
+    ng-switch-when="ProgressBar"
+    current="{{current}}" max="{{max}}"></progressbar>
+  <!-- duration-->
+  <span
+    ng-switch-when="Duration"
+    ng-bind="value|duration"></span>
+  <!-- default -->
+  <span
+    ng-switch-default
+    ng-bind="value"></span>
+</div>

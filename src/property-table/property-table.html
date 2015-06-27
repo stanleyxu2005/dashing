@@ -1,0 +1,20 @@
+<table class="table table-striped table-condensed">
+  <caption ng-if="caption" ng-bind="caption"></caption>
+  <tbody>
+  <tr ng-repeat="prop in props track by $index">
+    <td ng-class="propNameClass">
+      <small ng-bind="prop.name"></small>
+      <help ng-if="prop.help" text="{{prop.help}}"></help>
+    </td>
+    <td ng-switch="prop.hasOwnProperty('values')" ng-class="propValueClass">
+      <div ng-switch-when="true"
+           ng-repeat="value in prop.values track by $index">
+        <property value-bind="value" renderer="{{prop.renderer}}"></property>
+      </div>
+      <div ng-switch-default>
+        <property value-bind="prop.value" renderer="{{prop.renderer}}"></property>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

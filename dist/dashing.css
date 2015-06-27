@@ -1,7 +1,15 @@
 /*
- * Licensed under the Apache License, Version 2.0
- * See accompanying LICENSE file.
+ * dashing
+ * @version v0.0.2
+ * @link https://github.com/stanleyxu2005/dashing
+ * @license Apache License 2.0, see accompanying LICENSE file
  */
+.help-icon {
+  color: #bbb;
+}
+.help-icon:hover {
+  color: #888;
+}
 .metrics {
   white-space: nowrap;
 }
@@ -15,12 +23,7 @@
   margin-bottom: 2px;
   color: #a8a8a8;
 }
-.help-icon {
-  color: #bbb;
-}
-.help-icon:hover {
-  color: #888;
-}.progress-tiny {
+.progress-tiny {
   height: 3px;
   border-style: none;
   background-color: rgb(235, 235, 235);
@@ -65,7 +68,8 @@ input[st-search] {
   padding-left: 3px;
   padding-top: 3px;
   font-weight: 400;
-}.nav-tabs {
+}
+.nav-tabs {
   margin-bottom: 30px !important;
   border-bottom: 2px solid rgba(0, 39, 59, .1);
 }

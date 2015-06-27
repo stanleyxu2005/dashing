@@ -28,19 +28,6 @@ $templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng
 $templateCache.put("sortable-table/sortable-table-pagination.html","<div ng-if=\"pages.length >= 2\"> <div class=\"btn-group btn-group-xs\"> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(1)\"> <span class=\"glyphicon glyphicon-step-backward\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(currentPage-1)\"> <span class=\"glyphicon glyphicon-chevron-left\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-repeat=\"page in pages\" ng-class=\"{active: page==currentPage}\" ng-click=\"selectPage(page)\"> {{page}} </button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(currentPage+1)\"> <span class=\"glyphicon glyphicon-chevron-right\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(numPages)\"> <span class=\"glyphicon glyphicon-step-forward\"></span></button> </div> </div>");
 $templateCache.put("sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"records_\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-if=\"searchable\"> <th colspan=\"{{columns.length}}\"> <input type=\"text\" st-search placeholder=\"{{searchable}}\"> </th> </tr> </thead> <tbody> <tr ng-repeat=\"record in records_\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"records_.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <span class=\"small\">No data found</span> </td> </tr> </tbody> <tfoot ng-if=\"records_.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records_.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
 $templateCache.put("tabset/tabset.html","<ul class=\"nav nav-tabs nav-tabs-underlined\"> <li ng-repeat=\"tab in tabs\" ng-class=\"{active:tab.selected}\"> <a href=\"\" ng-click=\"selectTab(tab)\" ng-bind=\"tab.heading\"></a> </li> </ul> <div class=\"tab-content\" ng-transclude></div>");}]);
-angular.module('dashing.help', [
-  'mgcrea.ngStrap.tooltip'
-])
-  .directive('help', function() {
-    return {
-      template: '<span class="glyphicon glyphicon-question-sign help-icon" bs-tooltip="text"></span>',
-      restrict: 'E',
-      scope: {
-        text: '@'
-      }
-    };
-  })
-;
 angular.module('dashing.charts-comp', [
   'dashing.charts',
   'dashing.metrics'
@@ -119,7 +106,7 @@ angular.module('dashing.charts', [
       }
     };
   })
-  .factory('LookAndFeel', function() {
+  .factory('$echarts', function() {
     return {
             tooltip: function(args) {
         var result = {
@@ -175,12 +162,12 @@ angular.module('dashing.charts', [
         options: '=optionsBind',
         data: '=datasourceBind'
       },
-      controller: ['$scope', 'LookAndFeel', function($scope, LookAndFeel) {
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var colors = LookAndFeel.colorSet(0);
+        var colors = $echarts.colorSet(0);
         $scope.echartOptions = {
           height: use.height, width: use.width,
-          tooltip: LookAndFeel.tooltip({
+          tooltip: $echarts.tooltip({
             color: colors.grid, type: 'cross',
             formatter: use.tooltipFormatter ? function(params) {
               return use.tooltipFormatter(params[0]);
@@ -198,7 +185,7 @@ angular.module('dashing.charts', [
           }],
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
-          series: [LookAndFeel.makeDataSeries({
+          series: [$echarts.makeDataSeries({
             colors: colors, name: '1',
             data: $scope.data.map(function(item) {
               return item.y;
@@ -206,6 +193,19 @@ angular.module('dashing.charts', [
           })]
         };
       }]
+    };
+  })
+;
+angular.module('dashing.help', [
+  'mgcrea.ngStrap.tooltip'
+])
+  .directive('help', function() {
+    return {
+      template: '<span class="glyphicon glyphicon-question-sign help-icon" bs-tooltip="text"></span>',
+      restrict: 'E',
+      scope: {
+        text: '@'
+      }
     };
   })
 ;
@@ -239,7 +239,7 @@ angular.module('dashing.progressbar', [])
             Math.round($scope.current * 100 / $scope.max) : -1;
         });
         $scope.colorFn = function(usage) {
-          return usage < 50 ? 'blue' : (usage < 75 ? 'yellow' : 'red');
+          return usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger');
         };
       }]
     };
@@ -406,7 +406,7 @@ angular.module('dashing.state', [])
   })
 ;
 angular.module('dashing.tabset', [])
-  .directive('dsTabset', [function() {
+  .directive('tabset', [function() {
     return {
       templateUrl: 'tabset/tabset.html',
       restrict: 'E',
@@ -442,10 +442,10 @@ angular.module('dashing.tabset', [])
       }]
     };
   }])
-  .directive('dsTab', ['$http', '$controller', '$compile',
+  .directive('tab', ['$http', '$controller', '$compile',
     function($http, $controller, $compile) {
       return {
-        require: '^dsTabset',
+        require: '^tabset',
         restrict: 'E',
         transclude: true,
         link: function(scope, elem, attrs, tabsCtrl) {

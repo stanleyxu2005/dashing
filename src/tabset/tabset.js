@@ -12,7 +12,7 @@ angular.module('dashing.tabset', [])
  *    <tab heading="tab 2" template="path/to/tab2.html" controller="tab2Ctrl"></tab>
  *  </tabset>
  */
-  .directive('dsTabset', [function() {
+  .directive('tabset', [function() {
     'use strict';
     return {
       templateUrl: 'tabset/tabset.html',
@@ -51,11 +51,11 @@ angular.module('dashing.tabset', [])
   }])
 
 /** Directive of tab that is associated with tabs */
-  .directive('dsTab', ['$http', '$controller', '$compile',
+  .directive('tab', ['$http', '$controller', '$compile',
     function($http, $controller, $compile) {
       'use strict';
       return {
-        require: '^dsTabset',
+        require: '^tabset',
         restrict: 'E',
         transclude: true,
         link: function(scope, elem, attrs, tabsCtrl) {

@@ -55,7 +55,7 @@ angular.module('dashing.charts', [
 /**
  *
  */
-  .factory('LookAndFeel', function() {
+  .factory('$echarts', function() {
     'use strict';
     return {
       /** */
@@ -131,12 +131,12 @@ angular.module('dashing.charts', [
         options: '=optionsBind',
         data: '=datasourceBind'
       },
-      controller: ['$scope', 'LookAndFeel', function($scope, LookAndFeel) {
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var colors = LookAndFeel.colorSet(0);
+        var colors = $echarts.colorSet(0);
         $scope.echartOptions = {
           height: use.height, width: use.width,
-          tooltip: LookAndFeel.tooltip({
+          tooltip: $echarts.tooltip({
             color: colors.grid, type: 'cross',
             formatter: use.tooltipFormatter ? function(params) {
               return use.tooltipFormatter(params[0]);
@@ -154,7 +154,7 @@ angular.module('dashing.charts', [
           }],
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
-          series: [LookAndFeel.makeDataSeries({
+          series: [$echarts.makeDataSeries({
             colors: colors, name: '1',
             data: $scope.data.map(function(item) {
               return item.y;
@@ -176,11 +176,11 @@ angular.module('dashing.charts', [
         options: '=',
         data: '='
       },
-      controller: ['$scope', 'LookAndFeel', function($scope, LookAndFeel) {
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
         var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
         var options = {
-          tooltip: LookAndFeel.tooltip({}),
+          tooltip: $echarts.tooltip({}),
           dataZoom: {show: false},
           grid: {borderWidth: 0, y: 10, x2: 30, y2: 20},
           xAxis: [{
@@ -199,8 +199,8 @@ angular.module('dashing.charts', [
         };
         angular.forEach(use.series, function(series, i) {
           options.series.push(
-            LookAndFeel.makeDataSeries(
-              angular.merge({colors: LookAndFeel.colorSet(i)}, use.series[i])
+            $echarts.makeDataSeries(
+              angular.merge({colors: $echarts.colorSet(i)}, use.series[i])
             ));
         });
         if (options.series.length > 1) {

@@ -26,7 +26,7 @@ angular.module('dashing.progressbar', [])
         });
         // todo: externalize as a color attribute
         $scope.colorFn = function(usage) {
-          return usage < 50 ? 'blue' : (usage < 75 ? 'yellow' : 'red');
+          return usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger');
         };
       }]
     };

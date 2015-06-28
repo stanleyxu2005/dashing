@@ -1,6 +1,6 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
-Dashing is a set of ready-to-use widgets, which helps you to build dashing webapps in minutes!
+Hate searching around the world to find really powerful widgets, but have to customize them to fit your need? Dashing is a set of ready-to-use widgets, which helps you to build dashing webapps in minutes! 
 
 ## Quick Start
 
@@ -38,3 +38,14 @@ angular.module('myApp', ['dashing']);
 **Qian Xu**
 
 + https://github.com/stanleyxu2005
+
+
+## License
+
+The project itself is under Apache License version 2.0. All its dependencies are under diverse open source licences. Please checkout their homepage for more details.
+
++ [AngularJS](http://angularjs.org)
++ [Boostrap 3](http://getbootstrap.com)
++ [Angular-Strap](http://mgcrea.github.io/angular-strap)
++ [Smart-Table](http://lorenzofox3.github.io/smart-table-website/)
++ [Baidu Echarts](http://echarts.baidu.com/)

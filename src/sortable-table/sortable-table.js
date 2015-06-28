@@ -43,12 +43,14 @@ angular.module('dashing.sortable-table', [
           return col.style +
             (['Number'].indexOf(col.renderer) !== -1 ? ' text-right' : '');
         };
-        /** Expose isArray into template. */
+        // Expose isArray into template.
         $scope.isArray = angular.isArray;
       }]
     };
   })
-  /** Override smart-table's default behavior(s). */
+  /**
+   * Override smart-table's default behavior(s)
+   */
   .config(['stConfig', function(stConfig) {
     'use strict';
     stConfig.sort.skipNatural = true;

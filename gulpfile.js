@@ -70,8 +70,12 @@ gulp.task('pack-angular-templates', function() {
 
 // concat all js files as one
 gulp.task('concat-js', ['pack-angular-templates'], function() {
-  return gulp.src('src/**/*.js')
+  return gulp.src('src/*/*.js')
+    .pipe(tool.sort()) // `gulp.src()` does not aware file orders
     .pipe(tool.concat(brand + '.js'))
+    .pipe(tool.headerfooter.header([
+      tool.fs.readFileSync('src/module.js'), '',
+      tool.fs.readFileSync('src/tpls.js'), ''].join("\n")))
     .pipe(tool.stripcomments())
     .pipe(tool.stripemptylines())
     .pipe(tool.replace(/\s*\'use strict\';/g, ''))

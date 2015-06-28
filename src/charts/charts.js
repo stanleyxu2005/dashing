@@ -11,10 +11,12 @@ angular.module('dashing.charts', [
   .directive('echart', function() {
     'use strict';
     return {
-      restrict: 'A',
+      template: '<div></div>',
+      replace: true,
+      restrict: 'E',
       scope: {
-        options: '=',
-        data: '='
+        options: '=optionsBind',
+        data: '=dataBind'
       },
       link: function(scope, elems) {
         var options = scope.options;
@@ -27,10 +29,9 @@ angular.module('dashing.charts', [
         function ensureArray(obj) {
           return Array.isArray(obj) ? obj : [obj];
         }
+
         scope.$watch('data', function(data) {
-          // Expected to be an array of data series.
-          // E.g.: [{x: new Date(), y: [400, 300]}, {x: new Date(), y: [405, 305}]
-          if (data) {
+          if (data) { // [{x: new Date(), y: [400, 300]}]
             var dataGrow = !options.xAxisDataNum ||
               chart.getOption().xAxis[0].data.length < options.xAxisDataNum;
             var array = [];
@@ -63,7 +64,7 @@ angular.module('dashing.charts', [
           borderRadius: 2,
           formatter: args.formatter,
           position: function(p) {
-            return [p[0], 22]; // fix the tooltip possition
+            return [p[0], 22]; // fix the tooltip position
           }
         };
         if (args.color) {
@@ -77,6 +78,7 @@ angular.module('dashing.charts', [
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
         return angular.merge(args, {
+          symbol: 'emptyCircle',
           smooth: true,
           itemStyle: {
             normal: {
@@ -93,8 +95,14 @@ angular.module('dashing.charts', [
           case 1:
             return {
               line: 'rgb(110,119,215)',
-              grid: 'rgba(110,119,215,.2)',
-              area: 'rgb(129,242,250)'
+              grid: 'rgba(5,124,220,.2)',
+              area: 'rgb(243,247,257)'
+            };
+          case 2:
+            return {
+              line: 'rgb(255,127,80)',
+              grid: 'rgba(255,127,80,.2)',
+              area: 'rgb(250,227,215)'
             };
         }
         return {
@@ -109,21 +117,23 @@ angular.module('dashing.charts', [
  * Sparkline is an one data series line chart without axis labels.
  *
  * @example
- *   <sparkline-chart options-bind="sparkLineOptions" data-bind="sparkLineData"></sparkline-chart>
+ *   <sparkline-chart options-bind="sparkLineOptions" datasource-bind="sparkLineData"></sparkline-chart>
  *
  * @param options - the option object, which the following elements:
  * {
  *   height: string, // the css height of the chart
  *   width: string, // the css width of the chart
- *   maxDataNum: number, // the maximal number of data points in the chart
+ *   maxDataNum: number, // the maximal number of data points in the chart (default: unlimited)
  *   tooltipFormatter: function // a function to specify tooltip
+ *   seriesNames: [string] // name of data series in an array
  * }
- * @param data - array of object {x: label, y: value}
+ * @param data - array of data objects
+ *  every data object is {x: time|string, y: number}
  */
   .directive('sparklineChart', function() {
     'use strict';
     return {
-      template: '<div echart options="echartOptions" data="data"></div>',
+      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
       restrict: 'E',
       scope: {
         options: '=optionsBind',
@@ -131,6 +141,7 @@ angular.module('dashing.charts', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
+        var data = $scope.data;
         var colors = $echarts.colorSet(0);
         $scope.echartOptions = {
           height: use.height, width: use.width,
@@ -147,15 +158,15 @@ angular.module('dashing.charts', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: $scope.data.map(function(item) {
+            data: data.map(function(item) {
               return item.x;
             })
           }],
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
-            colors: colors, name: '1',
-            data: $scope.data.map(function(item) {
+            colors: colors,
+            data: data.map(function(item) {
               return item.y;
             })
           })]
@@ -165,52 +176,89 @@ angular.module('dashing.charts', [
   })
 /**
  * Line chart control.
- * /
+ *
+ * @example
+ *   <line-chart options-bind="lineChartOptions" datasource-bind="lineChartData"></line-chart>
+ *
+ * @param options - the option object, which the following elements:
+ * {
+ *   height: string, // the css height of the chart
+ *   width: string, // the css width of the chart
+ *   maxDataNum: number, // the maximal number of data points (of a series) in the chart (default: unlimited)
+ *   tooltipFormatter: function // a function to specify tooltip,
+ *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
+ *   stacked: boolean // should stack all data series (default: true)
+ * }
+ * @param data - array of data objects
+ *  every data object is {x: time|string, y: [number]}
+ */
   .directive('lineChart', function() {
     'use strict';
     return {
-      template: '<div echart options="echartOptions" data="data"></div>',
+      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
       restrict: 'E',
       scope: {
-        options: '=',
-        data: '='
+        options: '=optionsBind',
+        data: '=datasourceBind'
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
+        var data = $scope.data;
         var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
         var options = {
-          tooltip: $echarts.tooltip({}),
+          height: use.height, width: use.width,
+          tooltip: $echarts.tooltip({
+            color: $echarts.colorSet(0).grid,
+            axisPointer: {type: 'axis'},
+            formatter: use.tooltipFormatter ? function(params) {
+              return use.tooltipFormatter(params);
+            } : undefined
+          }),
           dataZoom: {show: false},
           grid: {borderWidth: 0, y: 10, x2: 30, y2: 20},
           xAxis: [{
-            axisLabel: {show: true},
+            boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
-            splitLine: {show: false},
-            data: use.xAxisData
+            axisLabel: {show: true},
+            splitLine: false,
+            data: data.map(function(item) {
+              return item.x;
+            })
           }],
           yAxis: [{
-            splitNumber: 3,
+            splitNumber: use.yAxisValuesNum || 3,
             splitLine: {show: false},
             axisLine: {show: false}
           }],
-          series: []
+          xAxisDataNum: use.maxDataNum,
+          series: [],
+          // override the default color palette, otherwise the colors look messy.
+          color: use.seriesNames.map(function(_, i) {
+            return $echarts.colorSet(i).line;
+          })
         };
-        angular.forEach(use.series, function(series, i) {
+        angular.forEach(use.seriesNames, function(name, i) {
           options.series.push(
-            $echarts.makeDataSeries(
-              angular.merge({colors: $echarts.colorSet(i)}, use.series[i])
-            ));
+            $echarts.makeDataSeries({
+              colors: $echarts.colorSet(i), name: name,
+              stack: use.stacked || true,
+              showAllSymbol: true,
+              data: data.map(function(item) {
+                return item.y[i];
+              })
+            })
+          );
         });
         if (options.series.length > 1) {
-          options.legend = {show: true, data: []};
+          options.legend = {show: true, selectedMode: false, data: []};
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });
           options.grid.y = 30;
         }
-        $scope.echartOptions = angular.merge(options, use.inject);
+        $scope.echartOptions = options;
       }]
     };
-  })*/
+  })
 ;

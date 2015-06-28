@@ -1,6 +1,6 @@
 /*
  * dashing
- * @version v0.0.2
+ * @version v0.0.3
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -19,7 +19,8 @@ angular.module('dashing', [
   'dashing.tabset'
 ])
 ;
-angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/sparkline-chart-metrics-left.html","<div class=\"row\"> <metrics class=\"col-md-4\" style=\"{{metricsStyleFix}}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline-chart class=\"col-md-offset-1 col-md-7\" options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart> </div>");
+angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/line-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <line-chart options-bind=\"options\" datasource-bind=\"data\"></line-chart>");
+$templateCache.put("charts/sparkline-chart-metrics-left.html","<div class=\"row\"> <metrics class=\"col-md-4\" style=\"{{metricsStyleFix}}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline-chart class=\"col-md-offset-1 col-md-7\" options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart> </div>");
 $templateCache.put("charts/sparkline-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <sparkline-chart options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart>");
 $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
@@ -62,16 +63,32 @@ angular.module('dashing.charts-comp', [
       }
     };
   })
+  .directive('lineChartMetricsTop', function() {
+    return {
+      templateUrl: 'charts/line-chart-metrics-top.html',
+      restrict: 'E',
+      scope: {
+        caption: '@',
+        help: '@',
+        current: '@',
+        unit: '@',
+        options: '=optionsBind',
+        data: '=datasourceBind'
+      }
+    };
+  })
 ;
 angular.module('dashing.charts', [
   'dashing.metrics'
 ])
   .directive('echart', function() {
     return {
-      restrict: 'A',
+      template: '<div></div>',
+      replace: true,
+      restrict: 'E',
       scope: {
-        options: '=',
-        data: '='
+        options: '=optionsBind',
+        data: '=dataBind'
       },
       link: function(scope, elems) {
         var options = scope.options;
@@ -127,6 +144,7 @@ angular.module('dashing.charts', [
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
         return angular.merge(args, {
+          symbol: 'emptyCircle',
           smooth: true,
           itemStyle: {
             normal: {
@@ -142,8 +160,14 @@ angular.module('dashing.charts', [
           case 1:
             return {
               line: 'rgb(110,119,215)',
-              grid: 'rgba(110,119,215,.2)',
-              area: 'rgb(129,242,250)'
+              grid: 'rgba(5,124,220,.2)',
+              area: 'rgb(243,247,257)'
+            };
+          case 2:
+            return {
+              line: 'rgb(255,127,80)',
+              grid: 'rgba(255,127,80,.2)',
+              area: 'rgb(250,227,215)'
             };
         }
         return {
@@ -156,7 +180,7 @@ angular.module('dashing.charts', [
   })
   .directive('sparklineChart', function() {
     return {
-      template: '<div echart options="echartOptions" data="data"></div>',
+      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
       restrict: 'E',
       scope: {
         options: '=optionsBind',
@@ -164,6 +188,7 @@ angular.module('dashing.charts', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
+        var data = $scope.data;
         var colors = $echarts.colorSet(0);
         $scope.echartOptions = {
           height: use.height, width: use.width,
@@ -180,19 +205,86 @@ angular.module('dashing.charts', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: $scope.data.map(function(item) {
+            data: data.map(function(item) {
               return item.x;
             })
           }],
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
-            colors: colors, name: '1',
-            data: $scope.data.map(function(item) {
+            colors: colors,
+            data: data.map(function(item) {
               return item.y;
             })
           })]
         };
+      }]
+    };
+  })
+  .directive('lineChart', function() {
+    return {
+      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
+      restrict: 'E',
+      scope: {
+        options: '=optionsBind',
+        data: '=datasourceBind'
+      },
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
+        var use = $scope.options;
+        var data = $scope.data;
+        var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
+        var options = {
+          height: use.height, width: use.width,
+          tooltip: $echarts.tooltip({
+            color: $echarts.colorSet(0).grid,
+            axisPointer: {type: 'axis'},
+            formatter: use.tooltipFormatter ? function(params) {
+              return use.tooltipFormatter(params);
+            } : undefined
+          }),
+          dataZoom: {show: false},
+          grid: {borderWidth: 0, y: 10, x2: 30, y2: 20},
+          xAxis: [{
+            boundaryGap: false,
+            axisLine: borderLineStyle,
+            axisTick: borderLineStyle,
+            axisLabel: {show: true},
+            splitLine: false,
+            data: data.map(function(item) {
+              return item.x;
+            })
+          }],
+          yAxis: [{
+            splitNumber: use.yAxisValuesNum || 3,
+            splitLine: {show: false},
+            axisLine: {show: false}
+          }],
+          xAxisDataNum: use.maxDataNum,
+          series: [],
+          color: use.seriesNames.map(function(_, i) {
+            return $echarts.colorSet(i).line;
+          })
+        };
+        angular.forEach(use.seriesNames, function(name, i) {
+          options.series.push(
+            $echarts.makeDataSeries({
+              colors: $echarts.colorSet(i), name: name,
+              stack: use.stacked || true,
+              showAllSymbol: true,
+              data: data.map(function(item) {
+                return item.y[i];
+              })
+            })
+          );
+        });
+        if (options.series.length > 1) {
+          options.legend = {show: true, selectedMode: false, data: []};
+          angular.forEach(options.series, function(series) {
+            options.legend.data.push(series.name);
+          });
+          options.grid.y = 30;
+        }
+        $scope.echartOptions = options;
       }]
     };
   })
@@ -243,6 +335,20 @@ angular.module('dashing.progressbar', [])
           return usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger');
         };
       }]
+    };
+  })
+;
+angular.module('dashing.property-table', [])
+  .directive('propertyTable', function () {
+    return {
+      templateUrl: 'property-table/property-table.html',
+      restrict: 'E',
+      scope: {
+        caption: '@',
+        props: '=propsBind',
+        propNameClass: '@',
+        propValueClass: '@'
+      }
     };
   })
 ;
@@ -315,20 +421,6 @@ angular.module('dashing.property', [])
     };
   })
 ;
-angular.module('dashing.property-table', [])
-  .directive('propertyTable', function () {
-    return {
-      templateUrl: 'property-table/property-table.html',
-      restrict: 'E',
-      scope: {
-        caption: '@',
-        props: '=propsBind',
-        propNameClass: '@',
-        propValueClass: '@'
-      }
-    };
-  })
-;
 angular.module('dashing.sortable-table', [
   'smart-table'
 ])
@@ -348,7 +440,7 @@ angular.module('dashing.sortable-table', [
           return col.style +
             (['Number'].indexOf(col.renderer) !== -1 ? ' text-right' : '');
         };
-                $scope.isArray = angular.isArray;
+        $scope.isArray = angular.isArray;
       }]
     };
   })

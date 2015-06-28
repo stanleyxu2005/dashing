@@ -3,7 +3,7 @@
   <tbody>
   <tr ng-repeat="prop in props track by $index">
     <td ng-class="propNameClass">
-      <small ng-bind="prop.name"></small>
+      <span ng-bind="prop.name"></span>
       <help ng-if="prop.help" text="{{prop.help}}"></help>
     </td>
     <td ng-switch="prop.hasOwnProperty('values')" ng-class="propValueClass">

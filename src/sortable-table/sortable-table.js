@@ -45,7 +45,7 @@ angular.module('dashing.sortable-table', [
         };
         /** Expose isArray into template. */
         $scope.isArray = angular.isArray;
-      }],
+      }]
     };
   })
   /** Override smart-table's default behavior(s). */

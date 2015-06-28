@@ -5,24 +5,7 @@
  
 .progress-tiny {
   height: 3px;
-  border-style: none;
   background-color: #ebebeb;
   padding: 0;
   margin: 1px 0 0 0;
-}
-.progress-bar-info {
-  background-color: #5bc0de;
-  background-image: none;
-}
-.progress-bar-success {
-  background-color: #5cb85c;
-  background-image: none;
-}
-.progress-bar-warning {
-  background-color: #fccd3b;
-  background-image: none;
-}
-.progress-bar-danger {
-  background-color: #ff5855;
-  background-image: none;
 }

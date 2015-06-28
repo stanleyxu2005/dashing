@@ -5,10 +5,11 @@
 'use strict';
 
 var brand = 'dashing';
+var projs = require('./package.json')
 var header = [
   '/*',
   ' * dashing',
-  ' * @version v' + require('./package.json').version,
+  ' * @version v' + projs.version,
   ' * @link https://github.com/stanleyxu2005/dashing',
   ' * @license Apache License 2.0, see accompanying LICENSE file',
   ' */',
@@ -17,8 +18,9 @@ var output_dir = 'dist';
 
 var gulp = require('gulp');
 var tool = {
-  concat: require('gulp-concat-util'),
+  concat: require('gulp-concat'),
   fs: require('fs'),
+  headerfooter: require('gulp-headerfooter'),
   htmlmin: require('gulp-htmlmin'),
   minifycss: require('gulp-minify-css'),
   rename: require("gulp-rename"),
@@ -38,11 +40,11 @@ gulp.task('default', ['min-css', 'min-js', 'doc'], function() {
 // concat all css files as one
 gulp.task('concat-css', function() {
   return gulp.src('src/**/*.css')
-    .pipe(tool.sort()) // `gulp.src()` returns filenames in random order
+    .pipe(tool.sort()) // `gulp.src()` does not aware file orders
     .pipe(tool.concat(brand + '.css'))
     .pipe(tool.stripcomments())
     .pipe(tool.stripemptylines())
-    .pipe(tool.concat.header(header))
+    .pipe(tool.headerfooter.header(header))
     .pipe(gulp.dest(output_dir));
 });
 
@@ -51,7 +53,7 @@ gulp.task('min-css', ['concat-css'], function() {
   return gulp.src(output_dir + '/' + brand + '.css')
     .pipe(tool.sourcemaps.init())
     .pipe(tool.minifycss())
-    .pipe(tool.concat.header(header))
+    .pipe(tool.headerfooter.header(header))
     .pipe(tool.rename(brand + '.min.css'))
     .pipe(tool.sourcemaps.write('.'))
     .pipe(gulp.dest(output_dir));
@@ -60,7 +62,7 @@ gulp.task('min-css', ['concat-css'], function() {
 // create angular template cache
 gulp.task('pack-angular-templates', function() {
   return gulp.src('src/**/*.html')
-    .pipe(tool.sort()) // `gulp.src()` returns filenames in random order
+    .pipe(tool.sort()) // `gulp.src()` does not aware file orders
     .pipe(tool.htmlmin({removeComments: true, collapseWhitespace: true, conservativeCollapse: true}))
     .pipe(tool.templatecache('tpls.js', {module: brand}))
     .pipe(gulp.dest('src'));
@@ -69,20 +71,13 @@ gulp.task('pack-angular-templates', function() {
 // concat all js files as one
 gulp.task('concat-js', ['pack-angular-templates'], function() {
   return gulp.src('src/**/*.js')
-    .pipe(tool.sort({ // `gulp.src()` returns filenames in random order
-      comparator: function(file1, file2) {
-        var path = require('path');
-        function l(f) { return f.path.split(path.sep).length; }
-        var result = l(file1) - l(file2);
-        return result === 0 ? file1.path > file2.path : result;
-      }}))
     .pipe(tool.concat(brand + '.js'))
     .pipe(tool.stripcomments())
     .pipe(tool.stripemptylines())
     .pipe(tool.replace(/\s*\'use strict\';/g, ''))
-    .pipe(tool.concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
-    .pipe(tool.concat.footer('\n})(window, document);'))
-    .pipe(tool.concat.header(header))
+    .pipe(tool.headerfooter.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+    .pipe(tool.headerfooter.footer('\n})(window, document);'))
+    .pipe(tool.headerfooter.header(header))
     .pipe(gulp.dest(output_dir));
 });
 
@@ -91,7 +86,7 @@ gulp.task('min-js', ['concat-js'], function() {
   return gulp.src(output_dir + '/' + brand + '.js')
     .pipe(tool.sourcemaps.init())
     .pipe(tool.uglifyjs())
-    .pipe(tool.concat.header(header))
+    .pipe(tool.headerfooter.header(header))
     .pipe(tool.rename(brand + '.min.js'))
     .pipe(tool.sourcemaps.write('.'))
     .pipe(gulp.dest(output_dir));

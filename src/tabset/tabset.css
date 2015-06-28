@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-
+ 
 .nav-tabs {
   margin-bottom: 30px !important;
   border-bottom: 2px solid rgba(0, 39, 59, .1);
@@ -22,8 +22,9 @@
   padding-left: 2px !important;
   padding-right: 2px !important;
   padding-bottom: 5px !important;
-  border: 2px solid transparent;
   border-width: 2px 0;
+  border-style: solid;
+  border-color: transparent;
   border-radius: 0;
   color: #777;
   font-size: 0.85em;
@@ -58,7 +59,8 @@
 }
 
 .nav-tabs-underlined .active {
-  border: 2px solid transparent;
   border-width: 2px 0;
+  border-style: solid;
+  border-color: transparent;
   border-bottom-color: #dd4b39;
 }

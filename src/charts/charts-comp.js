@@ -10,15 +10,15 @@ angular.module('dashing.charts-comp', [
  * Sparkline chart control with current value information on top.
  *
  * @example
- *   <sparkline-chart-comp1
+ *   <sparkline-chart-metrics-top
  *     caption="CPU usage" help="CPU usage in real time" value="50" unit="%"
  *     options-bind="sparkLineOptions" data-bind="sparkLineData">
  *   </sparkline-chart-comp1>
  */
-  .directive('sparklineChartComp1', function() {
+  .directive('sparklineChartMetricsTop', function() {
     'use strict';
     return {
-      templateUrl: 'charts/charts-comp-sparklinechartcomp1.html',
+      templateUrl: 'charts/sparkline-chart-metrics-top.html',
       restrict: 'E',
       scope: {
         caption: '@',
@@ -35,15 +35,15 @@ angular.module('dashing.charts-comp', [
  * todo: fix metrics block vertical alignment issue
  *
  * @example
- *   <sparkline-chart-comp2
+ *   <sparkline-chart-metrics-left
  *     caption="CPU usage" help="CPU usage in real time" value="50" unit="%"
  *     options-bind="sparkLineOptions" data-bind="sparkLineData">
- *   </sparkline-chart-comp2>
+ *   </sparkline-chart-metrics-left>
  */
-  .directive('sparklineChartComp2', function() {
+  .directive('sparklineChartMetricsLeft', function() {
     'use strict';
     return {
-      templateUrl: 'charts/charts-comp-sparklinechartcomp2.html',
+      templateUrl: 'charts/sparkline-chart-metrics-left.html',
       restrict: 'E',
       scope: {
         caption: '@',

@@ -25,26 +25,9 @@
 }
 .progress-tiny {
   height: 3px;
-  border-style: none;
   background-color: #ebebeb;
   padding: 0;
   margin: 1px 0 0 0;
-}
-.progress-bar-info {
-  background-color: #5bc0de;
-  background-image: none;
-}
-.progress-bar-success {
-  background-color: #5cb85c;
-  background-image: none;
-}
-.progress-bar-warning {
-  background-color: #fccd3b;
-  background-image: none;
-}
-.progress-bar-danger {
-  background-color: #ff5855;
-  background-image: none;
 }
 th[st-sort] {
   cursor: pointer;
@@ -89,8 +72,9 @@ input[st-search] {
   padding-left: 2px !important;
   padding-right: 2px !important;
   padding-bottom: 5px !important;
-  border: 2px solid transparent;
   border-width: 2px 0;
+  border-style: solid;
+  border-color: transparent;
   border-radius: 0;
   color: #777;
   font-size: 0.85em;
@@ -119,7 +103,8 @@ input[st-search] {
   border: 0 solid transparent;
 }
 .nav-tabs-underlined .active {
-  border: 2px solid transparent;
   border-width: 2px 0;
+  border-style: solid;
+  border-color: transparent;
   border-bottom-color: #dd4b39;
 }

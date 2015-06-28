@@ -6,7 +6,7 @@ angular.module('dashing.charts', [
   'dashing.metrics'
 ])
 /**
- * The angular directive of echarts control.
+ * Make DIV becoming an echart control.
  */
   .directive('echart', function() {
     'use strict';
@@ -24,21 +24,18 @@ angular.module('dashing.charts', [
         var chart = echarts.init(elem0);
         chart.setOption(options, /*noMerge=*/true);
 
+        function ensureArray(obj) {
+          return Array.isArray(obj) ? obj : [obj];
+        }
         scope.$watch('data', function(data) {
           // Expected to be an array of data series.
           // E.g.: [{x: new Date(), y: [400, 300]}, {x: new Date(), y: [405, 305}]
           if (data) {
             var dataGrow = !options.xAxisDataNum ||
               chart.getOption().xAxis[0].data.length < options.xAxisDataNum;
-            if (!Array.isArray(data)) {
-              data = [data];
-            }
             var array = [];
-            angular.forEach(data, function(datum) {
-              if (!Array.isArray(datum.y)) {
-                datum.y = [datum.y];
-              }
-              angular.forEach(datum.y, function(value, i) {
+            angular.forEach(ensureArray(data), function(datum) {
+              angular.forEach(ensureArray(datum.y), function(value, i) {
                 var params = [i, value, /*isHead=*/false, dataGrow];
                 if (i === 0) {
                   params.push(datum.x);
@@ -53,29 +50,30 @@ angular.module('dashing.charts', [
     };
   })
 /**
- *
+ * Customize chart's look and feel.
  */
   .factory('$echarts', function() {
     'use strict';
     return {
-      /** */
       tooltip: function(args) {
         var result = {
           trigger: args.trigger || 'axis',
           textStyle: {fontSize: 12},
           axisPointer: {type: 'none'},
           borderRadius: 2,
-          formatter: args.formatter
+          formatter: args.formatter,
+          position: function(p) {
+            return [p[0], 22]; // fix the tooltip possition
+          }
         };
         if (args.color) {
           result.axisPointer = {
-            type: 'line',
+            type: args.axisPointer.type || 'line',
             lineStyle: {color: args.color, width: 3, type: 'dotted'}
           };
         }
         return result;
       },
-      /** */
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
         return angular.merge(args, {
@@ -89,8 +87,8 @@ angular.module('dashing.charts', [
           }
         });
       },
-      /** */
       colorSet: function(i) {
+        // todo: more color palette
         switch (i % 2) {
           case 1:
             return {
@@ -137,7 +135,8 @@ angular.module('dashing.charts', [
         $scope.echartOptions = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
-            color: colors.grid, type: 'cross',
+            color: colors.grid,
+            axisPointer: {type: 'none'},
             formatter: use.tooltipFormatter ? function(params) {
               return use.tooltipFormatter(params[0]);
             } : undefined

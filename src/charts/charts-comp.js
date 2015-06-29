@@ -37,6 +37,7 @@ angular.module('dashing.charts-comp', [
  * @example
  *   <sparkline-chart-metrics-left
  *     caption="CPU usage" help="CPU usage in real time" value="50" unit="%"
+ *     metrics-part-class="col-md-4" chart-part-class="col-md-offset-1 col-md-7"
  *     options-bind="sparkLineOptions" datasource-bind="sparkLineData">
  *   </sparkline-chart-metrics-left>
  */
@@ -53,8 +54,15 @@ angular.module('dashing.charts-comp', [
         smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind',
-        metricsStyleFix: '@'
-      }
+        metricsPartClass: '@',
+        chartPartClass: '@'
+      },
+      controller: ['$timeout', function($timeout) {
+        // Manually trigger a window.resize, otherwise echart will not fit the width.
+        $timeout(function() {
+          angular.element(window).triggerHandler('resize');
+        });
+      }]
     };
   })
 /**

@@ -1,10 +1,10 @@
 <div class="row">
   <metrics
-    class="col-md-4" style="{{metricsStyleFix}}"
+    class="{{metricsPartClass}}" ng-class="{'col-md-6':!metricsPartClass}"
     caption="{{caption}}" ng-attr-help="{{help}}"
     value="{{current}}" unit="{{unit}}"
     small-text="{{smallText}}"></metrics>
   <sparkline-chart
-    class="col-md-offset-1 col-md-7"
+    class="{{chartPartClass}}" ng-class="{'col-md-6':!chartPartClass}"
     options-bind="options" datasource-bind="data"></sparkline-chart>
 </div>

@@ -1,7 +1,7 @@
 {
   "name": "dashing",
   "description": "Dashing widgets for (AngularJS based) webapps",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "Apache-2.0",
   "keywords": ["angular", "bootstrap", "table", "chart"],
   "homepage": "https://github.com/stanleyxu2005/dashing",

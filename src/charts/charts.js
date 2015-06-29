@@ -24,7 +24,13 @@ angular.module('dashing.charts', [
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
-        chart.setOption(options, /*noMerge=*/true);
+        angular.element(window).on('resize', chart.resize);
+        scope.$on('$destroy', function() {
+          angular.element(window).off('resize', chart.resize);
+          chart.dispose();
+          chart = null;
+        });
+        chart.setOption(options, /*do_not_merge=*/true);
 
         function ensureArray(obj) {
           return Array.isArray(obj) ? obj : [obj];
@@ -153,6 +159,7 @@ angular.module('dashing.charts', [
             } : undefined
           }),
           dataZoom: {show: false},
+          // 5px border on left and right to fix data point
           grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
           xAxis: [{
             boundaryGap: false,
@@ -215,7 +222,8 @@ angular.module('dashing.charts', [
             } : undefined
           }),
           dataZoom: {show: false},
-          grid: {borderWidth: 0, y: 10, x2: 30, y2: 20},
+          // 5px border on left and right to fix data point
+          grid: {borderWidth: 0, y: 10, x2: 5, y2: 22},
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,

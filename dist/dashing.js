@@ -1,6 +1,6 @@
 /*
  * dashing
- * @version v0.0.3
+ * @version v0.0.4
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -20,7 +20,7 @@ angular.module('dashing', [
 ])
 ;
 angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/line-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <line-chart options-bind=\"options\" datasource-bind=\"data\"></line-chart>");
-$templateCache.put("charts/sparkline-chart-metrics-left.html","<div class=\"row\"> <metrics class=\"col-md-4\" style=\"{{metricsStyleFix}}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline-chart class=\"col-md-offset-1 col-md-7\" options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart> </div>");
+$templateCache.put("charts/sparkline-chart-metrics-left.html","<div class=\"row\"> <metrics class=\"{{metricsPartClass}}\" ng-class=\"{\'col-md-6\':!metricsPartClass}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline-chart class=\"{{chartPartClass}}\" ng-class=\"{\'col-md-6\':!chartPartClass}\" options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart> </div>");
 $templateCache.put("charts/sparkline-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <sparkline-chart options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart>");
 $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
@@ -59,8 +59,14 @@ angular.module('dashing.charts-comp', [
         smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind',
-        metricsStyleFix: '@'
-      }
+        metricsPartClass: '@',
+        chartPartClass: '@'
+      },
+      controller: ['$timeout', function($timeout) {
+        $timeout(function() {
+          angular.element(window).triggerHandler('resize');
+        });
+      }]
     };
   })
   .directive('lineChartMetricsTop', function() {
@@ -96,6 +102,12 @@ angular.module('dashing.charts', [
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
+        angular.element(window).on('resize', chart.resize);
+        scope.$on('$destroy', function() {
+          angular.element(window).off('resize', chart.resize);
+          chart.dispose();
+          chart = null;
+        });
         chart.setOption(options, true);
         function ensureArray(obj) {
           return Array.isArray(obj) ? obj : [obj];
@@ -243,7 +255,7 @@ angular.module('dashing.charts', [
             } : undefined
           }),
           dataZoom: {show: false},
-          grid: {borderWidth: 0, y: 10, x2: 30, y2: 20},
+          grid: {borderWidth: 0, y: 10, x2: 5, y2: 22},
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,

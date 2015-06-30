@@ -106,7 +106,6 @@ angular.module('dashing.charts', [
         scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
-          chart = null;
         });
         chart.setOption(options, true);
         function ensureArray(obj) {
@@ -147,46 +146,63 @@ angular.module('dashing.charts', [
         };
         if (args.color) {
           result.axisPointer = {
-            type: args.axisPointer.type || 'line',
+            type: 'line',
             lineStyle: {color: args.color, width: 3, type: 'dotted'}
           };
         }
         return result;
       },
+      tooltipFirstSeriesFormatter: function(valueFormatter) {
+        return function(params) {
+          return valueFormatter(params[0].value);
+        };
+      },
+      tooltipAllSeriesFormatter: function(valueFormatter) {
+        return function(params) {
+          return params[0].name +
+            '<table>' +
+            params.map(function(param) {
+              var color = param.series.colors.line;
+              return '<tr>' +
+                '<td><div style="width:7px;height:7px;background-color:%s"></div></td>'.replace('%s', color) +
+                '<td style="padding:0 12px 0 4px">' + param.seriesName + '</td>' +
+                '<td>' + valueFormatter(param.value) + '</td>' +
+                '</tr>';
+            }).join('') + '</table>';
+        };
+      },
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
         return angular.merge(args, {
-          symbol: 'emptyCircle',
+          symbol: 'circle',
           smooth: true,
           itemStyle: {
             normal: {
               areaStyle: {type: 'default', color: args.colors.area},
               lineStyle: {color: args.colors.line, width: 3}
             },
-            emphasis: {color: args.colors.line}
+            emphasis: {
+              color: args.colors.line,
+              lineStyle: {
+                color: args.colors.line,
+                width: args.showAllSymbol ? 4 : 3
+              }
+            }
           }
         });
       },
       colorSet: function(i) {
-        switch (i % 2) {
-          case 1:
-            return {
-              line: 'rgb(110,119,215)',
-              grid: 'rgba(5,124,220,.2)',
-              area: 'rgb(243,247,257)'
-            };
-          case 2:
-            return {
-              line: 'rgb(255,127,80)',
-              grid: 'rgba(255,127,80,.2)',
-              area: 'rgb(250,227,215)'
-            };
-        }
-        return {
-          line: 'rgb(0,119,215)',
-          grid: 'rgba(0,119,215,.2)',
-          area: 'rgb(229,242,250)'
-        };
+        var palette = [
+          {line: 'rgb(0,119,215)', area: '#ebf6ff'},
+          {line: 'rgb(110,119,215)', area: '#eff0fb'},
+          {line: 'rgb(41,189,181)', area: '#eefbfb'},
+          {line: 'rgb(212,102,138)', area: '#fbeff3'},
+          {line: 'rgb(255,127,80)', area: '#fff0eb'}
+        ];
+        return palette[i % palette.length];
+      },
+      rgba: function(rgb, opacity) {
+        return rgb.replace('rgb(', 'rgba(').replace(')', ',' + opacity + ')');
       }
     };
   })
@@ -205,11 +221,13 @@ angular.module('dashing.charts', [
         $scope.echartOptions = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
-            color: colors.grid,
-            axisPointer: {type: 'none'},
-            formatter: use.tooltipFormatter ? function(params) {
-              return use.tooltipFormatter(params[0]);
-            } : undefined
+            formatter: use.tooltipFormatter ?
+              use.tooltipFormatter :
+              $echarts.tooltipFirstSeriesFormatter(
+                use.valueFormatter || function(value) {
+                  return value;
+                }
+              )
           }),
           dataZoom: {show: false},
           grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
@@ -248,11 +266,14 @@ angular.module('dashing.charts', [
         var options = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
-            color: $echarts.colorSet(0).grid,
-            axisPointer: {type: 'axis'},
-            formatter: use.tooltipFormatter ? function(params) {
-              return use.tooltipFormatter(params);
-            } : undefined
+            color: 'rgba(235,235,235,.75)',
+            formatter: use.tooltipFormatter ?
+              use.tooltipFormatter :
+              $echarts.tooltipAllSeriesFormatter(
+                use.valueFormatter || function(value) {
+                  return value;
+                }
+              )
           }),
           dataZoom: {show: false},
           grid: {borderWidth: 0, y: 10, x2: 5, y2: 22},
@@ -281,8 +302,7 @@ angular.module('dashing.charts', [
           options.series.push(
             $echarts.makeDataSeries({
               colors: $echarts.colorSet(i), name: name,
-              stack: use.stacked || true,
-              showAllSymbol: true,
+              stack: true, showAllSymbol: true,
               data: data.map(function(item) {
                 return item.y[i];
               })
@@ -290,7 +310,7 @@ angular.module('dashing.charts', [
           );
         });
         if (options.series.length > 1) {
-          options.legend = {show: true, selectedMode: false, data: []};
+          options.legend = {show: true, itemWidth: 8, data: []};
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });

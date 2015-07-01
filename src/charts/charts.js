@@ -2,9 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.charts', [
-  'dashing.metrics'
-])
+angular.module('dashing.charts', [])
 /**
  * Make DIV becoming an echart control.
  */
@@ -101,12 +99,11 @@ angular.module('dashing.charts', [
       },
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
-        return angular.merge(args, {
+        var options = {
           symbol: 'circle',
           smooth: true,
           itemStyle: {
             normal: {
-              areaStyle: {type: 'default', color: args.colors.area},
               lineStyle: {color: args.colors.line, width: 3}
             },
             emphasis: {
@@ -117,7 +114,13 @@ angular.module('dashing.charts', [
               }
             }
           }
-        });
+        }
+        if (args.stack) {
+          options.itemStyle.normal.areaStyle = {
+            type: 'default', color: args.colors.area
+          };
+        }
+        return angular.merge(args, options);
       },
       colorSet: function(i) {
         // todo: more color palette
@@ -192,7 +195,7 @@ angular.module('dashing.charts', [
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
-            colors: colors,
+            colors: colors, stack: true /* stack=true means fill area */,
             data: data.map(function(item) {
               return item.y;
             })
@@ -273,7 +276,8 @@ angular.module('dashing.charts', [
           options.series.push(
             $echarts.makeDataSeries({
               colors: $echarts.colorSet(i), name: name,
-              stack: true, showAllSymbol: true,
+              stack: use.hasOwnProperty('stacked') ? use.stacked : true,
+              showAllSymbol: true,
               data: data.map(function(item) {
                 return item.y[i];
               })

@@ -7,13 +7,13 @@
   white-space: nowrap;
 }
 
-.metrics > .metrics-value {
+.metrics .metrics-value {
   margin-top: 0;
   margin-bottom: 2px;
 
 }
 
-.metrics > .metrics-small-text {
+.metrics .metrics-small-text {
   display: block;
   margin-top: -2px;
   margin-bottom: 2px;

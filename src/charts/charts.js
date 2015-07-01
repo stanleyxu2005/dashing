@@ -114,7 +114,7 @@ angular.module('dashing.charts', [])
               }
             }
           }
-        }
+        };
         if (args.stack) {
           options.itemStyle.normal.areaStyle = {
             type: 'default', color: args.colors.area

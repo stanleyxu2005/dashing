@@ -1,6 +1,6 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
-Hate searching around the world to find really powerful widgets, but have to customize them to fit your need? Dashing is a set of ready-to-use widgets, which helps you to build dashing webapps in minutes! 
+Hate searching around the world to find widgets you really love? Dashing is a set of ready-to-use widgets, which helps you to build amazing webapps in minutes! 
 
 ## Quick Start
 
@@ -23,6 +23,7 @@ $ gulp
 <script src="vendors/angular-strap/angular-strap.min.js"></script>
 <script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
 <script src="vendors/smart-table/smart-table.min.js"></script>
+<script src="vendors/echarts/echarts-all.js"></script>
 <script src="dashing/dashing.min.js"></script>
 ```
 

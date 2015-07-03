@@ -3,15 +3,18 @@
   "description": "Dashing widgets for (AngularJS based) webapps",
   "version": "0.0.4",
   "license": "Apache-2.0",
-  "keywords": ["angular", "bootstrap", "table", "chart"],
+  "keywords": [
+    "angular",
+    "bootstrap",
+    "widgets",
+    "table",
+    "chart"
+  ],
   "homepage": "https://github.com/stanleyxu2005/dashing",
-  "author": {
-    "name": "Qian Xu",
-    "url": "https://github.com/stanleyxu2005"
-  },
+  "author": "Qian Xu (https://github.com/stanleyxu2005)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stanleyxu2005/dashing.git"
+    "url": "git+https://github.com/stanleyxu2005/dashing.git"
   },
   "devDependencies": {
     "gulp": "*",
@@ -27,5 +30,30 @@
     "gulp-sourcemaps": "*",
     "gulp-strip-comments": "*",
     "gulp-uglify": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/stanleyxu2005/dashing/issues"
+  },
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp-headerfooter": "^1.0.3",
+    "gulp-minify-css": "^1.2.0",
+    "gulp": "^3.9.0",
+    "gulp-htmlmin": "^1.1.3",
+    "gulp-angular-templatecache": "^1.7.0",
+    "gulp-remove-empty-lines": "^0.0.2",
+    "gulp-replace": "^0.5.3",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-strip-comments": "^1.0.1",
+    "gulp-util": "^3.0.6",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "gulp-git": "^1.2.4",
+    "gulp-clean": "^0.3.1",
+    "gulp-sort": "^1.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

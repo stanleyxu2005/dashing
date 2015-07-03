@@ -1,6 +1,9 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
+[![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies)[![DevDependency Status](http://img.shields.io/david/dev/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=devDependencies)
+
 Hate searching around the world to find widgets you really love? Dashing is a set of ready-to-use widgets, which helps you to build amazing webapps in minutes! 
+
 
 ## Quick Start
 
@@ -34,11 +37,10 @@ $ gulp
 angular.module('myApp', ['dashing']);
 ```
 
+
 ## Author
 
-**Qian Xu**
-
-+ https://github.com/stanleyxu2005
+**Qian Xu** [github](https://github.com/stanleyxu2005)
 
 
 ## License

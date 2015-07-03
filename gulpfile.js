@@ -5,7 +5,7 @@
 'use strict';
 
 var brand = 'dashing';
-var projs = require('./package.json')
+var projs = require('./package.json');
 var header = [
   '/*',
   ' * dashing',
@@ -13,8 +13,9 @@ var header = [
   ' * @link https://github.com/stanleyxu2005/dashing',
   ' * @license Apache License 2.0, see accompanying LICENSE file',
   ' */',
-  ''].join('\n')
+  ''].join('\n');
 var output_dir = 'dist';
+var output_brand_prefix = output_dir + '/' + brand;
 
 var gulp = require('gulp');
 var tool = {
@@ -50,7 +51,7 @@ gulp.task('concat-css', function() {
 
 // minify css file
 gulp.task('min-css', ['concat-css'], function() {
-  return gulp.src(output_dir + '/' + brand + '.css')
+  return gulp.src(output_brand_prefix + '.css')
     .pipe(tool.sourcemaps.init())
     .pipe(tool.minifycss())
     .pipe(tool.headerfooter.header(header))
@@ -87,7 +88,7 @@ gulp.task('concat-js', ['pack-angular-templates'], function() {
 
 // minify js file
 gulp.task('min-js', ['concat-js'], function() {
-  return gulp.src(output_dir + '/' + brand + '.js')
+  return gulp.src(output_brand_prefix + '.js')
     .pipe(tool.sourcemaps.init())
     .pipe(tool.uglifyjs())
     .pipe(tool.headerfooter.header(header))

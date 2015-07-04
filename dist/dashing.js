@@ -7,8 +7,11 @@
 (function(window, document, undefined) {
 'use strict';
 angular.module('dashing', [
-  'dashing.charts',
-  'dashing.charts-comp',
+  'dashing.charts.echarts',
+  'dashing.charts.bar',
+  'dashing.charts.line',
+  'dashing.charts.metrics-sparkline',
+  'dashing.charts.sparkline',
   'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',
@@ -19,80 +22,70 @@ angular.module('dashing', [
   'dashing.tabset'
 ])
 ;
-angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/line-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <line-chart options-bind=\"options\" datasource-bind=\"data\"></line-chart>");
-$templateCache.put("charts/sparkline-chart-metrics-left.html","<div class=\"row\"> <metrics class=\"{{metricsPartClass}}\" ng-class=\"{\'col-md-6\':!metricsPartClass}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline-chart class=\"{{chartPartClass}}\" ng-class=\"{\'col-md-6\':!chartPartClass}\" options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart> </div>");
-$templateCache.put("charts/sparkline-chart-metrics-top.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <sparkline-chart options-bind=\"options\" datasource-bind=\"data\"></sparkline-chart>");
+angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/metrics-sparkline-lr.html","<div class=\"row\"> <metrics class=\"{{metricsPartClass}}\" ng-class=\"{\'col-md-6\':!metricsPartClass}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline class=\"{{chartPartClass}}\" ng-class=\"{\'col-md-6\':!chartPartClass}\" options-bind=\"options\" datasource-bind=\"data\"></sparkline> </div>");
+$templateCache.put("charts/metrics-sparkline-td.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <sparkline options-bind=\"options\" datasource-bind=\"data\"></sparkline>");
 $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
 $templateCache.put("property-table/property-table.html","<table class=\"table table-striped table-condensed\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <tbody> <tr ng-repeat=\"prop in props track by $index\"> <td ng-class=\"propNameClass\"> <span ng-bind=\"prop.name\"></span> <help ng-if=\"prop.help\" text=\"{{prop.help}}\"></help> </td> <td ng-switch=\"prop.hasOwnProperty(\'values\')\" ng-class=\"propValueClass\"> <div ng-switch-when=\"true\" ng-repeat=\"value in prop.values track by $index\"> <property value-bind=\"value\" renderer=\"{{prop.renderer}}\"></property> </div> <div ng-switch-default> <property value-bind=\"prop.value\" renderer=\"{{prop.renderer}}\"></property> </div> </td> </tr> </tbody> </table>");
 $templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
 $templateCache.put("sortable-table/sortable-table-pagination.html","<div ng-if=\"pages.length >= 2\"> <div class=\"btn-group btn-group-xs\"> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(1)\"> <span class=\"glyphicon glyphicon-step-backward\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(currentPage-1)\"> <span class=\"glyphicon glyphicon-chevron-left\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-repeat=\"page in pages\" ng-class=\"{active: page==currentPage}\" ng-click=\"selectPage(page)\"> {{page}} </button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(currentPage+1)\"> <span class=\"glyphicon glyphicon-chevron-right\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(numPages)\"> <span class=\"glyphicon glyphicon-step-forward\"></span></button> </div> </div>");
-$templateCache.put("sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"records_\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-if=\"searchable\"> <th colspan=\"{{columns.length}}\"> <input type=\"text\" st-search placeholder=\"{{searchable}}\"> </th> </tr> </thead> <tbody> <tr ng-repeat=\"record in records_\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"records_.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <span class=\"small\">No data found</span> </td> </tr> </tbody> <tfoot ng-if=\"records_.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records_.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
+$templateCache.put("sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"records_\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-if=\"searchable\"> <th colspan=\"{{columns.length}}\"> <input type=\"text\" st-search placeholder=\"{{searchable}}\"> </th> </tr> </thead> <tbody> <tr ng-repeat=\"record in records_\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"records_.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if=\"records_.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records_.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
 $templateCache.put("tabset/tabset.html","<ul class=\"nav nav-tabs nav-tabs-underlined\"> <li ng-repeat=\"tab in tabs\" ng-class=\"{active:tab.selected}\"> <a href=\"\" ng-click=\"selectTab(tab)\" ng-bind=\"tab.heading\"></a> </li> </ul> <div class=\"tab-content\" ng-transclude></div>");}]);
-angular.module('dashing.charts-comp', [
-  'dashing.charts',
-  'dashing.metrics'
+angular.module('dashing.charts.bar', [
+  'dashing.charts.echarts'
 ])
-  .directive('sparklineChartMetricsTop', function() {
+  .directive('barChart', [function() {
     return {
-      templateUrl: 'charts/sparkline-chart-metrics-top.html',
+      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
       scope: {
-        caption: '@',
-        help: '@',
-        current: '@',
-        unit: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
-      }
-    };
-  })
-  .directive('sparklineChartMetricsLeft', function() {
-    return {
-      templateUrl: 'charts/sparkline-chart-metrics-left.html',
-      restrict: 'E',
-      scope: {
-        caption: '@',
-        help: '@',
-        current: '@',
-        unit: '@',
-        smallText: '@',
-        options: '=optionsBind',
-        data: '=datasourceBind',
-        metricsPartClass: '@',
-        chartPartClass: '@'
       },
-      controller: ['$timeout', function($timeout) {
-        $timeout(function() {
-          angular.element(window).triggerHandler('resize');
-        });
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
+        var use = $scope.options;
+        var data = $scope.data;
+        var colors = $echarts.colorPalette(0)[0];
+        $scope.echartOptions = {
+          height: use.height, width: use.width,
+          tooltip: $echarts.tooltip({
+            color: colors.grid,
+            trigger: 'item'
+          }),
+          grid: {borderWidth: 0, x: 45, y: 5, x2: 5, y2: 42},
+          xAxis: [{
+            axisLabel: {show: false},
+            axisLine: {show: false},
+            axisTick: {show: false},
+            splitLine: {show: false},
+            data: data.map(function(item) {
+              return item.x;
+            })
+          }],
+          yAxis: [{show: false}],
+          xAxisDataNum: use.maxDataNum,
+          dataZoom: {show: true, handleColor: 'rgb(188,188,188)', fillerColor: 'rgba(188,188,188,.15)'},
+          series: [$echarts.makeDataSeries({
+            colors: colors,
+            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2,
+            data: data.map(function(item) {
+              return item.y;
+            })
+          })]
+        };
       }]
     };
-  })
-  .directive('lineChartMetricsTop', function() {
-    return {
-      templateUrl: 'charts/line-chart-metrics-top.html',
-      restrict: 'E',
-      scope: {
-        caption: '@',
-        help: '@',
-        current: '@',
-        unit: '@',
-        options: '=optionsBind',
-        data: '=datasourceBind'
-      }
-    };
-  })
+  }])
 ;
-angular.module('dashing.charts', [])
-  .directive('echart', function() {
+angular.module('dashing.charts.echarts', [])
+  .directive('echart', ['$echarts', function($echarts) {
     return {
       template: '<div></div>',
       replace: true,
       restrict: 'E',
       scope: {
-        options: '=optionsBind',
-        data: '=dataBind'
+        options: '=',
+        data: '='
       },
       link: function(scope, elems) {
         var options = scope.options;
@@ -100,38 +93,25 @@ angular.module('dashing.charts', [])
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
+        chart.setOption(options, true);
         angular.element(window).on('resize', chart.resize);
         scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
-        chart.setOption(options, true);
-        function ensureArray(obj) {
-          return Array.isArray(obj) ? obj : [obj];
-        }
         scope.$watch('data', function(data) {
           if (data) {
-            var dataGrow = !options.xAxisDataNum ||
-              chart.getOption().xAxis[0].data.length < options.xAxisDataNum;
-            var array = [];
-            angular.forEach(ensureArray(data), function(datum) {
-              angular.forEach(ensureArray(datum.y), function(value, i) {
-                var params = [i, value, false, dataGrow];
-                if (i === 0) {
-                  params.push(datum.x);
-                }
-                array.push(params);
-              });
-            });
-            chart.addData(array);
+            var visibleDots = Math.min(200 ,
+              Math.max(0, options.xAxisDataNum - chart.getOption().xAxis[0].data.length));
+            chart.addData($echarts.makeDataArray(visibleDots, data));
           }
         });
       }
     };
-  })
+  }])
   .factory('$echarts', function() {
     return {
-      tooltip: function(args) {
+            tooltip: function(args) {
         var result = {
           trigger: args.trigger || 'axis',
           textStyle: {fontSize: 12},
@@ -150,12 +130,12 @@ angular.module('dashing.charts', [])
         }
         return result;
       },
-      tooltipFirstSeriesFormatter: function(valueFormatter) {
+            tooltipFirstSeriesFormatter: function(valueFormatter) {
         return function(params) {
           return valueFormatter(params[0].value);
         };
       },
-      tooltipAllSeriesFormatter: function(valueFormatter) {
+            tooltipAllSeriesFormatter: function(valueFormatter) {
         return function(params) {
           return params[0].name +
             '<table>' +
@@ -169,7 +149,7 @@ angular.module('dashing.charts', [])
             }).join('') + '</table>';
         };
       },
-      makeDataSeries: function(args) {
+            makeDataSeries: function(args) {
         args.type = args.type || 'line';
         var options = {
           symbol: 'circle',
@@ -194,69 +174,51 @@ angular.module('dashing.charts', [])
         }
         return angular.merge(args, options);
       },
-      colorSet: function(i) {
-        var palette = [
-          {line: 'rgb(0,119,215)', area: '#ebf6ff'},
-          {line: 'rgb(110,119,215)', area: '#eff0fb'},
-          {line: 'rgb(41,189,181)', area: '#eefbfb'},
-          {line: 'rgb(212,102,138)', area: '#fbeff3'},
-          {line: 'rgb(255,127,80)', area: '#fff0eb'}
-        ];
-        return palette[i % palette.length];
+            makeDataArray: function(visibleDots, data) {
+        function ensureArray(obj) {
+          return Array.isArray(obj) ? obj : [obj];
+        }
+        var array = [];
+        angular.forEach(ensureArray(data), function(datum) {
+          var dataGrow = --visibleDots > 0;
+          angular.forEach(ensureArray(datum.y), function(value, seriesIndex) {
+            var params = [seriesIndex, value, false, dataGrow];
+            if (seriesIndex === 0) {
+              params.push(datum.x);
+            }
+            array.push(params);
+          });
+        });
+        return array;
       },
-      rgba: function(rgb, opacity) {
-        return rgb.replace('rgb(', 'rgba(').replace(')', ',' + opacity + ')');
+            colorPalette: function(size) {
+        var colors = {
+          blue: {line: 'rgb(0,119,215)', area: '#ebf6ff'},
+          purple: {line: 'rgb(110,119,215)', area: '#eff0fb'},
+          green: {line: 'rgb(41,189,181)', area: '#eefbfb'},
+          darkRed: {line: 'rgb(212,102,138)', area: '#fbeff3'},
+          orange: {line: 'rgb(255,127,80)', area: '#fff0eb'}
+        };
+        switch (size) {
+          case 1:
+            return [colors.blue];
+          case 2:
+            return [colors.blue, colors.green];
+          default:
+            return Object.keys(colors).map(function(key) {
+              return colors[key];
+            });
+        }
       }
     };
   })
-  .directive('sparklineChart', function() {
-    return {
-      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
-      restrict: 'E',
-      scope: {
-        options: '=optionsBind',
-        data: '=datasourceBind'
-      },
-      controller: ['$scope', '$echarts', function($scope, $echarts) {
-        var use = $scope.options;
-        var data = $scope.data;
-        var colors = $echarts.colorSet(0);
-        $scope.echartOptions = {
-          height: use.height, width: use.width,
-          tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
-          }),
-          dataZoom: {show: false},
-          grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
-          xAxis: [{
-            boundaryGap: false,
-            axisLabel: false,
-            splitLine: false,
-            data: data.map(function(item) {
-              return item.x;
-            })
-          }],
-          yAxis: [{show: false}],
-          xAxisDataNum: use.maxDataNum,
-          series: [$echarts.makeDataSeries({
-            colors: colors, stack: true ,
-            data: data.map(function(item) {
-              return item.y;
-            })
-          })]
-        };
-      }]
-    };
-  })
+;
+angular.module('dashing.charts.line', [
+  'dashing.charts.echarts'
+])
   .directive('lineChart', function() {
     return {
-      template: '<echart options-bind="echartOptions" data-bind="data"></echart>',
+      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
       scope: {
         options: '=optionsBind',
@@ -265,6 +227,7 @@ angular.module('dashing.charts', [])
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
         var data = $scope.data;
+        var colorPalette = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
         var options = {
           height: use.height, width: use.width,
@@ -298,13 +261,14 @@ angular.module('dashing.charts', [])
           xAxisDataNum: use.maxDataNum,
           series: [],
           color: use.seriesNames.map(function(_, i) {
-            return $echarts.colorSet(i).line;
+            return colorPalette[i % colorPalette.length].line;
           })
         };
         angular.forEach(use.seriesNames, function(name, i) {
           options.series.push(
             $echarts.makeDataSeries({
-              colors: $echarts.colorSet(i), name: name,
+              name: name,
+              colors: colorPalette[i % colorPalette.length],
               stack: use.hasOwnProperty('stacked') ? use.stacked : true,
               showAllSymbol: true,
               data: data.map(function(item) {
@@ -321,6 +285,96 @@ angular.module('dashing.charts', [])
           options.grid.y = 30;
         }
         $scope.echartOptions = options;
+      }]
+    };
+  })
+;
+angular.module('dashing.charts.metrics-sparkline', [
+  'dashing.charts.sparkline',
+  'dashing.metrics'
+])
+  .directive('metricsSparklineTd', function() {
+    return {
+      templateUrl: 'charts/metrics-sparkline-td.html',
+      restrict: 'E',
+      scope: {
+        caption: '@',
+        help: '@',
+        current: '@',
+        unit: '@',
+        options: '=optionsBind',
+        data: '=datasourceBind'
+      }
+    };
+  })
+  .directive('metricsSparklineLr', function() {
+    return {
+      templateUrl: 'charts/metrics-sparkline-lr.html',
+      restrict: 'E',
+      scope: {
+        caption: '@',
+        help: '@',
+        current: '@',
+        unit: '@',
+        smallText: '@',
+        options: '=optionsBind',
+        data: '=datasourceBind',
+        metricsPartClass: '@',
+        chartPartClass: '@'
+      },
+      controller: ['$timeout', function($timeout) {
+        $timeout(function() {
+          angular.element(window).triggerHandler('resize');
+        });
+      }]
+    };
+  })
+;
+angular.module('dashing.charts.sparkline', [
+  'dashing.charts.echarts'
+])
+  .directive('sparkline', function() {
+    return {
+      template: '<echart options="echartOptions" data="data"></echart>',
+      restrict: 'E',
+      scope: {
+        options: '=optionsBind',
+        data: '=datasourceBind'
+      },
+      controller: ['$scope', '$echarts', function($scope, $echarts) {
+        var use = $scope.options;
+        var data = $scope.data;
+        var colors = $echarts.colorPalette(1)[0];
+        $scope.echartOptions = {
+          height: use.height, width: use.width,
+          tooltip: $echarts.tooltip({
+            formatter: use.tooltipFormatter ?
+              use.tooltipFormatter :
+              $echarts.tooltipFirstSeriesFormatter(
+                use.valueFormatter || function(value) {
+                  return value;
+                }
+              )
+          }),
+          dataZoom: {show: false},
+          grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
+          xAxis: [{
+            boundaryGap: false,
+            axisLabel: false,
+            splitLine: false,
+            data: data.map(function(item) {
+              return item.x;
+            })
+          }],
+          yAxis: [{show: false}],
+          xAxisDataNum: use.maxDataNum,
+          series: [$echarts.makeDataSeries({
+            colors: colors, stack: true ,
+            data: data.map(function(item) {
+              return item.y;
+            })
+          })]
+        };
       }]
     };
   })

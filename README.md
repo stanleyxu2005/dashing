@@ -1,8 +1,8 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
-[![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies)[![DevDependency Status](http://img.shields.io/david/dev/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=devDependencies)
+[![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies) [![DevDependency Status](http://img.shields.io/david/dev/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=devDependencies)
 
-Hate searching around the world to find widgets you really love? Dashing is a set of ready-to-use widgets, which helps you to build amazing webapps in minutes! 
+Love Bootstrap webapps? Want to be different? Dashing is the choice to make things different!  
 
 
 ## Quick Start
@@ -38,9 +38,14 @@ angular.module('myApp', ['dashing']);
 ```
 
 
+## Examples 
+
+*Coming soon*
+
+
 ## Author
 
-**Qian Xu** [github](https://github.com/stanleyxu2005)
+**Qian Xu** ([GitHub](https://github.com/stanleyxu2005))
 
 
 ## License
@@ -52,3 +57,4 @@ The project itself is under Apache License version 2.0. All its dependencies are
 + [Angular-Strap](http://mgcrea.github.io/angular-strap)
 + [Smart-Table](http://lorenzofox3.github.io/smart-table-website/)
 + [Baidu Echarts](http://echarts.baidu.com/)
+

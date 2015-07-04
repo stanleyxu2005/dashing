@@ -3,8 +3,11 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing', [
-  'dashing.charts',
-  'dashing.charts-comp',
+  'dashing.charts.echarts',
+  'dashing.charts.bar',
+  'dashing.charts.line',
+  'dashing.charts.metrics-sparkline',
+  'dashing.charts.sparkline',
   'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',

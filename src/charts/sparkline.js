@@ -33,8 +33,8 @@ angular.module('dashing.charts.sparkline', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var data = $scope.data;
         var colors = $echarts.colorPalette(1)[0];
+        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         $scope.echartOptions = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
@@ -53,7 +53,7 @@ angular.module('dashing.charts.sparkline', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.x;
             })
           }],
@@ -61,11 +61,14 @@ angular.module('dashing.charts.sparkline', [
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors, stack: true /* stack=true means fill area */,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.y;
             })
           })]
         };
+        if (data.tail.length) {
+          $scope.data = data.tail;
+        }
       }]
     };
   })

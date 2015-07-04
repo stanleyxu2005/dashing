@@ -21,20 +21,26 @@ angular.module('dashing.charts.echarts', [])
         var elem0 = elems[0];
         elem0.style.width = options.width;
         elem0.style.height = options.height;
-
         var chart = echarts.init(elem0);
-        chart.setOption(options, /*do_not_merge=*/true);
+
         angular.element(window).on('resize', chart.resize);
         scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
+        chart.setOption(options, /*do_not_merge=*/true);
 
         scope.$watch('data', function(data) {
           if (data) {
-            var visibleDots = Math.min(200 /* max visible dots per series */,
-              Math.max(0, options.xAxisDataNum - chart.getOption().xAxis[0].data.length));
-            chart.addData($echarts.makeDataArray(visibleDots, data));
+            try {
+              var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
+              var visibleDataPoints = Math.min(
+                80 /* maximal visible data points per series */,
+                Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
+              var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
+              chart.addData(dataArray);
+            } catch (ex) {
+            }
           }
         });
       }
@@ -102,7 +108,7 @@ angular.module('dashing.charts.echarts', [])
         args.type = args.type || 'line';
         var options = {
           symbol: 'circle',
-          smooth: true,
+          smooth: args.smooth || true,
           itemStyle: {
             normal: {
               lineStyle: {color: args.colors.line, width: 3}
@@ -111,7 +117,7 @@ angular.module('dashing.charts.echarts', [])
               color: args.colors.line,
               lineStyle: {
                 color: args.colors.line,
-                width: args.showAllSymbol ? 4 : 3
+                width: 3
               }
             }
           }
@@ -120,27 +126,29 @@ angular.module('dashing.charts.echarts', [])
           options.itemStyle.normal.areaStyle = {
             type: 'default', color: args.colors.area
           };
+        } else if (args.showAllSymbol) {
+          // bugfix: seems the line is 1px thicker than args.stack version!
+          options.itemStyle.normal.lineStyle.width -= 1;
         }
         return angular.merge(args, options);
       },
       /**
-       * Build data array regarding specified number of maximal visible dots.
+       * Build data array for echart control.
        *
-       * Data is an array of object. Each object represents value(s) of a moment.
        * E.g.: The chart has two series. X-axis is date. Y-axis is value.
        *  [
        *   {x: "2015/7/1 00:00:00", y: [400, 300]},
        *   {x: "2015/7/1 00:00:10", y: [440, 320]}
        *  ]
        */
-      makeDataArray: function(visibleDots, data) {
+      makeDataArray: function(visibleDataPoints, data) {
         function ensureArray(obj) {
           return Array.isArray(obj) ? obj : [obj];
         }
 
         var array = [];
         angular.forEach(ensureArray(data), function(datum) {
-          var dataGrow = --visibleDots > 0;
+          var dataGrow = visibleDataPoints-- > 0;
           angular.forEach(ensureArray(datum.y), function(value, seriesIndex) {
             var params = [seriesIndex, value, /*isHead=*/false, dataGrow];
             if (seriesIndex === 0) {
@@ -150,6 +158,26 @@ angular.module('dashing.charts.echarts', [])
           });
         });
         return array;
+      },
+      /**
+       * As we define the maximal visible data points, so we should split the data array
+       * into two. The head will be the initial data points. The rest of data points will
+       * be append afterwards.
+       */
+      splitDataArray: function(data, visibleDataPoints) {
+        if ([0, visibleDataPoints].indexOf(data.length) !== -1) {
+          return {head: data, tail: []};
+        }
+        var result = {head: angular.copy(data), tail: []};
+        if (result.head.length > visibleDataPoints) {
+          result.tail = result.head.splice(visibleDataPoints);
+        } else {
+          var reference = result.head[0];
+          for (var i = 0; i < visibleDataPoints - 1; i++) {
+            result.head.unshift(reference);
+          }
+        }
+        return result;
       },
       /**
        * Return an array of color objects regarding the num of data series.

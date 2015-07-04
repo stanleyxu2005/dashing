@@ -35,11 +35,11 @@ angular.module('dashing.charts.metrics-sparkline', [
  * todo: fix metrics block vertical alignment issue
  *
  * @example
- *   <metrics-spartkline-lr
+ *   <metrics-sparkline-lr
  *     caption="CPU usage" help="CPU usage in real time" value="50" unit="%"
  *     metrics-part-class="col-md-4" chart-part-class="col-md-offset-1 col-md-7"
  *     options-bind="sparkLineOptions" datasource-bind="sparkLineData">
- *   </metrics-spartkline-lr>
+ *   </metrics-sparkline-lr>
  */
   .directive('metricsSparklineLr', function() {
     'use strict';

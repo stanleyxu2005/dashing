@@ -93,17 +93,23 @@ angular.module('dashing.charts.echarts', [])
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
-        chart.setOption(options, true);
         angular.element(window).on('resize', chart.resize);
         scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
+        chart.setOption(options, true);
         scope.$watch('data', function(data) {
           if (data) {
-            var visibleDots = Math.min(200 ,
-              Math.max(0, options.xAxisDataNum - chart.getOption().xAxis[0].data.length));
-            chart.addData($echarts.makeDataArray(visibleDots, data));
+            try {
+              var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
+              var visibleDataPoints = Math.min(
+                80 ,
+                Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
+              var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
+              chart.addData(dataArray);
+            } catch (ex) {
+            }
           }
         });
       }
@@ -153,7 +159,7 @@ angular.module('dashing.charts.echarts', [])
         args.type = args.type || 'line';
         var options = {
           symbol: 'circle',
-          smooth: true,
+          smooth: args.smooth || true,
           itemStyle: {
             normal: {
               lineStyle: {color: args.colors.line, width: 3}
@@ -162,7 +168,7 @@ angular.module('dashing.charts.echarts', [])
               color: args.colors.line,
               lineStyle: {
                 color: args.colors.line,
-                width: args.showAllSymbol ? 4 : 3
+                width: 3
               }
             }
           }
@@ -171,16 +177,18 @@ angular.module('dashing.charts.echarts', [])
           options.itemStyle.normal.areaStyle = {
             type: 'default', color: args.colors.area
           };
+        } else if (args.showAllSymbol) {
+          options.itemStyle.normal.lineStyle.width -= 1;
         }
         return angular.merge(args, options);
       },
-            makeDataArray: function(visibleDots, data) {
+            makeDataArray: function(visibleDataPoints, data) {
         function ensureArray(obj) {
           return Array.isArray(obj) ? obj : [obj];
         }
         var array = [];
         angular.forEach(ensureArray(data), function(datum) {
-          var dataGrow = --visibleDots > 0;
+          var dataGrow = visibleDataPoints-- > 0;
           angular.forEach(ensureArray(datum.y), function(value, seriesIndex) {
             var params = [seriesIndex, value, false, dataGrow];
             if (seriesIndex === 0) {
@@ -190,6 +198,21 @@ angular.module('dashing.charts.echarts', [])
           });
         });
         return array;
+      },
+            splitDataArray: function(data, visibleDataPoints) {
+        if ([0, visibleDataPoints].indexOf(data.length) !== -1) {
+          return {head: data, tail: []};
+        }
+        var result = {head: angular.copy(data), tail: []};
+        if (result.head.length > visibleDataPoints) {
+          result.tail = result.head.splice(visibleDataPoints);
+        } else {
+          var reference = result.head[0];
+          for (var i = 0; i < visibleDataPoints - 1; i++) {
+            result.head.unshift(reference);
+          }
+        }
+        return result;
       },
             colorPalette: function(size) {
         var colors = {
@@ -226,7 +249,7 @@ angular.module('dashing.charts.line', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var data = $scope.data;
+        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
         var options = {
@@ -249,7 +272,7 @@ angular.module('dashing.charts.line', [
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.x;
             })
           }],
@@ -271,7 +294,7 @@ angular.module('dashing.charts.line', [
               colors: colorPalette[i % colorPalette.length],
               stack: use.hasOwnProperty('stacked') ? use.stacked : true,
               showAllSymbol: true,
-              data: data.map(function(item) {
+              data: data.head.map(function(item) {
                 return item.y[i];
               })
             })
@@ -285,6 +308,9 @@ angular.module('dashing.charts.line', [
           options.grid.y = 30;
         }
         $scope.echartOptions = options;
+        if (data.tail.length) {
+          $scope.data = data.tail;
+        }
       }]
     };
   })
@@ -343,8 +369,8 @@ angular.module('dashing.charts.sparkline', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var data = $scope.data;
         var colors = $echarts.colorPalette(1)[0];
+        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         $scope.echartOptions = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
@@ -362,7 +388,7 @@ angular.module('dashing.charts.sparkline', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.x;
             })
           }],
@@ -370,11 +396,14 @@ angular.module('dashing.charts.sparkline', [
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors, stack: true ,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.y;
             })
           })]
         };
+        if (data.tail.length) {
+          $scope.data = data.tail;
+        }
       }]
     };
   })

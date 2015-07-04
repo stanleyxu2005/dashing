@@ -34,7 +34,7 @@ angular.module('dashing.charts.line', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var data = $scope.data;
+        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
         var options = {
@@ -58,7 +58,7 @@ angular.module('dashing.charts.line', [
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false,
-            data: data.map(function(item) {
+            data: data.head.map(function(item) {
               return item.x;
             })
           }],
@@ -81,7 +81,7 @@ angular.module('dashing.charts.line', [
               colors: colorPalette[i % colorPalette.length],
               stack: use.hasOwnProperty('stacked') ? use.stacked : true,
               showAllSymbol: true,
-              data: data.map(function(item) {
+              data: data.head.map(function(item) {
                 return item.y[i];
               })
             })
@@ -95,6 +95,9 @@ angular.module('dashing.charts.line', [
           options.grid.y = 30;
         }
         $scope.echartOptions = options;
+        if (data.tail.length) {
+          $scope.data = data.tail;
+        }
       }]
     };
   })

@@ -9,10 +9,8 @@
       <help ng-if="col.hasOwnProperty('help')" text="{{col.help}}"></help>
     </th>
   </tr>
-  <tr ng-if="searchable">
-    <th colspan="{{columns.length}}">
-      <input type="text" st-search placeholder="{{searchable}}"/>
-    </th>
+  <tr ng-show="false">
+    <th colspan="{{columns.length}}"><input type="text" st-search/></th>
   </tr>
   </thead>
   <tbody>
@@ -44,7 +42,7 @@
       </div>
       <div class="pull-right"
            st-pagination st-items-by-page="pagination"
-           st-template="sortable-table/sortable-table-pagination.html"></div>
+           st-template="tables/sortable-table/sortable-table-pagination.html"></div>
     </td>
   </tr>
   </tfoot>

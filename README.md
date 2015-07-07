@@ -2,9 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) [![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies)
 
-Want to be dashing? Use Dashing! 
-
-Dashing is a set of widgets based on Bootstrap and AngularJS.
+**Want to be dashing? Use Dashing!** Dashing is a set of widgets based on Bootstrap and AngularJS.
 
 
 ## Quick Start

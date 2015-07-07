@@ -33,13 +33,3 @@ th.st-sort-descent:not(.text-right):after,
 th.st-sort-descent.text-right:before {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAICAIAAACkr0LiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABgSURBVBhXY/z//z8DDsAExF9+QNgIABEByaXO+brj0h8QDwyAbKAIiAU08/aLvz7dn7df/A1kA0kgGygCsguIgQAi3bXlB1wCCKByQHDx4V/n1s9AEsr//5+QO7EDBgYAc+haKbT8GukAAAAASUVORK5CYII=);
 }
-
-/**
- * Search box styling
- */
-input[st-search] {
-  width: 100%;
-  padding-left: 3px;
-  padding-top: 3px;
-  font-weight: 400;
-}

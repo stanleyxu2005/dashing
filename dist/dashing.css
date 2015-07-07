@@ -4,6 +4,19 @@
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
+.search-control {
+  position: relative;
+}
+.search-control span {
+  position: absolute;
+  right: 0;
+  padding: 7px 10px 7px 0;
+  cursor: pointer;
+}
+.search-control input {
+  width: 100%;
+  padding: 4px 30px 4px 6px;
+}
 .help-icon {
   color: #bbb;
 }
@@ -50,12 +63,6 @@ th.st-sort-descent:not(.text-right):after,
 th.st-sort-descent.text-right:before {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAICAIAAACkr0LiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABgSURBVBhXY/z//z8DDsAExF9+QNgIABEByaXO+brj0h8QDwyAbKAIiAU08/aLvz7dn7df/A1kA0kgGygCsguIgQAi3bXlB1wCCKByQHDx4V/n1s9AEsr//5+QO7EDBgYAc+haKbT8GukAAAAASUVORK5CYII=);
 }
-input[st-search] {
-  width: 100%;
-  padding-left: 3px;
-  padding-top: 3px;
-  font-weight: 400;
-}
 .nav-tabs {
   margin-bottom: 30px !important;
   border-bottom: 2px solid rgba(0, 39, 59, .1);
@@ -77,8 +84,6 @@ input[st-search] {
   border-color: transparent;
   border-radius: 0;
   color: #777;
-  font-size: 0.85em;
-  font-weight: bold;
 }
 .nav-tabs-underlined > li > a:hover,
 .nav-tabs-underlined > li > a:focus {

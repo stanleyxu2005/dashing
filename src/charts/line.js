@@ -11,7 +11,7 @@ angular.module('dashing.charts.line', [
  * @example
  *   <line-chart options-bind="lineChartOptions" datasource-bind="lineChartData"></line-chart>
  *
- * @param options - the option object, which the following elements:
+ * @param options-bind - the option object, which the following elements:
  * {
  *   height: string, // the css height of the chart
  *   width: string, // the css width of the chart
@@ -20,7 +20,7 @@ angular.module('dashing.charts.line', [
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   stacked: boolean // should stack all data series (default: true)
  * }
- * @param data - array of data objects
+ * @param datasource-bind - array of data objects
  *  every data object is {x: time|string, y: [number]}
  */
   .directive('lineChart', function() {

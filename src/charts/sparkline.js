@@ -11,7 +11,7 @@ angular.module('dashing.charts.sparkline', [
  * @example
  *   <sparkline options-bind="sparkLineOptions" datasource-bind="sparkLineData"></sparkline>
  *
- * @param options - the option object, which the following elements:
+ * @param options-bind - the option object, which the following elements:
  * {
  *   height: string, // the css height of the chart
  *   width: string, // the css width of the chart
@@ -19,7 +19,7 @@ angular.module('dashing.charts.sparkline', [
  *   tooltipFormatter: function // a function to specify tooltip
  *   seriesNames: [string] // name of data series in an array
  * }
- * @param data - array of data objects
+ * @param datasource-bind - array of data objects
  *  every data object is {x: time|string, y: number}
  */
   .directive('sparkline', function() {

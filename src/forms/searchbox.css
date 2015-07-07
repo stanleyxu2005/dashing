@@ -1,0 +1,20 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.search-control {
+  position: relative;
+}
+
+.search-control span {
+  position: absolute;
+  right: 0;
+  padding: 7px 10px 7px 0;
+  cursor: pointer;
+}
+
+.search-control input {
+  width: 100%;
+  padding: 4px 30px 4px 6px;
+}

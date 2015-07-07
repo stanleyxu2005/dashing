@@ -71,7 +71,7 @@ gulp.task('pack-angular-templates', function() {
 
 // concat all js files as one
 gulp.task('concat-js', ['pack-angular-templates'], function() {
-  return gulp.src('src/*/*.js')
+  return gulp.src('src/*/**/*.js')
     .pipe(tool.sort()) // `gulp.src()` does not aware file orders
     .pipe(tool.concat(brand + '.js'))
     .pipe(tool.headerfooter.header([

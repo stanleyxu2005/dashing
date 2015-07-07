@@ -2,7 +2,9 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.state', [])
+angular.module('dashing.state', [
+  'mgcrea.ngStrap.tooltip' // angular-strap
+])
 /**
  * A bootstrap label indicates one of these states: good, concern, danger or unknown.
  *
@@ -45,7 +47,7 @@ angular.module('dashing.state', [])
   .directive('indicator', function() {
     'use strict';
     return {
-      template: '<small ng-style="{color:colorFn(condition)}" class="glyphicon glyphicon-stop" ng-attr-bs-tooltip="text"></small>',
+      template: '<small ng-style="{color:colorFn(condition)}" class="glyphicon glyphicon-stop" bs-tooltip="text"></small>',
       restrict: 'E',
       scope: {
         condition: '@',

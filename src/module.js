@@ -4,7 +4,6 @@
  */
 angular.module('dashing', [
   'dashing.charts.echarts',
-  'dashing.charts.bar',
   'dashing.charts.line',
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
@@ -12,9 +11,9 @@ angular.module('dashing', [
   'dashing.metrics',
   'dashing.progressbar',
   'dashing.property',
-  'dashing.property-table',
-  'dashing.sortable-table',
   'dashing.state',
+  'dashing.tables.property-table',
+  'dashing.tables.sortable-table',
   'dashing.tabset'
 ])
 ;

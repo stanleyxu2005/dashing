@@ -25,6 +25,7 @@ angular.module('dashing.charts.metrics-sparkline', [
         help: '@',
         current: '@',
         unit: '@',
+        smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
       }

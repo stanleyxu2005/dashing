@@ -23,7 +23,7 @@ angular.module('dashing', [
 ])
 ;
 angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/metrics-sparkline-lr.html","<div class=\"row\"> <metrics class=\"{{metricsPartClass}}\" ng-class=\"{\'col-md-6\':!metricsPartClass}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline class=\"{{chartPartClass}}\" ng-class=\"{\'col-md-6\':!chartPartClass}\" options-bind=\"options\" datasource-bind=\"data\"></sparkline> </div>");
-$templateCache.put("charts/metrics-sparkline-td.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\"></metrics> <sparkline options-bind=\"options\" datasource-bind=\"data\"></sparkline>");
+$templateCache.put("charts/metrics-sparkline-td.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline options-bind=\"options\" datasource-bind=\"data\"></sparkline>");
 $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
 $templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
@@ -328,6 +328,7 @@ angular.module('dashing.charts.metrics-sparkline', [
         help: '@',
         current: '@',
         unit: '@',
+        smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
       }

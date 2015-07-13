@@ -4,6 +4,7 @@
  */
 angular.module('dashing', [
   'dashing.charts.echarts',
+  'dashing.charts.bar',
   'dashing.charts.line',
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',

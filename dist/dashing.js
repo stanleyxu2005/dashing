@@ -8,6 +8,7 @@
 'use strict';
 angular.module('dashing', [
   'dashing.charts.echarts',
+  'dashing.charts.bar',
   'dashing.charts.line',
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
@@ -27,9 +28,9 @@ $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span n
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
 $templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
 $templateCache.put("tables/property-table/property-table.html","<table class=\"table table-striped table-condensed\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <tbody> <tr ng-repeat=\"prop in props track by $index\"> <td ng-class=\"propNameClass\"> <span ng-bind=\"prop.name\"></span> <help ng-if=\"prop.help\" text=\"{{prop.help}}\"></help> </td> <td ng-switch=\"prop.hasOwnProperty(\'values\')\" ng-class=\"propValueClass\"> <div ng-switch-when=\"true\" ng-repeat=\"value in prop.values track by $index\"> <property value-bind=\"value\" renderer=\"{{prop.renderer}}\"></property> </div> <div ng-switch-default> <property value-bind=\"prop.value\" renderer=\"{{prop.renderer}}\"></property> </div> </td> </tr> </tbody> </table>");
-$templateCache.put("tables/sortable-table/sortable-table-pagination.html","<div ng-if=\"pages.length >= 2\"> <div class=\"btn-group btn-group-xs\"> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(1)\"> <span class=\"glyphicon glyphicon-step-backward\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(currentPage-1)\"> <span class=\"glyphicon glyphicon-chevron-left\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-repeat=\"page in pages\" ng-class=\"{active: page==currentPage}\" ng-click=\"selectPage(page)\"> {{page}} </button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(currentPage+1)\"> <span class=\"glyphicon glyphicon-chevron-right\"></span></button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(numPages)\"> <span class=\"glyphicon glyphicon-step-forward\"></span></button> </div> </div>");
-$templateCache.put("tables/sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"records_\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-show=\"false\"> <th colspan=\"{{columns.length}}\"><input type=\"text\" st-search></th> </tr> </thead> <tbody> <tr ng-repeat=\"record in records_\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"records_.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if=\"records_.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records_.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"tables/sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
-$templateCache.put("tabset/tabset.html","<ul class=\"nav nav-tabs nav-tabs-underlined\"> <li ng-repeat=\"tab in tabs\" ng-class=\"{active:tab.selected}\"> <a href=\"\" ng-click=\"selectTab(tab)\" ng-bind=\"tab.heading\"></a> </li> </ul> <div class=\"tab-content\" ng-transclude></div>");}]);
+$templateCache.put("tables/sortable-table/sortable-table-pagination.html","<div ng-if=\"pages.length>=2\"> <div class=\"btn-group btn-group-xs\">  <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(currentPage-1)\"> &laquo;</button> <button type=\"button\" class=\"btn btn-default\" ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page==currentPage}\" ng-click=\"selectPage(page)\"> {{page}} </button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(currentPage+1)\"> &raquo;</button>  </div> </div>");
+$templateCache.put("tables/sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"showing\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-show=\"false\"> <th colspan=\"{{columns.length}}\">  <input type=\"text\" st-search>  <div st-pagination st-items-by-page=\"pagination\"></div> </th> </tr> </thead> <tbody> <tr ng-repeat=\"record in showing track by $index\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"showing.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <i>No data found</i> </td> </tr> <tr ng-if=\"showing.length<pagination\" ng-repeat=\"i in range(pagination-showing.length) track by $index\"> <td colspan=\"{{columns.length}}\"> <span ng-bind-html=\"emptyRowContent\"></span> </td> </tr> </tbody> <tfoot ng-if=\"records.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"tables/sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
+$templateCache.put("tabset/tabset.html","<ul class=\"nav nav-tabs nav-tabs-underlined\"> <li ng-repeat=\"tab in tabs track by $index\" ng-class=\"{active:tab.selected}\"> <a href=\"\" ng-click=\"selectTab(tab)\" ng-bind=\"tab.heading\"></a> </li> </ul> <div class=\"tab-content\" ng-transclude></div>");}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
 ])
@@ -601,25 +602,39 @@ angular.module('dashing.tables.sortable-table', [
       scope: {
         caption: '@',
         pagination: '@',
+        emptyRowAsBr: '=',
         columns: '=columnsBind',
         records: '=recordsBind',
         search: '=searchBind'
       },
-      controller: ['$scope', '$element', function($scope, $element) {
+      controller: ['$scope', '$element', '$sce', function($scope, $element, $sce) {
         var elem = $element.find('input')[0];
         $scope.$watch('search', function(val) {
           elem.value = val || '';
           angular.element(elem).triggerHandler('input');
+        });
+        $scope.$watch('emptyRowAsBr', function(val) {
+          $scope.emptyRowContent = $sce.trustAsHtml(
+            angular.isDefined(val) ?
+              (val > 0 ? $scope.range(Number(val), '<br/>').join('') : '') :
+              '&nbsp;'
+          );
         });
         $scope.stylingFn = function(col) {
           return col.style +
             (['Number'].indexOf(col.renderer) !== -1 ? ' text-right' : '');
         };
         $scope.isArray = angular.isArray;
+        $scope.range = function(count, fill) {
+          return count > 0 ?
+            Array.apply(null, {length: count}).map(function(_, index) {
+              return fill || index;
+            }) : [];
+        };
       }]
     };
   })
-    .config(['stConfig', function(stConfig) {
+  .config(['stConfig', function(stConfig) {
     stConfig.sort.skipNatural = true;
   }])
 ;

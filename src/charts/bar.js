@@ -42,7 +42,7 @@ angular.module('dashing.charts.bar', [
           dataZoom: {show: true, handleColor: 'rgb(188,188,188)', fillerColor: 'rgba(188,188,188,.15)'},
           series: [$echarts.makeDataSeries({
             colors: colors,
-            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2,
+            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2, smooth:false,
             data: data.map(function(item) {
               return item.y;
             })

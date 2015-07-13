@@ -1,5 +1,5 @@
 <table class="table table-striped table-condensed"
-       st-table="records_" st-safe-src="records">
+       st-table="showing" st-safe-src="records">
   <caption ng-if="caption" ng-bind="caption"></caption>
   <thead>
   <tr>
@@ -10,13 +10,18 @@
     </th>
   </tr>
   <tr ng-show="false">
-    <th colspan="{{columns.length}}"><input type="text" st-search/></th>
+    <th colspan="{{columns.length}}">
+      <!-- Add an invisible search box that watches external search text -->
+      <input type="text" st-search/>
+      <!-- Add an invisible pagination before rendering any rows, otherwise it will at least
+      render all records once, even they should be shown after page 1. -->
+      <div st-pagination st-items-by-page="pagination"></div>
+    </th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="record in records_">
-    <td ng-repeat="col in columns track by $index"
-        ng-class="stylingFn(col)">
+  <tr ng-repeat="record in showing track by $index">
+    <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)">
       <div ng-switch="isArray(col.key)">
         <div ng-switch-when="true"
              ng-repeat="childKey in col.key track by $index">
@@ -28,17 +33,23 @@
       </div>
     </td>
   </tr>
-  <tr ng-if="records_.length===0">
+  <tr ng-if="showing.length===0">
     <td colspan="{{columns.length}}" class="text-center">
       <i>No data found</i>
     </td>
   </tr>
+  <tr ng-if="showing.length<pagination"
+      ng-repeat="i in range(pagination-showing.length) track by $index">
+    <td colspan="{{columns.length}}">
+      <span ng-bind-html="emptyRowContent"></span>
+    </td>
+  </tr>
   </tbody>
-  <tfoot ng-if="records_.length>0">
+  <tfoot ng-if="records.length>0">
   <tr>
     <td colspan="{{columns.length}}">
       <div class="pull-left">
-        Total: <span ng-bind="records_.length"></span>
+        Total: <span ng-bind="records.length"></span>
       </div>
       <div class="pull-right"
            st-pagination st-items-by-page="pagination"

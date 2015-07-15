@@ -1,0 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.label-lg {
+  font-size: .85em;
+  font-weight: 400;
+  padding: 3px 5px 4px;
+}

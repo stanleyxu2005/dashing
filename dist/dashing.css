@@ -42,6 +42,15 @@
   padding: 0;
   margin: 1px 0 0 0;
 }
+.label-lg {
+  font-size: .85em;
+  font-weight: 400;
+  padding: 3px 5px 4px;
+}
+.property-line-up {
+  float: left;
+  margin-right: 4px;
+}
 th[st-sort] {
   cursor: pointer;
 }

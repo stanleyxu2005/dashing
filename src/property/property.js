@@ -30,6 +30,8 @@ angular.module('dashing.property', [])
               case 'Link':
                 $scope.href = value.href;
                 $scope.text = value.text || value.href;
+                $scope.class = value.class;
+                $scope.tooltip = value.tooltip;
                 break;
               case 'State':
                 $scope.text = value.text;

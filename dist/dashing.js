@@ -26,7 +26,7 @@ angular.module("dashing").run(["$templateCache", function($templateCache) {$temp
 $templateCache.put("charts/metrics-sparkline-td.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline options-bind=\"options\" datasource-bind=\"data\"></sparkline>");
 $templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
-$templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
+$templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\" ng-attr-class=\"{{class}}\" bs-tooltip=\"tooltip\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
 $templateCache.put("tables/property-table/property-table.html","<table class=\"table table-striped table-condensed\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <tbody> <tr ng-repeat=\"prop in props track by $index\"> <td ng-class=\"propNameClass\"> <span ng-bind=\"prop.name\"></span> <help ng-if=\"prop.help\" text=\"{{prop.help}}\"></help> </td> <td ng-switch=\"prop.hasOwnProperty(\'values\')\" ng-class=\"propValueClass\"> <div ng-switch-when=\"true\" ng-repeat=\"value in prop.values track by $index\"> <property value-bind=\"value\" renderer=\"{{prop.renderer}}\"></property> </div> <div ng-switch-default> <property value-bind=\"prop.value\" renderer=\"{{prop.renderer}}\"></property> </div> </td> </tr> </tbody> </table>");
 $templateCache.put("tables/sortable-table/sortable-table-pagination.html","<div ng-if=\"pages.length>=2\"> <div class=\"btn-group btn-group-xs\">  <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: 1==currentPage}\" ng-click=\"selectPage(currentPage-1)\"> &laquo;</button> <button type=\"button\" class=\"btn btn-default\" ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page==currentPage}\" ng-click=\"selectPage(page)\"> {{page}} </button> <button type=\"button\" class=\"btn btn-default\" ng-class=\"{disabled: numPages==currentPage}\" ng-click=\"selectPage(currentPage+1)\"> &raquo;</button>  </div> </div>");
 $templateCache.put("tables/sortable-table/sortable-table.html","<table class=\"table table-striped table-condensed\" st-table=\"showing\" st-safe-src=\"records\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <thead> <tr> <th ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\" ng-attr-st-sort=\"{{col.sortKey}}\" st-sort-default=\"{{col.defaultSort}}\">{{col.name}} <help ng-if=\"col.hasOwnProperty(\'help\')\" text=\"{{col.help}}\"></help> </th> </tr> <tr ng-show=\"false\"> <th colspan=\"{{columns.length}}\">  <input type=\"text\" st-search>  <div st-pagination st-items-by-page=\"pagination\"></div> </th> </tr> </thead> <tbody> <tr ng-repeat=\"record in showing track by $index\"> <td ng-repeat=\"col in columns track by $index\" ng-class=\"stylingFn(col)\"> <div ng-switch=\"isArray(col.key)\"> <div ng-switch-when=\"true\" ng-repeat=\"childKey in col.key track by $index\"> <property value-bind=\"record[childKey]\" renderer=\"{{col.renderer[$index]}}\"></property> </div> <div ng-switch-default> <property value-bind=\"record[col.key]\" renderer=\"{{col.renderer}}\"></property> </div> </div> </td> </tr> <tr ng-if=\"showing.length===0\"> <td colspan=\"{{columns.length}}\" class=\"text-center\"> <i>No data found</i> </td> </tr> <tr ng-if=\"showing.length<pagination\" ng-repeat=\"i in range(pagination-showing.length) track by $index\"> <td colspan=\"{{columns.length}}\"> <span ng-bind-html=\"emptyRowContent\"></span> </td> </tr> </tbody> <tfoot ng-if=\"records.length>0\"> <tr> <td colspan=\"{{columns.length}}\"> <div class=\"pull-left\"> Total: <span ng-bind=\"records.length\"></span> </div> <div class=\"pull-right\" st-pagination st-items-by-page=\"pagination\" st-template=\"tables/sortable-table/sortable-table-pagination.html\"></div> </td> </tr> </tfoot> </table>");
@@ -479,6 +479,8 @@ angular.module('dashing.property', [])
               case 'Link':
                 $scope.href = value.href;
                 $scope.text = value.text || value.href;
+                $scope.class = value.class;
+                $scope.tooltip = value.tooltip;
                 break;
               case 'State':
                 $scope.text = value.text;
@@ -538,17 +540,21 @@ angular.module('dashing.state', [
         condition: '@',
         text: '@'
       },
-      controller: ['$scope', function($scope) {
+      controller: ['$scope', '$attrs', function($scope, $attrs) {
         $scope.stylingFn = function(condition) {
+          var clazz = '';
+          if ($attrs.text) {
+            clazz = 'label-lg ';
+          }
           switch (condition) {
             case 'good':
-              return 'label-success';
+              return clazz + 'label-success';
             case 'concern':
-              return 'label-warning';
+              return clazz + 'label-warning';
             case 'danger':
-              return 'label-danger';
+              return clazz + 'label-danger';
             default:
-              return 'label-default';
+              return clazz + 'label-default';
           }
         };
       }]

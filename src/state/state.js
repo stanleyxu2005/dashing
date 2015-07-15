@@ -21,17 +21,21 @@ angular.module('dashing.state', [
         condition: '@',
         text: '@'
       },
-      controller: ['$scope', function($scope) {
+      controller: ['$scope', '$attrs', function($scope, $attrs) {
         $scope.stylingFn = function(condition) {
+          var clazz = '';
+          if ($attrs.text) {
+            clazz = 'label-lg ';
+          }
           switch (condition) {
             case 'good':
-              return 'label-success';
+              return clazz + 'label-success';
             case 'concern':
-              return 'label-warning';
+              return clazz + 'label-warning';
             case 'danger':
-              return 'label-danger';
+              return clazz + 'label-danger';
             default:
-              return 'label-default';
+              return clazz + 'label-default';
           }
         };
       }]

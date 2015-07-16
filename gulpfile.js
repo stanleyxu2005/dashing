@@ -24,15 +24,15 @@ var tool = {
   headerfooter: require('gulp-headerfooter'),
   htmlmin: require('gulp-htmlmin'),
   minifycss: require('gulp-minify-css'),
-  rename: require("gulp-rename"),
+  rename: require('gulp-rename'),
   replace: require('gulp-replace'),
   sort: require('gulp-sort'),
   sourcemaps: require('gulp-sourcemaps'),
   stripcomments: require('gulp-strip-comments'),
   stripemptylines: require('gulp-remove-empty-lines'),
   templatecache: require('gulp-angular-templatecache'),
-  uglifyjs: require('gulp-uglify'),
-}
+  uglifyjs: require('gulp-uglify')
+};
 
 gulp.task('default', ['min-css', 'min-js', 'doc'], function() {
   tool.fs.unlink('src/tpls.js');
@@ -76,7 +76,7 @@ gulp.task('concat-js', ['pack-angular-templates'], function() {
     .pipe(tool.concat(brand + '.js'))
     .pipe(tool.headerfooter.header([
       tool.fs.readFileSync('src/module.js'), '',
-      tool.fs.readFileSync('src/tpls.js'), ''].join("\n")))
+      tool.fs.readFileSync('src/tpls.js'), ''].join('\n')))
     .pipe(tool.stripcomments())
     .pipe(tool.stripemptylines())
     .pipe(tool.replace(/\s*\'use strict\';/g, ''))

@@ -40,7 +40,7 @@
       <i>No data found</i>
     </td>
   </tr>
-  <tr ng-if="showing.length<pagination"
+  <tr ng-if="showing.length>0&&showing.length<pagination"
       ng-repeat="i in range(pagination-showing.length) track by $index">
     <td colspan="{{columns.length}}">
       <span ng-bind-html="emptyRowContent"></span>

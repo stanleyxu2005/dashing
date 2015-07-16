@@ -2,7 +2,16 @@
   <!-- link -->
   <a
     ng-switch-when="Link"
-    ng-href="{{href}}" ng-bind="text" ng-attr-class="{{class}}" bs-tooltip="tooltip"></a>
+    ng-href="{{href}}" ng-bind="text"></a>
+  <!-- button -->
+  <button
+    ng-switch-when="Button"
+    type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()"
+    ng-attr-ng-disabled="{{disabled}}" ng-attr-ng-show="{{show}}"></button>
+  <!-- tag (clickable label in a colored box) -->
+  <a
+    ng-switch-when="Tag"
+    ng-href="{{href}}" ng-bind="text" class="label label-lg {{color}}" bs-tooltip="tooltip"></a>
   <!-- state -->
   <state
     ng-switch-when="State"

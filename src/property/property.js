@@ -2,7 +2,9 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.property', [])
+angular.module('dashing.property', [
+  'mgcrea.ngStrap.tooltip' // angular-strap
+])
 /**
  * A magic widget to render property as a duration, state, progressbar, etc.
  *
@@ -30,8 +32,19 @@ angular.module('dashing.property', [])
               case 'Link':
                 $scope.href = value.href;
                 $scope.text = value.text || value.href;
-                $scope.class = value.class;
+                break;
+              case 'Tag':
+                $scope.text = value.text;
+                $scope.href = value.href;
+                $scope.color = colorToBootstrapLabelClass(value.color);
                 $scope.tooltip = value.tooltip;
+                break;
+              case 'Button':
+                $scope.text = value.text;
+                $scope.class = value.class;
+                $scope.click = value.click;
+                $scope.disabled = value.disabled;
+                $scope.show = value.show || true;
                 break;
               case 'State':
                 $scope.text = value.text;
@@ -44,6 +57,19 @@ angular.module('dashing.property', [])
             }
           }
         });
+
+        function colorToBootstrapLabelClass(color) {
+          switch (color) {
+            case 'green':
+              return 'label-success';
+            case 'yellow':
+              return 'label-warning';
+            case 'red':
+              return 'label-danger';
+            default:
+              return 'label-default';
+          }
+        }
       }]
     };
   })

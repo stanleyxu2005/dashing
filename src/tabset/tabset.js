@@ -68,7 +68,7 @@ angular.module('dashing.tabset', [])
               }
               $http.get(attrs.template)
                 .then(function(response) {
-                  var templateScope = scope.$new();
+                  var templateScope = scope.$new(false);
                   elem.html(response.data);
                   if (attrs.controller) {
                     elem.children().data('$ngController',

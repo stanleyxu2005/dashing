@@ -9,7 +9,9 @@
     <td ng-switch="prop.hasOwnProperty('values')" ng-class="propValueClass">
       <div ng-switch-when="true"
            ng-repeat="value in prop.values track by $index">
-        <property value-bind="value" renderer="{{prop.renderer}}"></property>
+        <div ng-class="{'props-in-one-line':!prop.vertical}">
+          <property value-bind="value" renderer="{{prop.renderer}}"></property>
+        </div>
       </div>
       <div ng-switch-default>
         <property value-bind="prop.value" renderer="{{prop.renderer}}"></property>

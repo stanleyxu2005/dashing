@@ -25,7 +25,9 @@
       <div ng-switch="isArray(col.key)">
         <div ng-switch-when="true"
              ng-repeat="childKey in col.key track by $index">
-          <property value-bind="record[childKey]" renderer="{{col.renderer[$index]}}"></property>
+          <div ng-class="{'props-in-one-line':!col.vertical}">
+            <property value-bind="record[childKey]" renderer="{{col.renderer[$index]}}"></property>
+          </div>
         </div>
         <div ng-switch-default>
           <property value-bind="record[col.key]" renderer="{{col.renderer}}"></property>

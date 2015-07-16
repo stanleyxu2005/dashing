@@ -15,18 +15,15 @@ angular.module('dashing.state', [
   .directive('state', function() {
     'use strict';
     return {
-      template: '<span ng-class="stylingFn(condition)" class="label" ng-bind="text"></span>',
+      template: '<span ng-class="classFn(condition,text)" class="label" ng-bind="text"></span>',
       restrict: 'E',
       scope: {
         condition: '@',
         text: '@'
       },
-      controller: ['$scope', '$attrs', function($scope, $attrs) {
-        $scope.stylingFn = function(condition) {
-          var clazz = '';
-          if ($attrs.text) {
-            clazz = 'label-lg ';
-          }
+      controller: ['$scope', function($scope) {
+        $scope.classFn = function(condition, text) {
+          var clazz = text ? 'label-lg ' : '';
           switch (condition) {
             case 'good':
               return clazz + 'label-success';

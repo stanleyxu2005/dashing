@@ -5,15 +5,15 @@
             ng-class="{disabled: 1==currentPage}" ng-click="selectPage(1)">
       <span class="glyphicon glyphicon-step-backward"></span></button>-->
     <button type="button" class="btn btn-default"
-            ng-class="{disabled: 1==currentPage}" ng-click="selectPage(currentPage-1)">
+            ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)">
       &laquo;</button>
     <button type="button" class="btn btn-default"
             ng-repeat="page in pages track by $index"
-            ng-class="{active: page==currentPage}" ng-click="selectPage(page)">
+            ng-class="{active:page==currentPage}" ng-click="selectPage(page)">
       {{page}}
     </button>
     <button type="button" class="btn btn-default"
-            ng-class="{disabled: numPages==currentPage}" ng-click="selectPage(currentPage+1)">
+            ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)">
       &raquo;</button>
     <!--
     <button type="button" class="btn btn-default"

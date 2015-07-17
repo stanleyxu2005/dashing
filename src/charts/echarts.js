@@ -184,25 +184,29 @@ angular.module('dashing.charts.echarts', [])
        */
       colorPalette: function(size) {
         // todo: standalone color provider for all widgets
-        // var hsl = d3.rgb(choice).hsl();
-        // color.area = d3.hsl(hsl.h, hsl.s, 0.96);
-        var colors = {
-          blue: {line: 'rgb(0,119,215)', area: '#ebf6ff'},
-          purple: {line: 'rgb(110,119,215)', area: '#eff0fb'},
-          green: {line: 'rgb(41,189,181)', area: '#eefbfb'},
-          darkRed: {line: 'rgb(212,102,138)', area: '#fbeff3'},
-          orange: {line: 'rgb(255,127,80)', area: '#fff0eb'}
-        };
-        switch (size) {
-          case 1:
-            return [colors.blue];
-          case 2:
-            return [colors.blue, colors.green];
-          default:
-            return Object.keys(colors).map(function(key) {
-              return colors[key];
-            });
+        function suggest(size) {
+          var colors = {
+            blue: 'rgb(0,119,215)',
+            purple: 'rgb(110,119,215)',
+            green: 'rgb(41,189,181)',
+            darkRed: 'rgb(212,102,138)',
+            orange: 'rgb(255,127,80)'
+          };
+          switch (size) {
+            case 1:
+              return [colors.blue];
+            case 2:
+              return [colors.blue, colors.green];
+            default:
+              return Object.keys(colors).map(function(key) {
+                return colors[key];
+              });
+          }
         }
+        return suggest(size).map(function(line) {
+          var area = zrender.tool.color.lift(line, -0.92);
+          return {line: line, area: area};
+        });
       }
     };
   })

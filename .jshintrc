@@ -9,7 +9,6 @@
   "noarg": true,
   "noempty": true,
   "nonew": true,
-  "regexp": true,
   "undef": true,
   "strict": false,
   "trailing": true,
@@ -19,6 +18,7 @@
   "node": true,
   "predef": [
     "angular",
-    "echarts"
+    "echarts",
+    "zrender"
   ]
 }

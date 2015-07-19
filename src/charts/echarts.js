@@ -28,6 +28,7 @@ angular.module('dashing.charts.echarts', [])
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
+
         chart.setOption(options, /*do_not_merge=*/true);
 
         scope.$watch('data', function(data) {
@@ -61,8 +62,9 @@ angular.module('dashing.charts.echarts', [])
           textStyle: {fontSize: 12},
           axisPointer: {type: 'none'},
           borderRadius: 2,
+          showDelay: 0,
           formatter: args.formatter,
-          position: function(p) {
+          position: args.position || function(p) {
             return [p[0], 22]; // fix the tooltip position
           }
         };

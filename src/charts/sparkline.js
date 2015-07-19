@@ -13,10 +13,10 @@ angular.module('dashing.charts.sparkline', [
  *
  * @param options-bind - the option object, which the following elements:
  * {
- *   height: string, // the css height of the chart
- *   width: string, // the css width of the chart
- *   maxDataNum: number, // the maximal number of data points in the chart (default: unlimited)
- *   tooltipFormatter: function // a function to specify tooltip
+ *   height: string // the css height of the chart
+ *   width: string // the css width of the chart
+ *   maxDataNum: number // the maximal number of data points in the chart (default: unlimited)
+ *   tooltipFormatter: function // optional to override the tooltip formatter
  *   seriesNames: [string] // name of data series in an array
  * }
  * @param datasource-bind - array of data objects

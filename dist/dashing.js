@@ -123,8 +123,9 @@ angular.module('dashing.charts.echarts', [])
           textStyle: {fontSize: 12},
           axisPointer: {type: 'none'},
           borderRadius: 2,
+          showDelay: 0,
           formatter: args.formatter,
-          position: function(p) {
+          position: args.position || function(p) {
             return [p[0], 22];
           }
         };

@@ -13,10 +13,11 @@ angular.module('dashing.charts.line', [
  *
  * @param options-bind - the option object, which the following elements:
  * {
- *   height: string, // the css height of the chart
- *   width: string, // the css width of the chart
- *   maxDataNum: number, // the maximal number of data points (of a series) in the chart (default: unlimited)
- *   tooltipFormatter: function // a function to specify tooltip,
+ *   height: string // the css height of the chart
+ *   width: string // the css width of the chart
+ *   maxDataNum: number // the maximal number of data points (of a series) in the chart (default: unlimited)
+ *   tooltipFormatter: function // optional to override the tooltip formatter
+ *   showDataOnLegend: boolean // show current data on legend (default: false)
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   stacked: boolean // should stack all data series (default: true)
  * }

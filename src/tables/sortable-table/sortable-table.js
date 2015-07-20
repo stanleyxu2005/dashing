@@ -73,6 +73,26 @@ angular.module('dashing.tables.sortable-table', [
       }]
     };
   })
+  // TODO: as long as st-table does not support pagination start and stop
+  // https://github.com/lorenzofox3/Smart-Table/issues/440
+  .directive('stSummary', function() {
+    'use strict';
+    return {
+      require: '^stTable',
+      template: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
+      link: function(scope, element, attrs, stTable) {
+        scope.stRange = {
+          from: null,
+          to: null
+        };
+        scope.$watch('currentPage', function() {
+          scope.stRange.from = stTable.tableState().pagination.start + 1;
+          scope.stRange.to = scope.currentPage === scope.numPages ?
+            scope.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
+        });
+      }
+    };
+  })
 /**
  * Override smart-table's default behavior(s)
  */

@@ -49,13 +49,9 @@
   </tbody>
   <tfoot ng-if="records.length>0">
   <tr>
-    <td colspan="{{columns.length}}">
-      <div class="pull-left">
-        Total: <span ng-bind="records.length"></span>
-      </div>
-      <div class="pull-right"
-           st-pagination st-items-by-page="pagination"
-           st-template="tables/sortable-table/sortable-table-pagination.html"></div>
+    <td colspan="{{columns.length}}"
+        st-pagination st-items-by-page="pagination"
+        st-template="tables/sortable-table/sortable-table-pagination.html">
     </td>
   </tr>
   </tfoot>

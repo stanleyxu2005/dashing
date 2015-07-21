@@ -96,7 +96,7 @@ angular.module('dashing.charts.line', [
 
         // todo: external font size and style should fit global style automatically (e.g. use sass)
         var titleHeight = 20;
-        var titleFontStyle = {fontSize: 14, fontWeight: '500', color: '#000'};
+        var titleFontStyle = {fontSize: 14, fontWeight: '400', color: '#000'};
         var legendHeight = 16;
 
         // Add inline chart title

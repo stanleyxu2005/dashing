@@ -312,7 +312,7 @@ angular.module('dashing.charts.line', [
           );
         });
         var titleHeight = 20;
-        var titleFontStyle = {fontSize: 14, fontWeight: '500', color: '#000'};
+        var titleFontStyle = {fontSize: 14, fontWeight: '400', color: '#000'};
         var legendHeight = 16;
         if (use.title) {
           options.title = {text: use.title, x: 0, y: 3, textStyle: titleFontStyle};

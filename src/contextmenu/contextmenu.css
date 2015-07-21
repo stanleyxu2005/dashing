@@ -1,0 +1,11 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.cm-container {
+  position: relative;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}

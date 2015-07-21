@@ -8,6 +8,7 @@ angular.module('dashing', [
   'dashing.charts.line',
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
+  'dashing.contextmenu',
   'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',

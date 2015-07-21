@@ -34,14 +34,18 @@ angular.module('dashing.charts.line', [
         data: '=datasourceBind'
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
-        var use = $scope.options;
+        var use = angular.merge({
+          stacked: true,
+          yAxisValuesNum: 3
+        }, $scope.options);
+
         var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
-        var borderLineStyle = {lineStyle: {width: 1, color: '#ccc'}};
+        var borderLineStyle = {lineStyle: {width: 1, color: '#ddd'}};
         var options = {
           height: use.height, width: use.width,
           tooltip: $echarts.tooltip({
-            color: 'rgba(235,235,235,.75)',
+            color: 'rgb(235,235,235)',
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
               $echarts.tooltipAllSeriesFormatter(
@@ -52,7 +56,7 @@ angular.module('dashing.charts.line', [
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
-          grid: {borderWidth: 0, y: 10, x2: 5, y2: 22},
+          grid: {borderWidth: 0, y: 20, x2: 5, y2: 23},
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,
@@ -64,7 +68,7 @@ angular.module('dashing.charts.line', [
             })
           }],
           yAxis: [{
-            splitNumber: use.yAxisValuesNum || 3,
+            splitNumber: use.yAxisValuesNum,
             splitLine: {show: false},
             axisLine: {show: false}
           }],
@@ -75,12 +79,13 @@ angular.module('dashing.charts.line', [
             return colorPalette[i % colorPalette.length].line;
           })
         };
+
         angular.forEach(use.seriesNames, function(name, i) {
           options.series.push(
             $echarts.makeDataSeries({
               name: name,
               colors: colorPalette[i % colorPalette.length],
-              stack: use.hasOwnProperty('stacked') ? use.stacked : true,
+              stack: use.stacked,
               showAllSymbol: true,
               data: data.head.map(function(item) {
                 return item.y[i];
@@ -88,13 +93,31 @@ angular.module('dashing.charts.line', [
             })
           );
         });
-        if (options.series.length > 1) {
+
+        // todo: external font size and style should fit global style automatically (e.g. use sass)
+        var titleHeight = 20;
+        var titleFontStyle = {fontSize: 14, fontWeight: '500', color: '#000'};
+        var legendHeight = 16;
+
+        // Add inline chart title
+        if (use.title) {
+          options.title = {text: use.title, x: 0, y: 3, textStyle: titleFontStyle};
+          options.grid.y += titleHeight;
+        }
+
+        // Add legend if there multiple data series
+        $scope.showLegend = options.series.length > 1;
+        if ($scope.showLegend) {
           options.legend = {show: true, itemWidth: 8, data: []};
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });
-          options.grid.y = 30;
+          options.legend.y = '6px';
+          if (!use.title) {
+            options.grid.y += legendHeight;
+          }
         }
+
         $scope.echartOptions = options;
         if (data.tail.length) {
           $scope.data = data.tail;

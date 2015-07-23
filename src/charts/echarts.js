@@ -22,6 +22,7 @@ angular.module('dashing.charts.echarts', [])
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
+        chart.setTheme($echarts.themeOverrides());
 
         angular.element(window).on('resize', chart.resize);
         scope.$on('$destroy', function() {
@@ -71,7 +72,11 @@ angular.module('dashing.charts.echarts', [])
         if (args.color) {
           result.axisPointer = {
             type: 'line',
-            lineStyle: {color: args.color, width: 3, type: 'dotted'}
+            lineStyle: {
+              color: args.color,
+              width: 3,
+              type: 'dotted'
+            }
           };
         }
         return result;
@@ -113,7 +118,10 @@ angular.module('dashing.charts.echarts', [])
           smooth: args.smooth || true,
           itemStyle: {
             normal: {
-              lineStyle: {color: args.colors.line, width: 3}
+              lineStyle: {
+                color: args.colors.line,
+                width: 3
+              }
             },
             emphasis: {
               color: args.colors.line,
@@ -126,7 +134,8 @@ angular.module('dashing.charts.echarts', [])
         };
         if (args.stack) {
           options.itemStyle.normal.areaStyle = {
-            type: 'default', color: args.colors.area
+            type: 'default',
+            color: args.colors.area
           };
         } else if (args.showAllSymbol) {
           // bugfix: seems the line is 1px thicker than args.stack version!
@@ -186,7 +195,7 @@ angular.module('dashing.charts.echarts', [])
        */
       colorPalette: function(size) {
         // todo: standalone color provider for all widgets
-        function suggest(size) {
+        function _suggestColor(size) {
           var colors = {
             blue: 'rgb(0,119,215)',
             purple: 'rgb(110,119,215)',
@@ -205,10 +214,34 @@ angular.module('dashing.charts.echarts', [])
               });
           }
         }
-        return suggest(size).map(function(line) {
+
+        return _suggestColor(size).map(function(line) {
           var area = zrender.tool.color.lift(line, -0.92);
           return {line: line, area: area};
         });
+      },
+      /**
+       * Return theme overrides
+       */
+      themeOverrides: function() {
+        return {
+          markLine: {
+            symbol: ['circle', 'circle']
+          },
+          title: {
+            textStyle: {
+              fontSize: 15,
+              fontWeight: '400',
+              color: '#000'
+            }
+          },
+          textStyle: {
+            fontFamily: 'roboto,"helvetica neue","segoe ui",arial'
+          },
+          loadingText: 'Data Loading...',
+          noDataText: 'No Graphic Data Found',
+          addDataAnimation: false
+        };
       }
     };
   })

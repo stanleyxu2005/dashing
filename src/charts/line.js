@@ -41,9 +41,15 @@ angular.module('dashing.charts.line', [
 
         var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
-        var borderLineStyle = {lineStyle: {width: 1, color: '#ddd'}};
+        var borderLineStyle = {
+          lineStyle: {
+            width: 1,
+            color: '#ddd'
+          }
+        };
         var options = {
-          height: use.height, width: use.width,
+          height: use.height,
+          width: use.width,
           tooltip: $echarts.tooltip({
             color: 'rgb(235,235,235)',
             formatter: use.tooltipFormatter ?
@@ -56,7 +62,12 @@ angular.module('dashing.charts.line', [
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
-          grid: {borderWidth: 0, y: 20, x2: 5, y2: 23},
+          grid: {
+            borderWidth: 0,
+            y: 20,
+            x2: 5,
+            y2: 23
+          },
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,
@@ -96,19 +107,26 @@ angular.module('dashing.charts.line', [
 
         // todo: external font size and style should fit global style automatically (e.g. use sass)
         var titleHeight = 20;
-        var titleFontStyle = {fontSize: 14, fontWeight: '400', color: '#000'};
         var legendHeight = 16;
 
         // Add inline chart title
         if (use.title) {
-          options.title = {text: use.title, x: 0, y: 3, textStyle: titleFontStyle};
+          options.title = {
+            text: use.title,
+            x: 0,
+            y: 3
+          };
           options.grid.y += titleHeight;
         }
 
         // Add legend if there multiple data series
         $scope.showLegend = options.series.length > 1;
         if ($scope.showLegend) {
-          options.legend = {show: true, itemWidth: 8, data: []};
+          options.legend = {
+            show: true,
+            itemWidth: 8,
+            data: []
+          };
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });

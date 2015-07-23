@@ -1,6 +1,6 @@
 /*
  * dashing
- * @version v0.0.4
+ * @version v0.0.5
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -94,6 +94,7 @@ angular.module('dashing.charts.echarts', [])
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
+        chart.setTheme($echarts.themeOverrides());
         angular.element(window).on('resize', chart.resize);
         scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
@@ -133,7 +134,11 @@ angular.module('dashing.charts.echarts', [])
         if (args.color) {
           result.axisPointer = {
             type: 'line',
-            lineStyle: {color: args.color, width: 3, type: 'dotted'}
+            lineStyle: {
+              color: args.color,
+              width: 3,
+              type: 'dotted'
+            }
           };
         }
         return result;
@@ -164,7 +169,10 @@ angular.module('dashing.charts.echarts', [])
           smooth: args.smooth || true,
           itemStyle: {
             normal: {
-              lineStyle: {color: args.colors.line, width: 3}
+              lineStyle: {
+                color: args.colors.line,
+                width: 3
+              }
             },
             emphasis: {
               color: args.colors.line,
@@ -177,7 +185,8 @@ angular.module('dashing.charts.echarts', [])
         };
         if (args.stack) {
           options.itemStyle.normal.areaStyle = {
-            type: 'default', color: args.colors.area
+            type: 'default',
+            color: args.colors.area
           };
         } else if (args.showAllSymbol) {
           options.itemStyle.normal.lineStyle.width -= 1;
@@ -217,7 +226,7 @@ angular.module('dashing.charts.echarts', [])
         return result;
       },
             colorPalette: function(size) {
-        function suggest(size) {
+        function _suggestColor(size) {
           var colors = {
             blue: 'rgb(0,119,215)',
             purple: 'rgb(110,119,215)',
@@ -236,10 +245,30 @@ angular.module('dashing.charts.echarts', [])
               });
           }
         }
-        return suggest(size).map(function(line) {
+        return _suggestColor(size).map(function(line) {
           var area = zrender.tool.color.lift(line, -0.92);
           return {line: line, area: area};
         });
+      },
+            themeOverrides: function() {
+        return {
+          markLine: {
+            symbol: ['circle', 'circle']
+          },
+          title: {
+            textStyle: {
+              fontSize: 15,
+              fontWeight: '400',
+              color: '#000'
+            }
+          },
+          textStyle: {
+            fontFamily: 'roboto,"helvetica neue","segoe ui",arial'
+          },
+          loadingText: 'Data Loading...',
+          noDataText: 'No Graphic Data Found',
+          addDataAnimation: false
+        };
       }
     };
   })
@@ -262,9 +291,15 @@ angular.module('dashing.charts.line', [
         }, $scope.options);
         var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
-        var borderLineStyle = {lineStyle: {width: 1, color: '#ddd'}};
+        var borderLineStyle = {
+          lineStyle: {
+            width: 1,
+            color: '#ddd'
+          }
+        };
         var options = {
-          height: use.height, width: use.width,
+          height: use.height,
+          width: use.width,
           tooltip: $echarts.tooltip({
             color: 'rgb(235,235,235)',
             formatter: use.tooltipFormatter ?
@@ -276,7 +311,12 @@ angular.module('dashing.charts.line', [
               )
           }),
           dataZoom: {show: false},
-          grid: {borderWidth: 0, y: 20, x2: 5, y2: 23},
+          grid: {
+            borderWidth: 0,
+            y: 20,
+            x2: 5,
+            y2: 23
+          },
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,
@@ -312,15 +352,22 @@ angular.module('dashing.charts.line', [
           );
         });
         var titleHeight = 20;
-        var titleFontStyle = {fontSize: 14, fontWeight: '400', color: '#000'};
         var legendHeight = 16;
         if (use.title) {
-          options.title = {text: use.title, x: 0, y: 3, textStyle: titleFontStyle};
+          options.title = {
+            text: use.title,
+            x: 0,
+            y: 3
+          };
           options.grid.y += titleHeight;
         }
         $scope.showLegend = options.series.length > 1;
         if ($scope.showLegend) {
-          options.legend = {show: true, itemWidth: 8, data: []};
+          options.legend = {
+            show: true,
+            itemWidth: 8,
+            data: []
+          };
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });
@@ -395,7 +442,8 @@ angular.module('dashing.charts.sparkline', [
         var colors = $echarts.colorPalette(1)[0];
         var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         $scope.echartOptions = {
-          height: use.height, width: use.width,
+          height: use.height,
+          width: use.width,
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
@@ -406,7 +454,13 @@ angular.module('dashing.charts.sparkline', [
               )
           }),
           dataZoom: {show: false},
-          grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
+          grid: {
+            borderWidth: 0,
+            x: 5,
+            y: 5,
+            x2: 5,
+            y2: 0
+          },
           xAxis: [{
             boundaryGap: false,
             axisLabel: false,
@@ -418,7 +472,8 @@ angular.module('dashing.charts.sparkline', [
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
-            colors: colors, stack: true ,
+            colors: colors,
+            stack: true ,
             data: data.head.map(function(item) {
               return item.y;
             })

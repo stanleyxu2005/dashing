@@ -36,7 +36,8 @@ angular.module('dashing.charts.sparkline', [
         var colors = $echarts.colorPalette(1)[0];
         var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
         $scope.echartOptions = {
-          height: use.height, width: use.width,
+          height: use.height,
+          width: use.width,
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
@@ -48,7 +49,13 @@ angular.module('dashing.charts.sparkline', [
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
-          grid: {borderWidth: 0, x: 5, y: 5, x2: 5, y2: 0},
+          grid: {
+            borderWidth: 0,
+            x: 5,
+            y: 5,
+            x2: 5,
+            y2: 0
+          },
           xAxis: [{
             boundaryGap: false,
             axisLabel: false,
@@ -60,7 +67,8 @@ angular.module('dashing.charts.sparkline', [
           yAxis: [{show: false}],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
-            colors: colors, stack: true /* stack=true means fill area */,
+            colors: colors,
+            stack: true /* stack=true means fill area */,
             data: data.head.map(function(item) {
               return item.y;
             })

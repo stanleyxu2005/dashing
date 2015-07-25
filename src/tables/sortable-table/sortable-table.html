@@ -21,7 +21,8 @@
   </thead>
   <tbody>
   <tr ng-repeat="record in showing track by $index">
-    <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)">
+    <td ng-repeat="col in columns track by $index"
+        ng-class="stylingFn(col)">
       <div ng-switch="isArray(col.key)">
         <div ng-switch-when="true"
              ng-repeat="childKey in col.key track by $index">
@@ -35,15 +36,9 @@
       </div>
     </td>
   </tr>
-  <tr ng-if="showing.length===0">
+  <tr ng-if="records!==null&&showing.length===0">
     <td colspan="{{columns.length}}" class="text-center">
-      <i>No data found</i>
-    </td>
-  </tr>
-  <tr ng-if="showing.length>0&&showing.length<pagination"
-      ng-repeat="i in range(pagination-showing.length) track by $index">
-    <td colspan="{{columns.length}}">
-      <span ng-bind-html="emptyRowContent"></span>
+      <i>No data found{{records.length}}</i>
     </td>
   </tr>
   </tbody>

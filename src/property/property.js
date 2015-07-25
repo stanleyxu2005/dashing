@@ -47,9 +47,6 @@ angular.module('dashing.property', [
                 $scope.show = value.show || true;
                 break;
               case 'State':
-                $scope.text = value.text;
-                $scope.condition = value.condition;
-                break;
               case 'Indicator':
                 $scope.text = value.text;
                 $scope.condition = value.condition;

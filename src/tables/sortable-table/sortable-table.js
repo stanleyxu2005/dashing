@@ -12,7 +12,7 @@ angular.module('dashing.tables.sortable-table', [
  * @example
  *  <sortable-table
  *    caption="Table caption"
- *    pagination="5" empty-row-as-br="1"
+ *    pagination="5"
  *    columns-bind="columnsVariable"
  *    records-bind="recordsVariable"
  *    search-bind="searchVariable">
@@ -37,12 +37,11 @@ angular.module('dashing.tables.sortable-table', [
       scope: {
         caption: '@',
         pagination: '@',
-        emptyRowAsBr: '=',
         columns: '=columnsBind',
         records: '=recordsBind',
         search: '=searchBind'
       },
-      controller: ['$scope', '$element', '$sce', function($scope, $element, $sce) {
+      controller: ['$scope', '$element', function($scope, $element) {
         // TODO: https://github.com/lorenzofox3/Smart-Table/issues/436
         var elem = $element.find('input')[0];
         $scope.$watch('search', function(val) {
@@ -50,16 +49,11 @@ angular.module('dashing.tables.sortable-table', [
           angular.element(elem).triggerHandler('input');
         });
 
-        $scope.$watch('emptyRowAsBr', function(val) {
-          $scope.emptyRowContent = $sce.trustAsHtml(
-            angular.isDefined(val) ?
-              (val > 0 ? $scope.range(Number(val), '<br/>').join('') : '') :
-              '&nbsp;'
-          );
-        });
         $scope.stylingFn = function(col) {
-          return col.style +
-            (['Number'].indexOf(col.renderer) !== -1 ? ' text-right' : '');
+          return [
+            col.styleClass,
+            'Number' === col.renderer ? 'text-right' : ''
+          ].join(' ');
         };
         // Expose isArray into template.
         $scope.isArray = angular.isArray;
@@ -86,9 +80,10 @@ angular.module('dashing.tables.sortable-table', [
           to: null
         };
         scope.$watch('currentPage', function() {
-          scope.stRange.from = stTable.tableState().pagination.start + 1;
-          scope.stRange.to = scope.currentPage === scope.numPages ?
-            scope.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
+          var pagination = stTable.tableState().pagination;
+          scope.stRange.from = pagination.start + 1;
+          scope.stRange.to = scope.currentPage === pagination.numberOfPages ?
+            pagination.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
         });
       }
     };

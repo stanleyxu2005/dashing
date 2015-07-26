@@ -27,7 +27,7 @@
         <div ng-switch-when="true"
              ng-repeat="childKey in col.key track by $index">
           <div ng-class="{'props-in-one-line':!col.vertical}">
-            <property value-bind="record[childKey]" renderer="{{col.renderer[$index]}}"></property>
+            <property value-bind="record[childKey]" renderer="{{get(col.renderer, $index)}}"></property>
           </div>
         </div>
         <div ng-switch-default>
@@ -38,7 +38,7 @@
   </tr>
   <tr ng-if="records!==null&&showing.length===0">
     <td colspan="{{columns.length}}" class="text-center">
-      <i>No data found{{records.length}}</i>
+      <i>No data found</i>
     </td>
   </tr>
   </tbody>

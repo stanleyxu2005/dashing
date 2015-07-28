@@ -28,6 +28,10 @@
   <span
     ng-switch-when="Duration"
     ng-bind="value|duration"></span>
+  <!-- datetime-->
+  <span
+    ng-switch-when="DateTime"
+    ng-bind="value|date:'yyyy-MM-dd HH:MM:ss'"></span>
   <!-- default -->
   <span
     ng-switch-default

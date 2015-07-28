@@ -257,7 +257,7 @@ angular.module('dashing.charts.echarts', [])
           },
           title: {
             textStyle: {
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: '400',
               color: '#000'
             }

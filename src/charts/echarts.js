@@ -101,7 +101,7 @@ angular.module('dashing.charts.echarts', [])
             params.map(function(param) {
               var color = param.series.colors.line;
               return '<tr>' +
-                '<td><div style="width:7px;height:7px;background-color:%s"></div></td>'.replace('%s', color) +
+                '<td><div style="width:7px;height:7px;background-color:' + color + '"></div></td>' +
                 '<td style="padding:0 12px 0 4px">' + param.seriesName + '</td>' +
                 '<td>' + valueFormatter(param.value) + '</td>' +
                 '</tr>';

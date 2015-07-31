@@ -133,7 +133,7 @@ angular.module('dashing.charts.line', [
           });
           options.legend.y = 6;
           if (use.title) {
-            options.legend.y += titleHeight
+            options.legend.y += titleHeight;
             options.grid.y += legendHeight;
           }
         }

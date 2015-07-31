@@ -64,8 +64,17 @@ gulp.task('min-css', ['concat-css'], function() {
 gulp.task('pack-angular-templates', function() {
   return gulp.src('src/**/*.html')
     .pipe(tool.sort()) // `gulp.src()` does not aware file orders
-    .pipe(tool.htmlmin({removeComments: true, collapseWhitespace: true, conservativeCollapse: true}))
-    .pipe(tool.templatecache('tpls.js', {module: brand}))
+    .pipe(tool.htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+      conservativeCollapse: true
+    }))
+    .pipe(tool.templatecache('tpls.js', {
+      module: brand,
+      templateHeader: 'angular.module(\'<%= module %>\'<%= standalone %>).run([\'$templateCache\', function($templateCache) {\'use strict\';',
+      templateBody: '$templateCache.put(\'<%= url %>\',\'<%= contents %>\');'
+    }))
+    .pipe(tool.replace('\\\"', '"'))
     .pipe(gulp.dest('src'));
 });
 

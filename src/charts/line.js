@@ -81,7 +81,8 @@ angular.module('dashing.charts.line', [
           yAxis: [{
             splitNumber: use.yAxisValuesNum,
             splitLine: {show: false},
-            axisLine: {show: false}
+            axisLine: {show: false},
+            scale: use.scale
           }],
           xAxisDataNum: use.maxDataNum,
           series: [],
@@ -130,10 +131,15 @@ angular.module('dashing.charts.line', [
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });
-          options.legend.y = '6px';
-          if (!use.title) {
+          options.legend.y = 6;
+          if (use.title) {
+            options.legend.y += titleHeight
             options.grid.y += legendHeight;
           }
+        }
+
+        if ($scope.showLegend || use.title) {
+          options.grid.y += 12;
         }
 
         $scope.echartOptions = options;

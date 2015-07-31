@@ -25,7 +25,7 @@ angular.module('dashing', [
 ;
 angular.module("dashing").run(["$templateCache", function($templateCache) {$templateCache.put("charts/metrics-sparkline-lr.html","<div class=\"row\"> <metrics class=\"{{metricsPartClass}}\" ng-class=\"{\'col-md-6\':!metricsPartClass}\" caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline class=\"{{chartPartClass}}\" ng-class=\"{\'col-md-6\':!chartPartClass}\" options-bind=\"options\" datasource-bind=\"data\"></sparkline> </div>");
 $templateCache.put("charts/metrics-sparkline-td.html","<metrics caption=\"{{caption}}\" ng-attr-help=\"{{help}}\" value=\"{{current}}\" unit=\"{{unit}}\" small-text=\"{{smallText}}\"></metrics> <sparkline options-bind=\"options\" datasource-bind=\"data\"></sparkline>");
-$templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
+$templateCache.put("metrics/metrics.html","<div class=\"metrics\"> <div> <span class=\"metrics-caption\" ng-bind=\"caption\"></span> <help ng-if=\"help\" text=\"{{help}}\"></help> </div> <h3 class=\"metrics-value\"> <span ng-bind=\"value\"></span> <small ng-bind=\"unit\"></small> </h3> <small ng-if=\"smallText\" class=\"metrics-small-text\" ng-bind=\"smallText\"></small> </div>");
 $templateCache.put("progressbar/progressbar.html","<div style=\"width:100%\">  <span class=\"small pull-left\" ng-bind=\"current+\'/\'+max\"></span> <span class=\"small pull-right\" ng-bind=\"usage + \'%\'\"></span> </div> <div style=\"width:100%\" class=\"progress progress-tiny\"> <div ng-class=\"\'progress-bar-\'+colorFn(usage)\" ng-style=\"{width:usage+\'%\'}\" class=\"progress-bar\"></div> </div>");
 $templateCache.put("property/property.html","<div ng-switch=\"renderer\">  <a ng-switch-when=\"Link\" ng-href=\"{{href}}\" ng-bind=\"text\"></a>  <button ng-switch-when=\"Button\" type=\"button\" class=\"btn btn-default {{class}}\" ng-bind=\"text\" ng-click=\"click()\" ng-attr-ng-disabled=\"{{disabled}}\" ng-attr-ng-show=\"{{show}}\"></button>  <a ng-switch-when=\"Tag\" ng-href=\"{{href}}\" ng-bind=\"text\" class=\"label label-lg {{color}}\" bs-tooltip=\"tooltip\"></a>  <state ng-switch-when=\"State\" text=\"{{text}}\" condition=\"{{condition}}\"></state>  <indicator ng-switch-when=\"Indicator\" text=\"{{text}}\" condition=\"{{condition}}\"></indicator>  <progressbar ng-switch-when=\"ProgressBar\" current=\"{{current}}\" max=\"{{max}}\"></progressbar>  <span ng-switch-when=\"Duration\" ng-bind=\"value|duration\"></span>  <span ng-switch-when=\"DateTime\" ng-bind=\"value|date:\'yyyy-MM-dd HH:MM:ss\'\"></span>  <span ng-switch-default ng-bind=\"value\"></span> </div>");
 $templateCache.put("tables/property-table/property-table.html","<table class=\"table table-striped table-condensed\"> <caption ng-if=\"caption\" ng-bind=\"caption\"></caption> <tbody> <tr ng-repeat=\"prop in props track by $index\"> <td ng-class=\"propNameClass\"> <span ng-bind=\"prop.name\"></span> <help ng-if=\"prop.help\" text=\"{{prop.help}}\"></help> </td> <td ng-switch=\"prop.hasOwnProperty(\'values\')\" ng-class=\"propValueClass\"> <div ng-switch-when=\"true\" ng-repeat=\"value in prop.values track by $index\"> <div ng-class=\"{\'props-in-one-line\':!prop.vertical}\"> <property value-bind=\"value\" renderer=\"{{prop.renderer}}\"></property> </div> </div> <div ng-switch-default> <property value-bind=\"prop.value\" renderer=\"{{prop.renderer}}\"></property> </div> </td> </tr> </tbody> </table>");
@@ -330,7 +330,8 @@ angular.module('dashing.charts.line', [
           yAxis: [{
             splitNumber: use.yAxisValuesNum,
             splitLine: {show: false},
-            axisLine: {show: false}
+            axisLine: {show: false},
+            scale: use.scale
           }],
           xAxisDataNum: use.maxDataNum,
           series: [],
@@ -371,10 +372,14 @@ angular.module('dashing.charts.line', [
           angular.forEach(options.series, function(series) {
             options.legend.data.push(series.name);
           });
-          options.legend.y = '6px';
-          if (!use.title) {
+          options.legend.y = 6;
+          if (use.title) {
+            options.legend.y += titleHeight
             options.grid.y += legendHeight;
           }
+        }
+        if ($scope.showLegend || use.title) {
+          options.grid.y += 12;
         }
         $scope.echartOptions = options;
         if (data.tail.length) {
@@ -469,7 +474,11 @@ angular.module('dashing.charts.sparkline', [
               return item.x;
             })
           }],
-          yAxis: [{show: false}],
+          yAxis: [{
+            show: false,
+            boundaryGap: true,
+            scale: use.scale
+          }],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors,

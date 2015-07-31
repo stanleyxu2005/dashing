@@ -64,7 +64,11 @@ angular.module('dashing.charts.sparkline', [
               return item.x;
             })
           }],
-          yAxis: [{show: false}],
+          yAxis: [{
+            show: false,
+            boundaryGap: true,
+            scale: use.scale
+          }],
           xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors,

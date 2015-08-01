@@ -125,7 +125,7 @@ angular.module('dashing.charts.echarts', [])
     };
   }])
   .factory('$echarts', function() {
-    return {
+    var self = {
             tooltip: function(args) {
         var result = {
           trigger: args.trigger || 'axis',
@@ -152,7 +152,14 @@ angular.module('dashing.charts.echarts', [])
       },
             tooltipFirstSeriesFormatter: function(valueFormatter) {
         return function(params) {
-          return valueFormatter(params[0].value);
+          var color = params[0].series.colors.line;
+          return params[0].name +
+            '<table>' +
+            '<tr>' +
+            '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
+            '<td style="padding-left:4px">' + valueFormatter(params[0].value) + '</td>' +
+            '</tr>' +
+            '</table>';
         };
       },
             tooltipAllSeriesFormatter: function(valueFormatter) {
@@ -162,12 +169,15 @@ angular.module('dashing.charts.echarts', [])
             params.map(function(param) {
               var color = param.series.colors.line;
               return '<tr>' +
-                '<td><div style="width:7px;height:7px;background-color:' + color + '"></div></td>' +
+                '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
                 '<td style="padding:0 12px 0 4px">' + param.seriesName + '</td>' +
                 '<td>' + valueFormatter(param.value) + '</td>' +
                 '</tr>';
             }).join('') + '</table>';
         };
+      },
+      tooltipSeriesColorIndicatorHtml: function(color) {
+        return '<div style="width:7px;height:7px;background-color:' + color + '"></div>';
       },
             makeDataSeries: function(args) {
         args.type = args.type || 'line';
@@ -278,6 +288,7 @@ angular.module('dashing.charts.echarts', [])
         };
       }
     };
+    return self;
   })
 ;
 angular.module('dashing.charts.line', [
@@ -753,12 +764,6 @@ angular.module('dashing.tables.sortable-table', [
         $scope.isArray = angular.isArray;
         $scope.get = function(obj, index) {
           return angular.isArray(obj) ? obj[index] : obj;
-        };
-        $scope.range = function(count, fill) {
-          return count > 0 ?
-            Array.apply(null, {length: count}).map(function(_, index) {
-              return fill || index;
-            }) : [];
         };
       }]
     };

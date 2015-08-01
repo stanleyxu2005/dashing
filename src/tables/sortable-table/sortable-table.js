@@ -61,13 +61,6 @@ angular.module('dashing.tables.sortable-table', [
         $scope.get = function(obj, index) {
           return angular.isArray(obj) ? obj[index] : obj;
         };
-        // Create an array with exact N elements
-        $scope.range = function(count, fill) {
-          return count > 0 ?
-            Array.apply(null, {length: count}).map(function(_, index) {
-              return fill || index;
-            }) : [];
-        };
       }]
     };
   })

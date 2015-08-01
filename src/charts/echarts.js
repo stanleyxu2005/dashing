@@ -30,7 +30,7 @@ angular.module('dashing.charts.echarts', [])
           chart.dispose();
         });
 
-        chart.setOption(options, /*do_not_merge=*/true);
+        chart.setOption(options, /*overwrite=*/true);
 
         scope.$watch('data', function(data) {
           if (data) {
@@ -40,7 +40,14 @@ angular.module('dashing.charts.echarts', [])
                 80 /* maximal visible data points per series */,
                 Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
               var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
-              chart.addData(dataArray);
+              if (dataArray.length > 0) {
+                if (data.yAxisMax) {
+                  chart.setOption({
+                    yAxis: [{max: data.yAxisMax}]
+                  }, /*overwrite=*/false);
+                }
+                chart.addData(dataArray);
+              }
             } catch (ex) {
             }
           }

@@ -28,7 +28,10 @@ angular.module('dashing.charts.metrics-sparkline', [
         smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
-      }
+      },
+      controller: ['$scope', function($scope) {
+        $scope.options.grid = {y: 12};
+      }]
     };
   })
 /**

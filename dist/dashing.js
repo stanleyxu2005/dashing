@@ -109,7 +109,14 @@ angular.module('dashing.charts.echarts', [])
                 80 ,
                 Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
               var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
-              chart.addData(dataArray);
+              if (dataArray.length > 0) {
+                if (data.yAxisMax) {
+                  chart.setOption({
+                    yAxis: [{max: data.yAxisMax}]
+                  }, false);
+                }
+                chart.addData(dataArray);
+              }
             } catch (ex) {
             }
           }
@@ -405,7 +412,10 @@ angular.module('dashing.charts.metrics-sparkline', [
         smallText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
-      }
+      },
+      controller: ['$scope', function($scope) {
+        $scope.options.grid = {y: 12};
+      }]
     };
   })
   .directive('metricsSparklineLr', function() {
@@ -459,13 +469,12 @@ angular.module('dashing.charts.sparkline', [
               )
           }),
           dataZoom: {show: false},
-          grid: {
-            borderWidth: 0,
+          grid: angular.merge({
+            borderWidth: 1,
             x: 5,
             y: 5,
             x2: 5,
-            y2: 0
-          },
+            y2: 1           }, use.grid),
           xAxis: [{
             boundaryGap: false,
             axisLabel: false,
@@ -476,7 +485,6 @@ angular.module('dashing.charts.sparkline', [
           }],
           yAxis: [{
             show: false,
-            boundaryGap: true,
             scale: use.scale
           }],
           xAxisDataNum: use.maxDataNum,

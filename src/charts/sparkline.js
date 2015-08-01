@@ -48,14 +48,14 @@ angular.module('dashing.charts.sparkline', [
               )
           }),
           dataZoom: {show: false},
-          // 5px border on left and right to fix data point
-          grid: {
-            borderWidth: 0,
+          // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
+          grid: angular.merge({
+            borderWidth: 1,
             x: 5,
             y: 5,
             x2: 5,
-            y2: 0
-          },
+            y2: 1 /* set 5px will have a thick ugly grey border */
+          }, use.grid),
           xAxis: [{
             boundaryGap: false,
             axisLabel: false,
@@ -66,7 +66,6 @@ angular.module('dashing.charts.sparkline', [
           }],
           yAxis: [{
             show: false,
-            boundaryGap: true,
             scale: use.scale
           }],
           xAxisDataNum: use.maxDataNum,

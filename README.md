@@ -20,11 +20,8 @@ $ gulp
 >
 ``` html
 <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css"/>
-<link rel="stylesheet" href="vendors/angular-motion/angular-motion.min.css"/>
 <link rel="stylesheet" href="dashing/dashing.min.css"/>
 <script src="vendors/angular/angular.min.js"></script>
-<script src="vendors/angular-strap/angular-strap.min.js"></script>
-<script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
 <script src="vendors/smart-table/smart-table.min.js"></script>
 <script src="vendors/echarts/echarts-all.js"></script>
 <script src="dashing/dashing.min.js"></script>
@@ -54,6 +51,5 @@ The project itself is under Apache License version 2.0. All its dependencies are
 
 + [AngularJS](http://angularjs.org)
 + [Boostrap 3](http://getbootstrap.com)
-+ [Angular-Strap](http://mgcrea.github.io/angular-strap)
 + [Smart-Table](http://lorenzofox3.github.io/smart-table-website/)
 + [Baidu Echarts](http://echarts.baidu.com/)

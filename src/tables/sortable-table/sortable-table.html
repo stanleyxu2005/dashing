@@ -4,10 +4,11 @@
   <thead>
   <tr>
     <th ng-repeat="col in columns track by $index"
-        ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}"
-        st-sort-default={{col.defaultSort}}>{{col.name}}
-      <help ng-if="col.hasOwnProperty('help')" text="{{col.help}}"></help>
-      <span ng-if="col.smallText" ng-bind="col.smallText"></span>
+        ng-class="stylingFn(col)"
+        ng-attr-st-sort="{{col.sortKey}}"
+        ng-attr-st-sort-default={{col.defaultSort}}>{{col.name}}
+      <help ng-if="col.help" text="{{col.help}}"></help>
+      <span ng-if="col.unit" ng-bind="col.unit"></span>
     </th>
   </tr>
   <tr ng-show="false">
@@ -34,13 +35,13 @@
       </ng-switch>
     </td>
   </tr>
-  <tr ng-if="records!==null&&showing.length===0">
+  <tr ng-if="records !== null && !showing.length">
     <td colspan="{{columns.length}}" class="text-center">
       <i>No data found</i>
     </td>
   </tr>
   </tbody>
-  <tfoot ng-if="records.length>0">
+  <tfoot ng-if="records.length">
   <tr>
     <td colspan="{{columns.length}}"
         st-pagination st-items-by-page="pagination"

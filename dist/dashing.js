@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.0.6
+ * @version v0.0.7
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -29,8 +29,8 @@ $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span cla
 $templateCache.put('progressbar/progressbar.html','<div style="width:100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width:100%" class="progress progress-tiny"> <div ng-class="\'progress-bar-\'+colorFn(usage)" ng-style="{width:usage+\'%\'}" class="progress-bar"></div> </div>');
 $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-attr-ng-disabled="{{disabled}}"></button>  <a ng-switch-when="Tag" ng-href="{{href}}" ng-bind="text" class="label label-lg {{color}}" bs-tooltip="tooltip"></a>  <state ng-switch-when="State" text="{{text}}" condition="{{condition}}"></state>  <indicator ng-switch-when="Indicator" text="{{text}}" condition="{{condition}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
 $templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-class="propNameClass"> <span ng-bind="prop.name"></span> <help ng-if="prop.help" text="{{prop.help}}"></help> </td> <td ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <div ng-switch-when="true" class="text-nowrap" ng-repeat="value in prop.values track by $index"> <property value-bind="value" renderer="{{prop.renderer}}"></property> </div> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
-$templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length>=2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
-$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" st-sort-default="{{col.defaultSort}}">{{col.name}} <help ng-if="col.hasOwnProperty(\'help\')" text="{{col.help}}"></help> <span ng-if="col.smallText" ng-bind="col.smallText"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records!==null&&showing.length===0"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length>0"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
+$templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
+$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <help ng-if="col.help" text="{{col.help}}"></help> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
 $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab(tab)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
@@ -734,6 +734,54 @@ angular.module('dashing.tables.property-table', [])
       }
     };
   })
+  .factory('$ptBuilder', function() {
+    var PB = function(renderer, title) {
+      this.props = renderer ? {renderer: renderer} : {};
+      if (title) {
+        this.title(title);
+      }
+    };
+    PB.prototype.title = function(title) {
+      this.props.name = title;
+      return this;
+    };
+    PB.prototype.help = function(help) {
+      this.props.help = help;
+      return this;
+    };
+    PB.prototype.done = function() {
+      return this.props;
+    };
+    return {
+      button: function(title) {
+        return new PB('Button', title);
+      },
+      datetime: function(title) {
+        return new PB('DateTime', title);
+      },
+      duration: function(title) {
+        return new PB('Duration', title);
+      },
+      indicator: function(title) {
+        return new PB('Indicator');
+      },
+      link: function(title) {
+        return new PB('Link', title);
+      },
+      number: function(title) {
+        return new PB('Number', title);
+      },
+      progressbar: function(title) {
+        return new PB('ProgressBar', title);
+      },
+      state: function(title) {
+        return new PB('State', title);
+      },
+      text: function(title) {
+        return new PB(undefined, title);
+      }
+    };
+  })
 ;
 angular.module('dashing.tables.sortable-table', [
   'smart-table'
@@ -796,6 +844,79 @@ angular.module('dashing.tables.sortable-table', [
   .config(['stConfig', function(stConfig) {
     stConfig.sort.skipNatural = true;
   }])
+  .factory('$stColBuilder', function() {
+    var CB = function(renderer, title) {
+      this.props = renderer ? {renderer: renderer} : {};
+      if (title) {
+        this.title(title);
+      }
+    };
+    CB.prototype.title = function(title) {
+      this.props.name = title;
+      return this;
+    };
+    CB.prototype.key = function(key) {
+      this.props.key = key;
+      return this;
+    };
+    CB.prototype.keyCanSort = function(key, sortDefaultAscent) {
+      this.props.key = key;
+      this.props.sortKey = key;
+      if (sortDefaultAscent !== undefined) {
+        this.props.defaultSort =
+          ['reverse', false].indexOf(sortDefaultAscent) !== -1 ? 'reverse' : true;
+      }
+      return this;
+    };
+    CB.prototype.styleClass = function(styleClass) {
+      this.props.styleClass = styleClass;
+      return this;
+    };
+    CB.prototype.sortBy = function(sortKey) {
+      this.props.sortKey = sortKey;
+      return this;
+    };
+    CB.prototype.unit = function(unit) {
+      this.props.unit = unit;
+      return this;
+    };
+    CB.prototype.help = function(help) {
+      this.props.help = help;
+      return this;
+    };
+    CB.prototype.done = function() {
+      return this.props;
+    };
+    return {
+      button: function(title) {
+        return new CB('Button', title);
+      },
+      datetime: function(title) {
+        return new CB('DateTime', title);
+      },
+      duration: function(title) {
+        return new CB('Duration', title);
+      },
+      indicator: function(title) {
+        return new CB('Indicator', title);
+      },
+      link: function(title) {
+        return new CB('Link', title);
+      },
+      number: function(title) {
+        return new CB('Number', title);
+      },
+      progressbar: function(title) {
+        return new CB('ProgressBar', title);
+      },
+      state: function(title) {
+        return new CB('State', title);
+      },
+      text: function(title) {
+        return new CB(undefined, title);
+      }
+    };
+  })
 ;
 angular.module('dashing.tabset', [])
   .directive('tabset', [function() {

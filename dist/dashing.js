@@ -13,6 +13,7 @@ angular.module('dashing', [
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
   'dashing.contextmenu',
+  'dashing.forms.searchbox',
   'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',
@@ -25,6 +26,7 @@ angular.module('dashing', [
 ;
 angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-lr.html','<div class="row"> <metrics class="{{metricsPartClass}}" ng-class="{\'col-md-6\':!metricsPartClass}" caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline class="{{chartPartClass}}" ng-class="{\'col-md-6\':!chartPartClass}" options-bind="options" datasource-bind="data"></sparkline> </div>');
 $templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
+$templateCache.put('forms/searchbox.html','<div class="search-control"> <span class="glyphicon glyphicon-search"></span> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> </div>');
 $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <help ng-if="help" text="{{help}}"></help> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="smallText" class="metrics-small-text" ng-bind="smallText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width:100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width:100%" class="progress progress-tiny"> <div ng-class="\'progress-bar-\'+colorFn(usage)" ng-style="{width:usage+\'%\'}" class="progress-bar"></div> </div>');
 $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-attr-ng-disabled="{{disabled}}"></button>  <a ng-switch-when="Tag" ng-href="{{href}}" ng-bind="text" class="label label-lg {{color}}" bs-tooltip="tooltip"></a>  <state ng-switch-when="State" text="{{text}}" condition="{{condition}}"></state>  <indicator ng-switch-when="Indicator" text="{{text}}" condition="{{condition}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
@@ -522,6 +524,19 @@ angular.module('dashing.contextmenu', [
       popup: function(elem, position) {
         angular.element(elem).css({left: position.x + 'px', top: position.y + 'px'});
         angular.element(elem).triggerHandler('click');
+      }
+    };
+  })
+;
+angular.module('dashing.forms.searchbox', [
+])
+  .directive('searchbox', function() {
+    return {
+      templateUrl: 'forms/searchbox.html',
+      restrict: 'E',
+      scope: {
+        placeholder: '@',
+        ngModel: '='
       }
     };
   })

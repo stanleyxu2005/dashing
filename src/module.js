@@ -9,6 +9,7 @@ angular.module('dashing', [
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
   'dashing.contextmenu',
+  'dashing.forms.searchbox',
   'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',

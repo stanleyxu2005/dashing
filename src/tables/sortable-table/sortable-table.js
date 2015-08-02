@@ -50,10 +50,17 @@ angular.module('dashing.tables.sortable-table', [
         });
 
         $scope.stylingFn = function(col) {
-          return [
-            col.styleClass,
-            'Number' === col.renderer ? 'text-right' : ''
-          ].join(' ');
+          var result = [];
+          if (col.styleClass) {
+            result.push(col.styleClass);
+          }
+          if ('Number' === col.renderer) {
+            result.push('text-right');
+          }
+          if (angular.isArray(col.key) && !col.vertical) {
+            result.push('text-nowrap');
+          }
+          return result.join(' ');
         };
         // Expose isArray into template.
         $scope.isArray = angular.isArray;

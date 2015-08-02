@@ -1,4 +1,4 @@
-<table class="table table-striped table-condensed"
+<table class="table table-striped table-hover"
        st-table="showing" st-safe-src="records">
   <caption ng-if="caption" ng-bind="caption"></caption>
   <thead>
@@ -7,6 +7,7 @@
         ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}"
         st-sort-default={{col.defaultSort}}>{{col.name}}
       <help ng-if="col.hasOwnProperty('help')" text="{{col.help}}"></help>
+      <span ng-if="col.smallText" ng-bind="col.smallText"></span>
     </th>
   </tr>
   <tr ng-show="false">
@@ -21,19 +22,16 @@
   </thead>
   <tbody>
   <tr ng-repeat="record in showing track by $index">
-    <td ng-repeat="col in columns track by $index"
-        ng-class="stylingFn(col)">
-      <div ng-switch="isArray(col.key)">
-        <div ng-switch-when="true"
-             ng-repeat="childKey in col.key track by $index">
-          <div ng-class="{'props-in-one-line':!col.vertical}">
-            <property value-bind="record[childKey]" renderer="{{get(col.renderer, $index)}}"></property>
-          </div>
-        </div>
-        <div ng-switch-default>
-          <property value-bind="record[col.key]" renderer="{{col.renderer}}"></property>
-        </div>
-      </div>
+    <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)">
+      <ng-switch on="isArray(col.key)">
+        <property ng-switch-when="true"
+                  ng-repeat="subKey in col.key track by $index"
+                  value-bind="record[subKey]"
+                  renderer="{{get(col.renderer, $index)}}"></property>
+        <property ng-switch-when="false"
+                  value-bind="record[col.key]"
+                  renderer="{{col.renderer}}"></property>
+      </ng-switch>
     </td>
   </tr>
   <tr ng-if="records!==null&&showing.length===0">

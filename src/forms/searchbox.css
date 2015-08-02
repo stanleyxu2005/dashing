@@ -5,16 +5,12 @@
 
 .search-control {
   position: relative;
+  margin-bottom: 20px;
 }
 
 .search-control span {
   position: absolute;
   right: 0;
-  padding: 7px 10px 7px 0;
+  padding: 9px 10px 7px 0;
   cursor: pointer;
-}
-
-.search-control input {
-  width: 100%;
-  padding: 4px 30px 4px 6px;
 }

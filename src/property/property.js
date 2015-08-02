@@ -29,23 +29,27 @@ angular.module('dashing.property', [
                 $scope.current = value.current;
                 $scope.max = value.max;
                 break;
+
               case 'Link':
                 $scope.href = value.href;
                 $scope.text = value.text || value.href;
                 break;
+
               case 'Tag':
                 $scope.text = value.text;
                 $scope.href = value.href;
                 $scope.color = colorToBootstrapLabelClass(value.color);
                 $scope.tooltip = value.tooltip;
                 break;
+
               case 'Button':
                 $scope.text = value.text;
                 $scope.class = value.class;
                 $scope.click = value.click;
                 $scope.disabled = value.disabled;
-                $scope.show = value.show || true;
+                $scope.hide = value.hide;
                 break;
+
               case 'State':
               case 'Indicator':
                 $scope.text = value.text;

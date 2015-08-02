@@ -1,4 +1,4 @@
-<div ng-switch="renderer">
+<ng-switch on="renderer">
   <!-- link -->
   <a
     ng-switch-when="Link"
@@ -6,8 +6,9 @@
   <!-- button -->
   <button
     ng-switch-when="Button"
+    ng-if="!hide"
     type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()"
-    ng-attr-ng-disabled="{{disabled}}" ng-attr-ng-show="{{show}}"></button>
+    ng-attr-ng-disabled="{{disabled}}"></button>
   <!-- tag (clickable label in a colored box) -->
   <a
     ng-switch-when="Tag"
@@ -32,8 +33,12 @@
   <span
     ng-switch-when="DateTime"
     ng-bind="value|date:'yyyy-MM-dd HH:MM:ss'"></span>
+  <!-- number-->
+  <span
+    ng-switch-when="Number"
+    ng-bind="value|number:0"></span>
   <!-- default -->
   <span
     ng-switch-default
     ng-bind="value"></span>
-</div>
+</ng-switch>

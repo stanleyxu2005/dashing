@@ -8,27 +8,34 @@ angular.module('dashing.progressbar', [])
  * determined by the progress value.
  *
  * @example
- *  <progressbar current="50" max="100"/>
+ *  <progressbar current="50" max="100"></progressbar>
  */
   .directive('progressbar', function() {
     'use strict';
+
     return {
-      templateUrl: 'progressbar/progressbar.html',
       restrict: 'E',
+      templateUrl: 'progressbar/progressbar.html',
       scope: {
         current: '@',
         max: '@'
       },
-      controller: ['$scope', function($scope) {
-        $scope.$watch('[current, max]', function() {
-          $scope.usage = $scope.max > 0 ?
-            Math.round($scope.current * 100 / $scope.max) : -1;
+      link: function(scope, elem, attrs) {
+        attrs.$observe('current', function(current) {
+          updateUsageAndClass(Number(current), Number(attrs.max));
         });
-        // todo: externalize as a color attribute
-        $scope.colorFn = function(usage) {
-          return usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger');
-        };
-      }]
+        attrs.$observe('max', function(max) {
+          updateUsageAndClass(Number(attrs.current), Number(max));
+        });
+
+        function updateUsageAndClass(current, max) {
+          scope.usage = max > 0 ?
+            Math.round(current * 100 / max) : -1;
+          // todo: provide a range array for colors
+          scope.usageClass = 'progress-bar-' +
+            (scope.usage < 50 ? 'info' : (scope.usage < 75 ? 'warning' : 'danger'));
+        }
+      }
     };
   })
 ;

@@ -8,19 +8,16 @@
     ng-switch-when="Button"
     ng-if="!hide"
     type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()"
-    ng-attr-ng-disabled="{{disabled}}"></button>
+    ng-disabled="disabled"></button>
   <!-- tag (clickable label in a colored box) -->
-  <a
+  <tag
     ng-switch-when="Tag"
-    ng-href="{{href}}" ng-bind="text" class="label label-lg {{color}}" bs-tooltip="tooltip"></a>
-  <!-- state -->
-  <state
-    ng-switch-when="State"
-    text="{{text}}" condition="{{condition}}"></state>
+    ng-attr-href="{{href}}"
+    text="{{text}}" condition="{{condition}}" tooltip="{{tooltip}}"></tag>
   <!-- indicator -->
   <indicator
     ng-switch-when="Indicator"
-    text="{{text}}" condition="{{condition}}"></indicator>
+    condition="{{condition}}" tooltip="{{tooltip}}"></indicator>
   <!-- progress bar -->
   <progressbar
     ng-switch-when="ProgressBar"

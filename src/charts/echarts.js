@@ -252,7 +252,7 @@ angular.module('dashing.charts.echarts', [])
             }
           },
           textStyle: {
-            fontFamily: 'roboto,"helvetica neue","segoe ui",arial'
+            fontFamily: 'lato,roboto,"helvetica neue","segoe ui",arial'
           },
           loadingText: 'Data Loading...',
           noDataText: 'No Graphic Data Found',

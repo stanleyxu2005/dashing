@@ -4,6 +4,6 @@
   <span class="small pull-right" ng-bind="usage + '%'"></span>
 </div>
 <div style="width:100%" class="progress progress-tiny">
-  <div ng-class="'progress-bar-'+colorFn(usage)"
-       ng-style="{width:usage+'%'}" class="progress-bar"></div>
+  <div ng-style="{width:usage+'%'}"
+       class="progress-bar {{usageClass}}"></div>
 </div>

@@ -14,9 +14,11 @@ angular.module('dashing', [
   'dashing.metrics',
   'dashing.progressbar',
   'dashing.property',
-  'dashing.state',
+  'dashing.state.indicator',
+  'dashing.state.tag',
   'dashing.tables.property-table',
   'dashing.tables.sortable-table',
-  'dashing.tabset'
+  'dashing.tabset',
+  'dashing.util'
 ])
 ;

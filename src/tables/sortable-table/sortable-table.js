@@ -168,8 +168,8 @@ angular.module('dashing.tables.sortable-table', [
       progressbar: function(title) {
         return new CB('ProgressBar', title);
       },
-      state: function(title) {
-        return new CB('State', title);
+      tag: function(title) {
+        return new CB('Tag', title);
       },
       text: function(title) {
         return new CB(undefined, title);
@@ -179,7 +179,7 @@ angular.module('dashing.tables.sortable-table', [
           var keys = angular.isArray(col.key) ? col.key : [col.key];
           angular.forEach(keys, function(key) {
             if (!model.hasOwnProperty(key)) {
-              console.error('Model does not have a property matches column key `' + col + '`');
+              console.warn('Model does not have a property matches column key `' + col + '`');
             }
           });
         });

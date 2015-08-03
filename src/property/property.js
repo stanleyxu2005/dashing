@@ -6,7 +6,7 @@ angular.module('dashing.property', [
   'mgcrea.ngStrap.tooltip' // angular-strap
 ])
 /**
- * A magic widget to render property as a duration, state, progressbar, etc.
+ * A magic widget to render property as a duration, indicator/tag, progressbar, etc.
  *
  * @example
  *  <property value-bind="valueVariable" renderer="Duration"></property>
@@ -36,9 +36,9 @@ angular.module('dashing.property', [
                 break;
 
               case 'Tag':
-                $scope.text = value.text;
                 $scope.href = value.href;
-                $scope.color = colorToBootstrapLabelClass(value.color);
+                $scope.text = value.text;
+                $scope.condition = value.condition;
                 $scope.tooltip = value.tooltip;
                 break;
 
@@ -50,27 +50,13 @@ angular.module('dashing.property', [
                 $scope.hide = value.hide;
                 break;
 
-              case 'State':
               case 'Indicator':
-                $scope.text = value.text;
                 $scope.condition = value.condition;
+                $scope.tooltip = value.tooltip;
                 break;
             }
           }
         });
-
-        function colorToBootstrapLabelClass(color) {
-          switch (color) {
-            case 'green':
-              return 'label-success';
-            case 'yellow':
-              return 'label-warning';
-            case 'red':
-              return 'label-danger';
-            default:
-              return 'label-default';
-          }
-        }
       }]
     };
   })

@@ -8,10 +8,10 @@
     </td>
     <td ng-class="propValueClass">
       <ng-switch on="prop.hasOwnProperty('values')">
-        <div ng-switch-when="true" class="text-nowrap"
-             ng-repeat="value in prop.values track by $index">
-          <property value-bind="value" renderer="{{prop.renderer}}"></property>
-        </div>
+        <property
+          ng-switch-when="true"
+          ng-repeat="value in prop.values track by $index"
+          value-bind="value" renderer="{{prop.renderer}}"></property>
         <property
           ng-switch-when="false"
           value-bind="prop.value" renderer="{{prop.renderer}}"></property>

@@ -75,8 +75,8 @@ angular.module('dashing.tables.property-table', [])
       progressbar: function(title) {
         return new PB('ProgressBar', title);
       },
-      state: function(title) {
-        return new PB('State', title);
+      tag: function(title) {
+        return new PB('Tag', title);
       },
       text: function(title) {
         return new PB(undefined, title);

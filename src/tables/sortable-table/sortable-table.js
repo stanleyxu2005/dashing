@@ -173,6 +173,16 @@ angular.module('dashing.tables.sortable-table', [
       },
       text: function(title) {
         return new CB(undefined, title);
+      },
+      $check: function(cols, model) {
+        angular.forEach(cols, function(col) {
+          var keys = angular.isArray(col.key) ? col.key : [col.key];
+          angular.forEach(keys, function(key) {
+            if (!model.hasOwnProperty(key)) {
+              console.error('Model does not have a property matches column key `' + col + '`');
+            }
+          });
+        });
       }
     };
   })

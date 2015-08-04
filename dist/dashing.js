@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.0.7
+ * @version v0.0.8
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */

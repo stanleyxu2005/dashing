@@ -13,6 +13,7 @@ angular.module('dashing', [
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
   'dashing.contextmenu',
+  'dashing.filters.duration',
   'dashing.forms.searchbox',
   'dashing.metrics',
   'dashing.progressbar',
@@ -21,7 +22,9 @@ angular.module('dashing', [
   'dashing.state.indicator',
   'dashing.state.tag',
   'dashing.tables.property-table',
+  'dashing.tables.property-table.builder',
   'dashing.tables.sortable-table',
+  'dashing.tables.sortable-table.builder',
   'dashing.tabset',
   'dashing.util'
 ])
@@ -35,9 +38,9 @@ $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-sw
 $templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
 $templateCache.put('state/indicator.html','<small ng-style="{color:colorStyle, cursor:cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></small>');
 $templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{cursor:cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
-$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
+$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-attr-ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-attr-ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
-$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
+$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" class="{{styles[$index]}}" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" class="{{styles[$index]}}"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
 $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab($index)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
@@ -531,6 +534,40 @@ angular.module('dashing.contextmenu', [
     };
   })
 ;
+angular.module('dashing.filters.duration', [])
+  .filter('duration', function() {
+    return function(millis) {
+      var x = parseInt(millis, 10);
+      if (isNaN(x)) {
+        return millis;
+      }
+      var units = [
+        {label: 'ms', mod: 1000},
+        {label: 'secs', mod: 60},
+        {label: 'mins', mod: 60},
+        {label: 'hours', mod: 24},
+        {label: 'days', mod: 7},
+        {label: 'weeks', mod: 52}
+      ];
+      var duration = [];
+      for (var i = 0; i < units.length; i++) {
+        var unit = units[i];
+        var t = x % unit.mod;
+        if (t !== 0) {
+          duration.unshift({label: unit.label, value: t});
+        }
+        x = (x - t) / unit.mod;
+      }
+      duration = duration.slice(0, 2);
+      if (duration.length > 1 && duration[1].label === 'ms') {
+        duration = [duration[0]];
+      }
+      return duration.map(function(unit) {
+        return unit.value + ' ' + unit.label;
+      }).join(' and ');
+    };
+  })
+;
 angular.module('dashing.forms.searchbox', [
 ])
   .directive('searchbox', function() {
@@ -590,78 +627,46 @@ angular.module('dashing.property', [
 ])
   .directive('property', function() {
     return {
-      templateUrl: 'property/property.html',
       restrict: 'E',
+      templateUrl: 'property/property.html',
       replace: false,
       scope: {
         value: '=valueBind',
         renderer: '@'
       },
-      controller: ['$scope', function($scope) {
-        $scope.$watch('value', function(value) {
+      link: function(scope) {
+        scope.$watch('value', function(value) {
           if (value) {
-            switch ($scope.renderer) {
+            switch (scope.renderer) {
               case 'ProgressBar':
-                $scope.current = value.current;
-                $scope.max = value.max;
+                scope.current = value.current;
+                scope.max = value.max;
                 break;
               case 'Link':
-                $scope.href = value.href;
-                $scope.text = value.text || value.href;
+                scope.href = value.href;
+                scope.text = value.text || value.href;
                 break;
               case 'Tag':
-                $scope.href = value.href;
-                $scope.text = value.text;
-                $scope.condition = value.condition;
-                $scope.tooltip = value.tooltip;
+                scope.href = value.href;
+                scope.text = value.text;
+                scope.condition = value.condition;
+                scope.tooltip = value.tooltip;
                 break;
               case 'Button':
-                $scope.text = value.text;
-                $scope.class = value.class;
-                $scope.click = value.click;
-                $scope.disabled = value.disabled;
-                $scope.hide = value.hide;
+                scope.text = value.text;
+                scope.class = value.class;
+                scope.click = value.click;
+                scope.disabled = value.disabled;
+                scope.hide = value.hide;
                 break;
               case 'Indicator':
-                $scope.condition = value.condition;
-                $scope.tooltip = value.tooltip;
+                scope.condition = value.condition;
+                scope.tooltip = value.tooltip;
                 break;
             }
           }
         });
-      }]
-    };
-  })
-  .filter('duration', function() {
-    return function(millis) {
-      var x = parseInt(millis, 10);
-      if (isNaN(x)) {
-        return millis;
       }
-      var units = [
-        {label: "ms", mod: 1000},
-        {label: "secs", mod: 60},
-        {label: "mins", mod: 60},
-        {label: "hours", mod: 24},
-        {label: "days", mod: 7},
-        {label: "weeks", mod: 52}
-      ];
-      var duration = [];
-      for (var i = 0; i < units.length; i++) {
-        var unit = units[i];
-        var t = x % unit.mod;
-        if (t !== 0) {
-          duration.unshift({label: unit.label, value: t});
-        }
-        x = (x - t) / unit.mod;
-      }
-      duration = duration.slice(0, 2);
-      if (duration.length > 1 && duration[1].label === "ms") {
-        duration = [duration[0]];
-      }
-      return duration.map(function(unit) {
-        return unit.value + " " + unit.label;
-      }).join(" and ");
     };
   })
 ;
@@ -687,7 +692,6 @@ angular.module('dashing.remark', [
             case 'warning':
               scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
               break;
-            case 'question':
             default:
               scope.fontClass = 'glyphicon glyphicon-question-sign';
               break;
@@ -751,20 +755,8 @@ angular.module('dashing.state.tag', [
     };
   }])
 ;
-angular.module('dashing.tables.property-table', [])
-  .directive('propertyTable', function () {
-    return {
-      templateUrl: 'tables/property-table/property-table.html',
-      restrict: 'E',
-      scope: {
-        caption: '@',
-        props: '=propsBind',
-        propNameClass: '@',
-        propValueClass: '@'
-      }
-    };
-  })
-  .factory('$ptBuilder', function() {
+angular.module('dashing.tables.property-table.builder', [])
+  .factory('$propertyTableBuilder', function() {
     var PB = function(renderer, title) {
       this.props = renderer ? {renderer: renderer} : {};
       if (title) {
@@ -793,7 +785,7 @@ angular.module('dashing.tables.property-table', [])
         return new PB('Duration', title);
       },
       indicator: function(title) {
-        return new PB('Indicator');
+        return new PB('Indicator', title);
       },
       link: function(title) {
         return new PB('Link', title);
@@ -813,68 +805,22 @@ angular.module('dashing.tables.property-table', [])
     };
   })
 ;
-angular.module('dashing.tables.sortable-table', [
-  'smart-table'
-])
-  .directive('sortableTable', function() {
+angular.module('dashing.tables.property-table', [])
+  .directive('propertyTable', function() {
     return {
-      templateUrl: 'tables/sortable-table/sortable-table.html',
       restrict: 'E',
+      templateUrl: 'tables/property-table/property-table.html',
       scope: {
         caption: '@',
-        pagination: '@',
-        columns: '=columnsBind',
-        records: '=recordsBind',
-        search: '=searchBind'
-      },
-      controller: ['$scope', '$element', function($scope, $element) {
-        var elem = $element.find('input')[0];
-        $scope.$watch('search', function(val) {
-          elem.value = val || '';
-          angular.element(elem).triggerHandler('input');
-        });
-        $scope.stylingFn = function(col) {
-          var result = [];
-          if (col.styleClass) {
-            result.push(col.styleClass);
-          }
-          if ('Number' === col.renderer) {
-            result.push('text-right');
-          }
-          if (angular.isArray(col.key) && !col.vertical) {
-            result.push('text-nowrap');
-          }
-          return result.join(' ');
-        };
-        $scope.isArray = angular.isArray;
-        $scope.get = function(obj, index) {
-          return angular.isArray(obj) ? obj[index] : obj;
-        };
-      }]
-    };
-  })
-  .directive('stSummary', function() {
-    return {
-      require: '^stTable',
-      template: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
-      link: function(scope, element, attrs, stTable) {
-        scope.stRange = {
-          from: null,
-          to: null
-        };
-        scope.$watch('currentPage', function() {
-          var pagination = stTable.tableState().pagination;
-          scope.stRange.from = pagination.start + 1;
-          scope.stRange.to = scope.currentPage === pagination.numberOfPages ?
-            pagination.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
-        });
+        props: '=propsBind',
+        propNameClass: '@',
+        propValueClass: '@'
       }
     };
   })
-  .config(['stConfig', function(stConfig) {
-    stConfig.sort.skipNatural = true;
-  }])
-  .factory('$stColBuilder', function() {
+;
+angular.module('dashing.tables.sortable-table.builder', [])
+  .factory('$sortableTableBuilder', function() {
     var CB = function(renderer, title) {
       this.props = renderer ? {renderer: renderer} : {};
       if (title) {
@@ -945,7 +891,7 @@ angular.module('dashing.tables.sortable-table', [
       text: function(title) {
         return new CB(undefined, title);
       },
-      $check: function(cols, model) {
+            $check: function(cols, model) {
         angular.forEach(cols, function(col) {
           var keys = angular.isArray(col.key) ? col.key : [col.key];
           angular.forEach(keys, function(key) {
@@ -957,6 +903,70 @@ angular.module('dashing.tables.sortable-table', [
       }
     };
   })
+;
+angular.module('dashing.tables.sortable-table', [
+  'smart-table'
+])
+  .directive('sortableTable', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'tables/sortable-table/sortable-table.html',
+      scope: {
+        caption: '@',
+        pagination: '@',
+        columns: '=columnsBind',
+        records: '=recordsBind',
+        search: '=searchBind'
+      },
+      link: function(scope, elem) {
+        var searchControl = elem.find('input')[0];
+        scope.$watch('search', function(val) {
+          searchControl.value = val || '';
+          angular.element(searchControl).triggerHandler('input');
+        });
+        scope.$watch('columns', function(cols) {
+          scope.styles = cols.map(function(col) {
+            var result = [];
+            if (col.styleClass) {
+              result.push(col.styleClass);
+            }
+            if ('Number' === col.renderer) {
+              result.push('text-right');
+            }
+            if (angular.isArray(col.key) && !col.vertical) {
+              result.push('text-nowrap');
+            }
+            return result.join(' ');
+          });
+        });
+        scope.isArray = angular.isArray;
+        scope.get = function(obj, index) {
+          return angular.isArray(obj) ? obj[index] : obj;
+        };
+      }
+    };
+  })
+  .directive('stSummary', function() {
+    return {
+      require: '^stTable',
+      template: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
+      link: function(scope, element, attrs, stTable) {
+        scope.stRange = {
+          from: null,
+          to: null
+        };
+        scope.$watch('currentPage', function() {
+          var pagination = stTable.tableState().pagination;
+          scope.stRange.from = pagination.start + 1;
+          scope.stRange.to = scope.currentPage === pagination.numberOfPages ?
+            pagination.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
+        });
+      }
+    };
+  })
+  .config(['stConfig', function(stConfig) {
+    stConfig.sort.skipNatural = true;
+  }])
 ;
 angular.module('dashing.tabset', [])
   .directive('tabset', [function() {

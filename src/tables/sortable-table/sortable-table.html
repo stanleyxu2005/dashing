@@ -4,7 +4,7 @@
   <thead>
   <tr>
     <th ng-repeat="col in columns track by $index"
-        ng-class="stylingFn(col)"
+        class="{{styles[$index]}}"
         ng-attr-st-sort="{{col.sortKey}}"
         ng-attr-st-sort-default={{col.defaultSort}}>{{col.name}}
       <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark>
@@ -23,7 +23,8 @@
   </thead>
   <tbody>
   <tr ng-repeat="record in showing track by $index">
-    <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)">
+    <td ng-repeat="col in columns track by $index"
+        class="{{styles[$index]}}">
       <ng-switch on="isArray(col.key)">
         <property ng-switch-when="true"
                   ng-repeat="subKey in col.key track by $index"

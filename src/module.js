@@ -9,6 +9,7 @@ angular.module('dashing', [
   'dashing.charts.metrics-sparkline',
   'dashing.charts.sparkline',
   'dashing.contextmenu',
+  'dashing.filters.duration',
   'dashing.forms.searchbox',
   'dashing.metrics',
   'dashing.progressbar',
@@ -17,7 +18,9 @@ angular.module('dashing', [
   'dashing.state.indicator',
   'dashing.state.tag',
   'dashing.tables.property-table',
+  'dashing.tables.property-table.builder',
   'dashing.tables.sortable-table',
+  'dashing.tables.sortable-table.builder',
   'dashing.tabset',
   'dashing.util'
 ])

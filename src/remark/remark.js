@@ -37,7 +37,7 @@ angular.module('dashing.remark', [
             case 'warning':
               scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
               break;
-            case 'question':
+            //case 'question':
             default:
               scope.fontClass = 'glyphicon glyphicon-question-sign';
               break;

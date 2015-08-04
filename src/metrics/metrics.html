@@ -1,7 +1,7 @@
 <div class="metrics">
   <div>
     <span class="metrics-caption" ng-bind="caption"></span>
-    <help ng-if="help" text="{{help}}"></help>
+    <remark ng-if="help" type="question" tooltip="{{help}}"></remark>
   </div>
   <h3 class="metrics-value">
     <span ng-bind="value"></span>

@@ -21,12 +21,6 @@
   cursor: pointer;
 }
 
-.help-icon {
-  color: #bbb;
-}
-.help-icon:hover {
-  color: #888;
-}
 .metrics {
   white-space: nowrap;
 }
@@ -48,6 +42,12 @@
   background-color: #ebebeb;
   padding: 0;
   margin: 1px 0 0 0;
+}
+.remark-icon {
+  color: #bbb;
+}
+.remark-icon:hover {
+  color: #888;
 }
 .label-lg {
   font-size: .85em;

@@ -14,10 +14,10 @@ angular.module('dashing', [
   'dashing.charts.sparkline',
   'dashing.contextmenu',
   'dashing.forms.searchbox',
-  'dashing.help',
   'dashing.metrics',
   'dashing.progressbar',
   'dashing.property',
+  'dashing.remark',
   'dashing.state.indicator',
   'dashing.state.tag',
   'dashing.tables.property-table',
@@ -29,14 +29,15 @@ angular.module('dashing', [
 angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-lr.html','<div class="row"> <metrics class="{{metricsPartClass}}" ng-class="{\'col-md-6\':!metricsPartClass}" caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline class="{{chartPartClass}}" ng-class="{\'col-md-6\':!chartPartClass}" options-bind="options" datasource-bind="data"></sparkline> </div>');
 $templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
 $templateCache.put('forms/searchbox.html','<div class="search-control"> <span class="glyphicon glyphicon-search"></span> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> </div>');
-$templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <help ng-if="help" text="{{help}}"></help> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="smallText" class="metrics-small-text" ng-bind="smallText"></small> </div>');
+$templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="smallText" class="metrics-small-text" ng-bind="smallText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width:100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width:100%" class="progress progress-tiny"> <div ng-style="{width:usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
 $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-disabled="disabled"></button>  <tag ng-switch-when="Tag" ng-attr-href="{{href}}" text="{{text}}" condition="{{condition}}" tooltip="{{tooltip}}"></tag>  <indicator ng-switch-when="Indicator" condition="{{condition}}" tooltip="{{tooltip}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
+$templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
 $templateCache.put('state/indicator.html','<small ng-style="{color:colorStyle, cursor:cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></small>');
 $templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{cursor:cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
-$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-class="propNameClass"> <span ng-bind="prop.name"></span> <help ng-if="prop.help" text="{{prop.help}}"></help> </td> <td ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
+$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
-$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <help ng-if="col.help" text="{{col.help}}"></help> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
+$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
 $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab(tab)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
@@ -545,19 +546,6 @@ angular.module('dashing.forms.searchbox', [
     };
   })
 ;
-angular.module('dashing.help', [
-  'mgcrea.ngStrap.tooltip'
-])
-  .directive('help', function() {
-    return {
-      template: '<span class="glyphicon glyphicon-question-sign help-icon" bs-tooltip="text"></span>',
-      restrict: 'E',
-      scope: {
-        text: '@'
-      }
-    };
-  })
-;
 angular.module('dashing.metrics', [])
   .directive('metrics', function() {
     return {
@@ -679,6 +667,38 @@ angular.module('dashing.property', [
     };
   })
 ;
+angular.module('dashing.remark', [
+  'mgcrea.ngStrap.tooltip'
+])
+  .directive('remark', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'remark/remark.html',
+      scope: {
+        tooltip: '@'
+      },
+      link: function(scope, elem, attrs) {
+        if (!attrs.type) {
+          attrs.type = 'question';
+        }
+                attrs.$observe('type', function(type) {
+          switch (type) {
+            case 'info':
+              scope.fontClass = 'glyphicon glyphicon-info-sign';
+              break;
+            case 'warning':
+              scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
+              break;
+            case 'question':
+            default:
+              scope.fontClass = 'glyphicon glyphicon-question-sign';
+              break;
+          }
+        });
+      }
+    };
+  })
+;
 angular.module('dashing.state.indicator', [
   'dashing.util',
   'mgcrea.ngStrap.tooltip'
@@ -691,6 +711,9 @@ angular.module('dashing.state.indicator', [
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
+        if (!attrs.condition) {
+          attrs.condition = '';
+        }
                 attrs.$observe('condition', function(condition) {
           scope.colorStyle = $util.conditionToColor(condition);
         });
@@ -710,12 +733,14 @@ angular.module('dashing.state.tag', [
       restrict: 'E',
       templateUrl: 'state/tag.html',
       scope: {
-        condition: '@',
         href: '@',
         text: '@',
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
+        if (!attrs.condition) {
+          attrs.condition = '';
+        }
                 attrs.$observe('condition', function(condition) {
           scope.labelColorClass = $util.conditionToBootstrapLabelClass(condition);
         });

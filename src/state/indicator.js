@@ -25,6 +25,10 @@ angular.module('dashing.state.indicator', [
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
+        if (!attrs.condition) {
+          attrs.condition = '';
+        }
+
         /** Condition will affect the color */
         attrs.$observe('condition', function(condition) {
           scope.colorStyle = $util.conditionToColor(condition);

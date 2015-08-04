@@ -4,7 +4,7 @@
   <tr ng-repeat="prop in props track by $index">
     <td ng-class="propNameClass">
       <span ng-bind="prop.name"></span>
-      <help ng-if="prop.help" text="{{prop.help}}"></help>
+      <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark>
     </td>
     <td ng-class="propValueClass">
       <ng-switch on="prop.hasOwnProperty('values')">

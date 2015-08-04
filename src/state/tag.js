@@ -25,12 +25,15 @@ angular.module('dashing.state.tag', [
       restrict: 'E',
       templateUrl: 'state/tag.html',
       scope: {
-        condition: '@',
         href: '@',
         text: '@',
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
+        if (!attrs.condition) {
+          attrs.condition = '';
+        }
+
         /** Condition will affect the color */
         attrs.$observe('condition', function(condition) {
           scope.labelColorClass = $util.conditionToBootstrapLabelClass(condition);

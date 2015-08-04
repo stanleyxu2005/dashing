@@ -7,7 +7,7 @@
         ng-class="stylingFn(col)"
         ng-attr-st-sort="{{col.sortKey}}"
         ng-attr-st-sort-default={{col.defaultSort}}>{{col.name}}
-      <help ng-if="col.help" text="{{col.help}}"></help>
+      <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark>
       <span ng-if="col.unit" ng-bind="col.unit"></span>
     </th>
   </tr>

@@ -7,10 +7,16 @@ angular.module('dashing.tabset', [])
  * Similar to Google's tab control.
  *
  * @example
- *  <tabset>
- *    <tab heading="tab 1" template="path/to/tab1.html" controller="tab1Ctrl"></tab>
- *    <tab heading="tab 2" template="path/to/tab2.html" controller="tab2Ctrl"></tab>
+ *  <tabset switch-to="switchTab">
+ *    <tab ng-repeat="tab in tabs track by $index"
+ *      heading="{{tab.heading}}"
+ *      template="{{tab.templateUrl}}
+ *      controller="{{tab.controller}}"></tab>
  *  </tabset>
+ *
+ *  In script:
+ *    var directiveScope = angular.element(tabsetElem).scope();
+ *    directiveScope.selectTab(2);
  */
   .directive('tabset', [function() {
     'use strict';
@@ -19,36 +25,31 @@ angular.module('dashing.tabset', [])
       restrict: 'E',
       templateUrl: 'tabset/tabset.html',
       transclude: true,
-      scope: {
-        switchTo: '='
-      },
+      scope: true, // in order to expose the method `selectTab()`
       controller: ['$scope', function($scope) {
         var tabs = $scope.tabs = [];
-        $scope.selectTab = function(tab, reload) {
+
+        function select(tab, reload) {
           angular.forEach(tabs, function(item) {
             item.selected = item === tab;
           });
           if (tab.load !== undefined) {
             tab.load(reload);
           }
-        };
+        }
 
         this.addTab = function(tab) {
           tabs.push(tab);
           if (tabs.length === 1) {
-            $scope.selectTab(tab);
+            select(tab);
           }
         };
-        
-        $scope.$watch('switchTo', function(args) {
-          if (args) {
-            var tabIndex = args.tabIndex;
-            if (tabIndex >= 0 && tabIndex < tabs.length) {
-              $scope.selectTab(tabs[tabIndex], args.reload);
-            }
-            $scope.switchTo = null;
+
+        $scope.selectTab = function(activeTabIndex, reload) {
+          if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+            select(tabs[activeTabIndex], reload);
           }
-        });
+        };
       }]
     };
   }])
@@ -68,25 +69,26 @@ angular.module('dashing.tabset', [])
           scope.heading = attrs.heading;
           scope.loaded = false;
 
-          if (attrs.templateUrl) {
-            scope.load = function(reload) {
-              if (scope.loaded && !reload) {
-                return;
-              }
+          scope.load = function(reload) {
+            if (scope.loaded && !reload) {
+              return;
+            }
+            if (attrs.template) {
+              $http.get(attrs.template).then(function(response) {
+                createTemplateScope(response.data);
+              });
+            }
+          };
 
-              $http.get(attrs.templateUrl)
-                .then(function(response) {
-                  var templateScope = scope.$new(false);
-                  elem.html(response.data);
-                  if (attrs.controller) {
-                    elem.children().data('$ngController',
-                      $controller(attrs.controller, {$scope: templateScope})
-                    );
-                  }
-                  $compile(elem.contents())(templateScope);
-                  scope.loaded = true;
-                });
-            };
+          function createTemplateScope(template) {
+            elem.html(template);
+            var templateScope = scope.$new(false);
+            if (attrs.controller) {
+              var scopeController = $controller(attrs.controller, {$scope: templateScope});
+              elem.children().data('$ngController', scopeController);
+            }
+            $compile(elem.contents())(templateScope);
+            scope.loaded = true;
           }
 
           ctrl.addTab(scope);

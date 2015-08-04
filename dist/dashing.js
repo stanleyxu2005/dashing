@@ -38,7 +38,7 @@ $templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="f
 $templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
 $templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" ng-class="stylingFn(col)" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" ng-class="stylingFn(col)"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
-$templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab(tab)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
+$templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab($index)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
 ])
@@ -964,34 +964,28 @@ angular.module('dashing.tabset', [])
       restrict: 'E',
       templateUrl: 'tabset/tabset.html',
       transclude: true,
-      scope: {
-        switchTo: '='
-      },
+      scope: true,
       controller: ['$scope', function($scope) {
         var tabs = $scope.tabs = [];
-        $scope.selectTab = function(tab, reload) {
+        function select(tab, reload) {
           angular.forEach(tabs, function(item) {
             item.selected = item === tab;
           });
           if (tab.load !== undefined) {
             tab.load(reload);
           }
-        };
+        }
         this.addTab = function(tab) {
           tabs.push(tab);
           if (tabs.length === 1) {
-            $scope.selectTab(tab);
+            select(tab);
           }
         };
-        $scope.$watch('switchTo', function(args) {
-          if (args) {
-            var tabIndex = args.tabIndex;
-            if (tabIndex >= 0 && tabIndex < tabs.length) {
-              $scope.selectTab(tabs[tabIndex], args.reload);
-            }
-            $scope.switchTo = null;
+        $scope.selectTab = function(activeTabIndex, reload) {
+          if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+            select(tabs[activeTabIndex], reload);
           }
-        });
+        };
       }]
     };
   }])
@@ -1006,24 +1000,25 @@ angular.module('dashing.tabset', [])
         link: function(scope, elem, attrs, ctrl) {
           scope.heading = attrs.heading;
           scope.loaded = false;
-          if (attrs.templateUrl) {
-            scope.load = function(reload) {
-              if (scope.loaded && !reload) {
-                return;
-              }
-              $http.get(attrs.templateUrl)
-                .then(function(response) {
-                  var templateScope = scope.$new(false);
-                  elem.html(response.data);
-                  if (attrs.controller) {
-                    elem.children().data('$ngController',
-                      $controller(attrs.controller, {$scope: templateScope})
-                    );
-                  }
-                  $compile(elem.contents())(templateScope);
-                  scope.loaded = true;
-                });
-            };
+          scope.load = function(reload) {
+            if (scope.loaded && !reload) {
+              return;
+            }
+            if (attrs.template) {
+              $http.get(attrs.template).then(function(response) {
+                createTemplateScope(response.data);
+              });
+            }
+          };
+          function createTemplateScope(template) {
+            elem.html(template);
+            var templateScope = scope.$new(false);
+            if (attrs.controller) {
+              var scopeController = $controller(attrs.controller, {$scope: templateScope});
+              elem.children().data('$ngController', scopeController);
+            }
+            $compile(elem.contents())(templateScope);
+            scope.loaded = true;
           }
           ctrl.addTab(scope);
         }

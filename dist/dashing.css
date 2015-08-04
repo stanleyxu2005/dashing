@@ -10,33 +10,25 @@
   width: 0;
   height: 0;
 }
-.search-control {
-  position: relative;
-  margin-bottom: 20px;
-}
-.search-control span {
-  position: absolute;
-  right: 0;
-  padding: 9px 10px 7px 0;
-  cursor: pointer;
-}
-
 .metrics {
   white-space: nowrap;
 }
 .metrics .metrics-caption {
-  font-size: 14px;
+  font-size: 1.15em;
   font-weight: 500;
 }
 .metrics .metrics-value {
   margin-top: 1px;
   margin-bottom: 2px;
 }
-.metrics .metrics-small-text {
+.metrics .metrics-sub-text {
   display: block;
   color: #a8a8a8;
 }
-
+.metrics-thicker-bottom {
+  display: block;
+  padding-bottom: 12px;
+}
 .progress-tiny {
   height: 3px;
   background-color: #ebebeb;

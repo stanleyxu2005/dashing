@@ -26,10 +26,10 @@ angular.module('dashing', [
   'dashing.util'
 ])
 ;
-angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-lr.html','<div class="row"> <metrics class="{{metricsPartClass}}" ng-class="{\'col-md-6\':!metricsPartClass}" caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline class="{{chartPartClass}}" ng-class="{\'col-md-6\':!chartPartClass}" options-bind="options" datasource-bind="data"></sparkline> </div>');
-$templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" small-text="{{smallText}}"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
-$templateCache.put('forms/searchbox.html','<div class="search-control"> <span class="glyphicon glyphicon-search"></span> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> </div>');
-$templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="smallText" class="metrics-small-text" ng-bind="smallText"></small> </div>');
+angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-lr.html','<div class="row"> <metrics class="{{metricsPartClass}}" ng-class="{\'col-md-6\':!metricsPartClass}" caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}"></metrics> <sparkline class="{{chartPartClass}}" ng-class="{\'col-md-6\':!chartPartClass}" options-bind="options" datasource-bind="data"></sparkline> </div>');
+$templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
+$templateCache.put('forms/searchbox.html','<div class="form-group has-feedback"> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> <span class="glyphicon glyphicon-search form-control-feedback"></span> </div>');
+$templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="subText" class="metrics-sub-text" ng-bind="subText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width:100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width:100%" class="progress progress-tiny"> <div ng-style="{width:usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
 $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-disabled="disabled"></button>  <tag ng-switch-when="Tag" ng-attr-href="{{href}}" text="{{text}}" condition="{{condition}}" tooltip="{{tooltip}}"></tag>  <indicator ng-switch-when="Indicator" condition="{{condition}}" tooltip="{{tooltip}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
 $templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
@@ -420,32 +420,29 @@ angular.module('dashing.charts.metrics-sparkline', [
 ])
   .directive('metricsSparklineTd', function() {
     return {
-      templateUrl: 'charts/metrics-sparkline-td.html',
       restrict: 'E',
+      templateUrl: 'charts/metrics-sparkline-td.html',
       scope: {
         caption: '@',
         help: '@',
         current: '@',
         unit: '@',
-        smallText: '@',
+        subText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
-      },
-      controller: ['$scope', function($scope) {
-        $scope.options.grid = {y: 12};
-      }]
+      }
     };
   })
   .directive('metricsSparklineLr', function() {
     return {
-      templateUrl: 'charts/metrics-sparkline-lr.html',
       restrict: 'E',
+      templateUrl: 'charts/metrics-sparkline-lr.html',
       scope: {
         caption: '@',
         help: '@',
         current: '@',
         unit: '@',
-        smallText: '@',
+        subText: '@',
         options: '=optionsBind',
         data: '=datasourceBind',
         metricsPartClass: '@',
@@ -527,8 +524,9 @@ angular.module('dashing.contextmenu', [
   .factory('$contextmenu', function() {
     return {
       popup: function(elem, position) {
-        angular.element(elem).css({left: position.x + 'px', top: position.y + 'px'});
-        angular.element(elem).triggerHandler('click');
+        var elem0 = angular.element(elem);
+        elem0.css({left: position.x + 'px', top: position.y + 'px'});
+        elem0.triggerHandler('click');
       }
     };
   })
@@ -537,8 +535,8 @@ angular.module('dashing.forms.searchbox', [
 ])
   .directive('searchbox', function() {
     return {
-      templateUrl: 'forms/searchbox.html',
       restrict: 'E',
+      templateUrl: 'forms/searchbox.html',
       scope: {
         placeholder: '@',
         ngModel: '='
@@ -549,14 +547,14 @@ angular.module('dashing.forms.searchbox', [
 angular.module('dashing.metrics', [])
   .directive('metrics', function() {
     return {
-      templateUrl: 'metrics/metrics.html',
       restrict: 'E',
+      templateUrl: 'metrics/metrics.html',
       scope: {
         caption: '@',
         help: '@',
         value: '@',
         unit: '@',
-        smallText: '@'
+        subText: '@'
       }
     };
   })
@@ -963,8 +961,8 @@ angular.module('dashing.tables.sortable-table', [
 angular.module('dashing.tabset', [])
   .directive('tabset', [function() {
     return {
-      templateUrl: 'tabset/tabset.html',
       restrict: 'E',
+      templateUrl: 'tabset/tabset.html',
       transclude: true,
       scope: {
         switchTo: '='
@@ -1000,34 +998,35 @@ angular.module('dashing.tabset', [])
   .directive('tab', ['$http', '$controller', '$compile',
     function($http, $controller, $compile) {
       return {
-        require: '^tabset',
         restrict: 'E',
+        require: '^tabset',
+        template: '<div class="tab-pane" ng-class="{active:selected}" ng-transclude></div>',
+        replace: true,
         transclude: true,
-        link: function(scope, elem, attrs, tabsCtrl) {
+        link: function(scope, elem, attrs, ctrl) {
           scope.heading = attrs.heading;
-          if (attrs.template) {
-            scope.loaded = false;
+          scope.loaded = false;
+          if (attrs.templateUrl) {
             scope.load = function(reload) {
               if (scope.loaded && !reload) {
                 return;
               }
-              $http.get(attrs.template)
+              $http.get(attrs.templateUrl)
                 .then(function(response) {
                   var templateScope = scope.$new(false);
                   elem.html(response.data);
                   if (attrs.controller) {
                     elem.children().data('$ngController',
-                      $controller(attrs.controller, {$scope: templateScope}));
+                      $controller(attrs.controller, {$scope: templateScope})
+                    );
                   }
                   $compile(elem.contents())(templateScope);
                   scope.loaded = true;
                 });
             };
           }
-          tabsCtrl.addTab(scope);
-        },
-        template: '<div class="tab-pane" ng-class="{active:selected}" ng-transclude></div>',
-        replace: true
+          ctrl.addTab(scope);
+        }
       };
     }])
 ;

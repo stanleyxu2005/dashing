@@ -8,7 +8,7 @@
 }
 
 .metrics .metrics-caption {
-  font-size: 14px;
+  font-size: 1.15em;
   font-weight: 500;
 }
 
@@ -17,7 +17,12 @@
   margin-bottom: 2px;
 }
 
-.metrics .metrics-small-text {
+.metrics .metrics-sub-text {
   display: block;
   color: #a8a8a8;
+}
+
+.metrics-thicker-bottom {
+  display: block;
+  padding-bottom: 12px;
 }

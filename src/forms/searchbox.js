@@ -12,9 +12,10 @@ angular.module('dashing.forms.searchbox', [
  */
   .directive('searchbox', function() {
     'use strict';
+
     return {
-      templateUrl: 'forms/searchbox.html',
       restrict: 'E',
+      templateUrl: 'forms/searchbox.html',
       scope: {
         placeholder: '@',
         ngModel: '='

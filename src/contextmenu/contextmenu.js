@@ -13,10 +13,12 @@ angular.module('dashing.contextmenu', [
  */
   .factory('$contextmenu', function() {
     'use strict';
+
     return {
       popup: function(elem, position) {
-        angular.element(elem).css({left: position.x + 'px', top: position.y + 'px'});
-        angular.element(elem).triggerHandler('click');
+        var elem0 = angular.element(elem);
+        elem0.css({left: position.x + 'px', top: position.y + 'px'});
+        elem0.triggerHandler('click');
       }
     };
   })

@@ -11,27 +11,26 @@ angular.module('dashing.charts.metrics-sparkline', [
  *
  * @example
  *   <metrics-sparkline-td
- *     caption="CPU usage" help="CPU usage in real time" value="50" unit="%"
+ *     caption="CPU usage" help="CPU usage in real time"
+ *     value="50" unit="%"
  *     options-bind="sparkLineOptions" datasource-bind="sparkLineData">
  *   </metrics-sparkline-td>
  */
   .directive('metricsSparklineTd', function() {
     'use strict';
+
     return {
-      templateUrl: 'charts/metrics-sparkline-td.html',
       restrict: 'E',
+      templateUrl: 'charts/metrics-sparkline-td.html',
       scope: {
         caption: '@',
         help: '@',
         current: '@',
         unit: '@',
-        smallText: '@',
+        subText: '@',
         options: '=optionsBind',
         data: '=datasourceBind'
-      },
-      controller: ['$scope', function($scope) {
-        $scope.options.grid = {y: 12};
-      }]
+      }
     };
   })
 /**
@@ -47,15 +46,16 @@ angular.module('dashing.charts.metrics-sparkline', [
  */
   .directive('metricsSparklineLr', function() {
     'use strict';
+
     return {
-      templateUrl: 'charts/metrics-sparkline-lr.html',
       restrict: 'E',
+      templateUrl: 'charts/metrics-sparkline-lr.html',
       scope: {
         caption: '@',
         help: '@',
         current: '@',
         unit: '@',
-        smallText: '@',
+        subText: '@',
         options: '=optionsBind',
         data: '=datasourceBind',
         metricsPartClass: '@',

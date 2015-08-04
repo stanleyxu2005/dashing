@@ -8,19 +8,20 @@ angular.module('dashing.metrics', [])
  *
  * @example
  *  <metrics caption="Send Throughput" value="2250" unit="msgs/s"></metrics>
- *  <metrics caption="Send Throughput" value="2250" unit="msgs/s" small-text="Avg: 1000 msgs/s"></metrics>
+ *  <metrics caption="Send Throughput" value="2250" unit="msgs/s" sub-text="Average value: 1000 msgs/s"></metrics>
  */
   .directive('metrics', function() {
     'use strict';
+
     return {
-      templateUrl: 'metrics/metrics.html',
       restrict: 'E',
+      templateUrl: 'metrics/metrics.html',
       scope: {
         caption: '@',
         help: '@',
         value: '@',
         unit: '@',
-        smallText: '@'
+        subText: '@'
       }
     };
   })

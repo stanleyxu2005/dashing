@@ -14,9 +14,10 @@ angular.module('dashing.tabset', [])
  */
   .directive('tabset', [function() {
     'use strict';
+
     return {
-      templateUrl: 'tabset/tabset.html',
       restrict: 'E',
+      templateUrl: 'tabset/tabset.html',
       transclude: true,
       scope: {
         switchTo: '='
@@ -31,12 +32,14 @@ angular.module('dashing.tabset', [])
             tab.load(reload);
           }
         };
+
         this.addTab = function(tab) {
           tabs.push(tab);
           if (tabs.length === 1) {
             $scope.selectTab(tab);
           }
         };
+        
         $scope.$watch('switchTo', function(args) {
           if (args) {
             var tabIndex = args.tabIndex;
@@ -54,35 +57,40 @@ angular.module('dashing.tabset', [])
   .directive('tab', ['$http', '$controller', '$compile',
     function($http, $controller, $compile) {
       'use strict';
+
       return {
-        require: '^tabset',
         restrict: 'E',
+        require: '^tabset',
+        template: '<div class="tab-pane" ng-class="{active:selected}" ng-transclude></div>',
+        replace: true,
         transclude: true,
-        link: function(scope, elem, attrs, tabsCtrl) {
+        link: function(scope, elem, attrs, ctrl) {
           scope.heading = attrs.heading;
-          if (attrs.template) {
-            scope.loaded = false;
+          scope.loaded = false;
+
+          if (attrs.templateUrl) {
             scope.load = function(reload) {
               if (scope.loaded && !reload) {
                 return;
               }
-              $http.get(attrs.template)
+
+              $http.get(attrs.templateUrl)
                 .then(function(response) {
                   var templateScope = scope.$new(false);
                   elem.html(response.data);
                   if (attrs.controller) {
                     elem.children().data('$ngController',
-                      $controller(attrs.controller, {$scope: templateScope}));
+                      $controller(attrs.controller, {$scope: templateScope})
+                    );
                   }
                   $compile(elem.contents())(templateScope);
                   scope.loaded = true;
                 });
             };
           }
-          tabsCtrl.addTab(scope);
-        },
-        template: '<div class="tab-pane" ng-class="{active:selected}" ng-transclude></div>',
-        replace: true
+
+          ctrl.addTab(scope);
+        }
       };
     }])
 ;

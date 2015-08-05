@@ -15,7 +15,9 @@ angular.module('dashing.tables.property-table', [])
  * @example
  *  <property-table
  *    caption="Table caption"
- *    props-bind="propsVariable">
+ *    props-bind="propsVariable"
+ *    prop-name-class="col-md-4"
+ *    prop-value-class="col-md-8">
  *  </property-table>
  */
   .directive('propertyTable', function() {

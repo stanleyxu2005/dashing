@@ -40,7 +40,7 @@ $templateCache.put('state/indicator.html','<small ng-style="{color:colorStyle, c
 $templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{cursor:cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
 $templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-attr-ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-attr-ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
-$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="col in columns track by $index" class="{{styles[$index]}}" ng-attr-st-sort="{{col.sortKey}}" ng-attr-st-sort-default="{{col.defaultSort}}">{{col.name}} <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark> <span ng-if="col.unit" ng-bind="col.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="col in columns track by $index" class="{{styles[$index]}}"> <ng-switch on="isArray(col.key)"> <property ng-switch-when="true" ng-repeat="subKey in col.key track by $index" value-bind="record[subKey]" renderer="{{get(col.renderer, $index)}}"></property> <property ng-switch-when="false" value-bind="record[col.key]" renderer="{{col.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
+$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="column in columns track by $index" class="{{columnStyleClass[$index]}}" ng-attr-st-sort="{{column.sortKey}}" ng-attr-st-sort-default="{{column.defaultSort}}">{{column.name}} <remark ng-if="column.help" type="question" tooltip="{{column.help}}"></remark> <span ng-if="column.unit" ng-bind="column.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="column in columns track by $index" class="{{columnStyleClass[$index]}}"> <ng-switch on="isArray(column.key)"> <property ng-switch-when="true" ng-repeat="columnKeyChild in column.key track by $index" value-bind="record[columnKeyChild]" renderer="{{multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property> <property ng-switch-when="false" value-bind="record[column.key]" renderer="{{column.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
 $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab($index)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
@@ -924,19 +924,32 @@ angular.module('dashing.tables.sortable-table', [
           searchControl.value = val || '';
           angular.element(searchControl).triggerHandler('input');
         });
-        scope.$watch('columns', function(cols) {
-          scope.styles = cols.map(function(col) {
-            var result = [];
-            if (col.styleClass) {
-              result.push(col.styleClass);
+        scope.$watch('columns', function(columns) {
+          scope.columnStyleClass = columns.map(function(column) {
+            function addStyleClass(dest, clazz, condition) {
+              if (condition) {
+                dest.push(clazz);
+              }
             }
-            if ('Number' === col.renderer) {
-              result.push('text-right');
+            var array = [];
+            addStyleClass(array, column.styleClass, column.styleClass !== undefined);
+            addStyleClass(array, 'text-right', 'Number' === column.renderer);
+            addStyleClass(array, 'text-nowrap', angular.isArray(column.key) && !column.vertical);
+            return array.join(' ');
+          });
+          scope.multipleRendererColumnsRenderers = columns.map(function(column) {
+            if (!angular.isArray(column.key)) {
+              return null;
             }
-            if (angular.isArray(col.key) && !col.vertical) {
-              result.push('text-nowrap');
+            if (angular.isArray(column.renderer)) {
+              if (column.renderer.length !== column.key.length) {
+                console.error('Every column key should have a renderer, or share one renderer.');
+              }
+              return column.renderer;
             }
-            return result.join(' ');
+            return column.key.map(function() {
+              return column.renderer;
+            });
           });
         });
         scope.isArray = angular.isArray;

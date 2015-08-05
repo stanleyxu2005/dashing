@@ -50,19 +50,37 @@ angular.module('dashing.tables.sortable-table', [
           angular.element(searchControl).triggerHandler('input');
         });
 
-        scope.$watch('columns', function(cols) {
-          scope.styles = cols.map(function(col) {
-            var result = [];
-            if (col.styleClass) {
-              result.push(col.styleClass);
+        // Columns are not changed after table is created, we cache frequently accessed values rather than
+        // evaluating them in every digest cycle.
+        scope.$watch('columns', function(columns) {
+          // 1
+          scope.columnStyleClass = columns.map(function(column) {
+            function addStyleClass(dest, clazz, condition) {
+              if (condition) {
+                dest.push(clazz);
+              }
             }
-            if ('Number' === col.renderer) {
-              result.push('text-right');
+
+            var array = [];
+            addStyleClass(array, column.styleClass, column.styleClass !== undefined);
+            addStyleClass(array, 'text-right', 'Number' === column.renderer);
+            addStyleClass(array, 'text-nowrap', angular.isArray(column.key) && !column.vertical);
+            return array.join(' ');
+          });
+          // 2
+          scope.multipleRendererColumnsRenderers = columns.map(function(column) {
+            if (!angular.isArray(column.key)) {
+              return null; // Template will not call the method at all
             }
-            if (angular.isArray(col.key) && !col.vertical) {
-              result.push('text-nowrap');
+            if (angular.isArray(column.renderer)) {
+              if (column.renderer.length !== column.key.length) {
+                console.error('Every column key should have a renderer, or share one renderer.');
+              }
+              return column.renderer;
             }
-            return result.join(' ');
+            return column.key.map(function() {
+              return column.renderer;
+            });
           });
         });
 

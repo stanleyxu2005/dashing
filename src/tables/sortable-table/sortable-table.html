@@ -3,12 +3,12 @@
   <caption ng-if="caption" ng-bind="caption"></caption>
   <thead>
   <tr>
-    <th ng-repeat="col in columns track by $index"
-        class="{{styles[$index]}}"
-        ng-attr-st-sort="{{col.sortKey}}"
-        ng-attr-st-sort-default={{col.defaultSort}}>{{col.name}}
-      <remark ng-if="col.help" type="question" tooltip="{{col.help}}"></remark>
-      <span ng-if="col.unit" ng-bind="col.unit"></span>
+    <th ng-repeat="column in columns track by $index"
+        class="{{columnStyleClass[$index]}}"
+        ng-attr-st-sort="{{column.sortKey}}"
+        ng-attr-st-sort-default={{column.defaultSort}}>{{column.name}}
+      <remark ng-if="column.help" type="question" tooltip="{{column.help}}"></remark>
+      <span ng-if="column.unit" ng-bind="column.unit"></span>
     </th>
   </tr>
   <tr ng-show="false">
@@ -23,16 +23,16 @@
   </thead>
   <tbody>
   <tr ng-repeat="record in showing track by $index">
-    <td ng-repeat="col in columns track by $index"
-        class="{{styles[$index]}}">
-      <ng-switch on="isArray(col.key)">
+    <td ng-repeat="column in columns track by $index"
+        class="{{columnStyleClass[$index]}}">
+      <ng-switch on="isArray(column.key)">
         <property ng-switch-when="true"
-                  ng-repeat="subKey in col.key track by $index"
-                  value-bind="record[subKey]"
-                  renderer="{{get(col.renderer, $index)}}"></property>
+                  ng-repeat="columnKeyChild in column.key track by $index"
+                  value-bind="record[columnKeyChild]"
+                  renderer="{{multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property>
         <property ng-switch-when="false"
-                  value-bind="record[col.key]"
-                  renderer="{{col.renderer}}"></property>
+                  value-bind="record[column.key]"
+                  renderer="{{column.renderer}}"></property>
       </ng-switch>
     </td>
   </tr>

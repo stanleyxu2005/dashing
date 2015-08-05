@@ -45,13 +45,20 @@ $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underl
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
 ])
-  .directive('barChart', [function() {
+  .directive('barChart', function() {
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
+      },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
@@ -74,66 +81,71 @@ angular.module('dashing.charts.bar', [
             })
           }],
           yAxis: [{show: false}],
-          xAxisDataNum: use.maxDataNum,
           dataZoom: {show: true, handleColor: 'rgb(188,188,188)', fillerColor: 'rgba(188,188,188,.15)'},
           series: [$echarts.makeDataSeries({
             colors: colors,
-            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2, smooth:false,
+            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2, smooth: false,
             data: data.map(function(item) {
               return item.y;
             })
-          })]
+          })],
+          xAxisDataNum: use.maxDataNum
         };
       }]
     };
-  }])
+  })
 ;
 angular.module('dashing.charts.echarts', [])
-  .directive('echart', ['$echarts', function($echarts) {
+  .directive('echart', function() {
     return {
-      template: '<div></div>',
-      replace: true,
       restrict: 'E',
+      template: '<div></div>',
+      replace: true ,
       scope: {
-        options: '=',
-        data: '='
+        options: '='
       },
-      link: function(scope, elems) {
-        var options = scope.options;
-        var elem0 = elems[0];
+      controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
+        var options = $scope.options;
+        var elem0 = $element[0];
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
-        chart.setTheme($echarts.themeOverrides());
         angular.element(window).on('resize', chart.resize);
-        scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
+        chart.setTheme($echarts.themeOverrides());
         chart.setOption(options, true);
-        scope.$watch('data', function(data) {
-          if (data) {
-            try {
-              var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
-              var visibleDataPoints = Math.min(
-                80 ,
-                Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
-              var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
-              if (dataArray.length > 0) {
-                if (data.yAxisMax) {
-                  chart.setOption({
-                    yAxis: [{max: data.yAxisMax}]
-                  }, false);
-                }
-                chart.addData(dataArray);
+                $scope.addDataPoints = function(data, newYAxisMaxValue) {
+          try {
+            var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
+            var visibleDataPoints = Math.min(
+              80 ,
+              Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
+            var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
+            if (dataArray.length > 0) {
+              if (newYAxisMaxValue !== undefined) {
+                chart.setOption({
+                  yAxis: [{max: newYAxisMaxValue}]
+                }, false);
               }
-            } catch (ex) {
+              chart.addData(dataArray);
             }
+          } catch (ex) {
           }
+        };
+        if (options.initialDataRound1.length) {
+          $scope.addDataPoints(options.initialDataRound1);
+        }
+        delete options.initialDataRound1;
+        delete options.xAxis[0].data;
+        angular.forEach(options.series, function(_, i) {
+          delete options.series[i].data;
         });
-      }
+      }]
     };
-  }])
+  })
   .factory('$echarts', function() {
     var self = {
             tooltip: function(args) {
@@ -227,8 +239,8 @@ angular.module('dashing.charts.echarts', [])
         var array = [];
         angular.forEach(ensureArray(data), function(datum) {
           var dataGrow = visibleDataPoints-- > 0;
-          angular.forEach(ensureArray(datum.y), function(value, seriesIndex) {
-            var params = [seriesIndex, value, false, dataGrow];
+          angular.forEach(ensureArray(datum.y), function(yValue, seriesIndex) {
+            var params = [seriesIndex, yValue, false, dataGrow];
             if (seriesIndex === 0) {
               params.push(datum.x);
             }
@@ -237,20 +249,18 @@ angular.module('dashing.charts.echarts', [])
         });
         return array;
       },
-            splitDataArray: function(data, visibleDataPoints) {
-        if ([0, visibleDataPoints].indexOf(data.length) !== -1) {
-          return {head: data, tail: []};
+            splitInitialData: function(data, visibleDataPoints) {
+        if (!data || !Array.isArray(data)) {
+          console.warn('Chart need at least a data point to initialize the axises.');
+          data = [];
         }
-        var result = {head: angular.copy(data), tail: []};
-        if (result.head.length > visibleDataPoints) {
-          result.tail = result.head.splice(visibleDataPoints);
-        } else {
-          var reference = result.head[0];
-          for (var i = 0; i < visibleDataPoints - 1; i++) {
-            result.head.unshift(reference);
-          }
+        if (data.length <= visibleDataPoints) {
+          return {round0: data, round1: []};
         }
-        return result;
+        return {
+          round0: data.slice(0, visibleDataPoints),
+          round1: data.slice(visibleDataPoints)
+        };
       },
             colorPalette: function(size) {
         function _suggestColor(size) {
@@ -306,18 +316,25 @@ angular.module('dashing.charts.line', [
 ])
   .directive('lineChart', function() {
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions" data="data"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
+      },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
           yAxisValuesNum: 3
         }, $scope.options);
-        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
+        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {
           lineStyle: {
@@ -351,7 +368,7 @@ angular.module('dashing.charts.line', [
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.x;
             })
           }],
@@ -361,11 +378,12 @@ angular.module('dashing.charts.line', [
             axisLine: {show: false},
             scale: use.scale
           }],
-          xAxisDataNum: use.maxDataNum,
           series: [],
           color: use.seriesNames.map(function(_, i) {
             return colorPalette[i % colorPalette.length].line;
-          })
+          }),
+          xAxisDataNum: use.maxDataNum,
+          initialDataRound1: data.round1
         };
         angular.forEach(use.seriesNames, function(name, i) {
           options.series.push(
@@ -374,7 +392,7 @@ angular.module('dashing.charts.line', [
               colors: colorPalette[i % colorPalette.length],
               stack: use.stacked,
               showAllSymbol: true,
-              data: data.head.map(function(item) {
+              data: data.round0.map(function(item) {
                 return item.y[i];
               })
             })
@@ -410,9 +428,6 @@ angular.module('dashing.charts.line', [
           options.grid.y += 12;
         }
         $scope.echartOptions = options;
-        if (data.tail.length) {
-          $scope.data = data.tail;
-        }
       }]
     };
   })
@@ -464,16 +479,23 @@ angular.module('dashing.charts.sparkline', [
 ])
   .directive('sparkline', function() {
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
       },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
+      },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
         var colors = $echarts.colorPalette(1)[0];
-        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
+        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         $scope.echartOptions = {
           height: use.height,
           width: use.width,
@@ -497,7 +519,7 @@ angular.module('dashing.charts.sparkline', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.x;
             })
           }],
@@ -505,18 +527,16 @@ angular.module('dashing.charts.sparkline', [
             show: false,
             scale: use.scale
           }],
-          xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors,
             stack: true ,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.y;
             })
-          })]
+          })],
+          xAxisDataNum: use.maxDataNum,
+          initialDataRound1: data.round1
         };
-        if (data.tail.length) {
-          $scope.data = data.tail;
-        }
       }]
     };
   })
@@ -892,7 +912,7 @@ angular.module('dashing.tables.sortable-table.builder', [])
       },
             $check: function(cols, model) {
         angular.forEach(cols, function(col) {
-          var keys = angular.isArray(col.key) ? col.key : [col.key];
+          var keys = Array.isArray(col.key) ? col.key : [col.key];
           angular.forEach(keys, function(key) {
             if (!model.hasOwnProperty(key)) {
               console.warn('Model does not have a property matches column key `' + col + '`');
@@ -933,14 +953,14 @@ angular.module('dashing.tables.sortable-table', [
             var array = [];
             addStyleClass(array, column.styleClass, column.styleClass !== undefined);
             addStyleClass(array, 'text-right', 'Number' === column.renderer);
-            addStyleClass(array, 'text-nowrap', angular.isArray(column.key) && !column.vertical);
+            addStyleClass(array, 'text-nowrap', Array.isArray(column.key) && !column.vertical);
             return array.join(' ');
           });
           scope.multipleRendererColumnsRenderers = columns.map(function(column) {
-            if (!angular.isArray(column.key)) {
+            if (!Array.isArray(column.key)) {
               return null;
             }
-            if (angular.isArray(column.renderer)) {
+            if (Array.isArray(column.renderer)) {
               if (column.renderer.length !== column.key.length) {
                 console.error('Every column key should have a renderer, or share one renderer.');
               }
@@ -951,7 +971,7 @@ angular.module('dashing.tables.sortable-table', [
             });
           });
         });
-        scope.isArray = angular.isArray;
+        scope.isArray = Array.isArray;
       }
     };
   })

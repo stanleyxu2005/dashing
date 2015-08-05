@@ -18,6 +18,7 @@ angular.module('dashing.charts.sparkline', [
  *   maxDataNum: number // the maximal number of data points in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
  *   seriesNames: [string] // name of data series in an array
+ *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
  *  every data object is {x: time|string, y: number}
@@ -25,16 +26,26 @@ angular.module('dashing.charts.sparkline', [
   .directive('sparkline', function() {
     'use strict';
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
       },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+
+        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
+      },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
         var colors = $echarts.colorPalette(1)[0];
-        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
+        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
+
         $scope.echartOptions = {
           height: use.height,
           width: use.width,
@@ -60,7 +71,7 @@ angular.module('dashing.charts.sparkline', [
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.x;
             })
           }],
@@ -68,18 +79,17 @@ angular.module('dashing.charts.sparkline', [
             show: false,
             scale: use.scale
           }],
-          xAxisDataNum: use.maxDataNum,
           series: [$echarts.makeDataSeries({
             colors: colors,
             stack: true /* stack=true means fill area */,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.y;
             })
-          })]
+          })],
+          // own properties
+          xAxisDataNum: use.maxDataNum,
+          initialDataRound1: data.round1
         };
-        if (data.tail.length) {
-          $scope.data = data.tail;
-        }
       }]
     };
   })

@@ -8,14 +8,23 @@ angular.module('dashing.charts.bar', [
 /**
  * Bar chart control.
  */
-  .directive('barChart', [function() {
+  .directive('barChart', function() {
     'use strict';
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
+      },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+
+        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
@@ -38,17 +47,18 @@ angular.module('dashing.charts.bar', [
             })
           }],
           yAxis: [{show: false}],
-          xAxisDataNum: use.maxDataNum,
           dataZoom: {show: true, handleColor: 'rgb(188,188,188)', fillerColor: 'rgba(188,188,188,.15)'},
           series: [$echarts.makeDataSeries({
             colors: colors,
-            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2, smooth:false,
+            type: 'bar', barWidth: 7, barMaxWidth: 7, barGap: 2, barCategoryGap: 2, smooth: false,
             data: data.map(function(item) {
               return item.y;
             })
-          })]
+          })],
+          // own properties
+          xAxisDataNum: use.maxDataNum
         };
       }]
     };
-  }])
+  })
 ;

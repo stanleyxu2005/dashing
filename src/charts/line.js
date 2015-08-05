@@ -20,6 +20,7 @@ angular.module('dashing.charts.line', [
  *   showDataOnLegend: boolean // show current data on legend (default: false)
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   stacked: boolean // should stack all data series (default: true)
+ *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
  *  every data object is {x: time|string, y: [number]}
@@ -27,11 +28,20 @@ angular.module('dashing.charts.line', [
   .directive('lineChart', function() {
     'use strict';
     return {
-      template: '<echart options="echartOptions" data="data"></echart>',
       restrict: 'E',
+      template: '<echart options="::echartOptions" data="data"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'
+      },
+      link: function(scope, elem) {
+        var echartElem = elem.find('div')[0];
+        var echartScope = angular.element(echartElem).isolateScope();
+
+        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
+        scope.$watch('data', function(data) {
+          echartScope.addDataPoints(data);
+        });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
@@ -39,7 +49,7 @@ angular.module('dashing.charts.line', [
           yAxisValuesNum: 3
         }, $scope.options);
 
-        var data = $echarts.splitDataArray($scope.data, use.maxDataNum);
+        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         var colorPalette = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {
           lineStyle: {
@@ -74,7 +84,7 @@ angular.module('dashing.charts.line', [
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false,
-            data: data.head.map(function(item) {
+            data: data.round0.map(function(item) {
               return item.x;
             })
           }],
@@ -84,12 +94,14 @@ angular.module('dashing.charts.line', [
             axisLine: {show: false},
             scale: use.scale
           }],
-          xAxisDataNum: use.maxDataNum,
           series: [],
           // override the default color colorPalette, otherwise the colors look messy.
           color: use.seriesNames.map(function(_, i) {
             return colorPalette[i % colorPalette.length].line;
-          })
+          }),
+          // own properties
+          xAxisDataNum: use.maxDataNum,
+          initialDataRound1: data.round1
         };
 
         angular.forEach(use.seriesNames, function(name, i) {
@@ -99,7 +111,7 @@ angular.module('dashing.charts.line', [
               colors: colorPalette[i % colorPalette.length],
               stack: use.stacked,
               showAllSymbol: true,
-              data: data.head.map(function(item) {
+              data: data.round0.map(function(item) {
                 return item.y[i];
               })
             })
@@ -143,9 +155,6 @@ angular.module('dashing.charts.line', [
         }
 
         $scope.echartOptions = options;
-        if (data.tail.length) {
-          $scope.data = data.tail;
-        }
       }]
     };
   })

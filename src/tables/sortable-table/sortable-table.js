@@ -64,15 +64,15 @@ angular.module('dashing.tables.sortable-table', [
             var array = [];
             addStyleClass(array, column.styleClass, column.styleClass !== undefined);
             addStyleClass(array, 'text-right', 'Number' === column.renderer);
-            addStyleClass(array, 'text-nowrap', angular.isArray(column.key) && !column.vertical);
+            addStyleClass(array, 'text-nowrap', Array.isArray(column.key) && !column.vertical);
             return array.join(' ');
           });
           // 2
           scope.multipleRendererColumnsRenderers = columns.map(function(column) {
-            if (!angular.isArray(column.key)) {
+            if (!Array.isArray(column.key)) {
               return null; // Template will not call the method at all
             }
-            if (angular.isArray(column.renderer)) {
+            if (Array.isArray(column.renderer)) {
               if (column.renderer.length !== column.key.length) {
                 console.error('Every column key should have a renderer, or share one renderer.');
               }
@@ -85,7 +85,7 @@ angular.module('dashing.tables.sortable-table', [
         });
 
         // Expose isArray into template.
-        scope.isArray = angular.isArray;
+        scope.isArray = Array.isArray;
       }
     };
   })

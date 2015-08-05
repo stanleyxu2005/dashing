@@ -5,56 +5,68 @@
 angular.module('dashing.charts.echarts', [])
 /**
  * Make DIV becoming an echart control.
+ *
+ * Recommend use `<echart options="::YourOptions"></echart>`, because the options will not accept new changes
+ * anyway after the directive is stabilized.
  */
-  .directive('echart', ['$echarts', function($echarts) {
+  .directive('echart', function() {
     'use strict';
     return {
-      template: '<div></div>',
-      replace: true,
       restrict: 'E',
+      template: '<div></div>',
+      replace: true /* tag will be replaced as div, otherwise echart cannot find a container to stay. */,
       scope: {
-        options: '=',
-        data: '='
+        options: '='
       },
-      link: function(scope, elems) {
-        var options = scope.options;
-        var elem0 = elems[0];
+      controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
+        var options = $scope.options;
+        var elem0 = $element[0];
         elem0.style.width = options.width;
         elem0.style.height = options.height;
         var chart = echarts.init(elem0);
-        chart.setTheme($echarts.themeOverrides());
 
         angular.element(window).on('resize', chart.resize);
-        scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function() {
           angular.element(window).off('resize', chart.resize);
           chart.dispose();
         });
 
+        chart.setTheme($echarts.themeOverrides());
         chart.setOption(options, /*overwrite=*/true);
 
-        scope.$watch('data', function(data) {
-          if (data) {
-            try {
-              var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
-              var visibleDataPoints = Math.min(
-                80 /* maximal visible data points per series */,
-                Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
-              var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
-              if (dataArray.length > 0) {
-                if (data.yAxisMax) {
-                  chart.setOption({
-                    yAxis: [{max: data.yAxisMax}]
-                  }, /*overwrite=*/false);
-                }
-                chart.addData(dataArray);
+        /** Method to add data points to chart */
+        $scope.addDataPoints = function(data, newYAxisMaxValue) {
+          try {
+            var actualVisibleDataPoints = chart.getOption().xAxis[0].data.length;
+            var visibleDataPoints = Math.min(
+              80 /* maximal visible data points per series */,
+              Math.max(0, options.xAxisDataNum - actualVisibleDataPoints));
+            var dataArray = $echarts.makeDataArray(visibleDataPoints, data);
+            if (dataArray.length > 0) {
+              if (newYAxisMaxValue !== undefined) {
+                chart.setOption({
+                  yAxis: [{max: newYAxisMaxValue}]
+                }, /*overwrite=*/false);
               }
-            } catch (ex) {
+              chart.addData(dataArray);
             }
+          } catch (ex) {
           }
+        };
+
+        if (options.initialDataRound1.length) {
+          $scope.addDataPoints(options.initialDataRound1);
+        }
+
+        // Data points in `options` object are no longer used. We destroy them.
+        delete options.initialDataRound1;
+        delete options.xAxis[0].data;
+        angular.forEach(options.series, function(_, i) {
+          delete options.series[i].data;
         });
-      }
+      }]
     };
-  }])
+  })
 /**
  * Customize chart's look and feel.
  */
@@ -176,8 +188,8 @@ angular.module('dashing.charts.echarts', [])
         var array = [];
         angular.forEach(ensureArray(data), function(datum) {
           var dataGrow = visibleDataPoints-- > 0;
-          angular.forEach(ensureArray(datum.y), function(value, seriesIndex) {
-            var params = [seriesIndex, value, /*isHead=*/false, dataGrow];
+          angular.forEach(ensureArray(datum.y), function(yValue, seriesIndex) {
+            var params = [seriesIndex, yValue, /*isHead=*/false, dataGrow];
             if (seriesIndex === 0) {
               params.push(datum.x);
             }
@@ -188,23 +200,21 @@ angular.module('dashing.charts.echarts', [])
       },
       /**
        * As we define the maximal visible data points, so we should split the data array
-       * into two. The head will be the initial data points. The rest of data points will
-       * be append afterwards.
+       * into two. The part `round0` are old data points, that will be shown when the chart
+       * is created. The part `round1` will be added afterwards by `addDataPoints()`.
        */
-      splitDataArray: function(data, visibleDataPoints) {
-        if ([0, visibleDataPoints].indexOf(data.length) !== -1) {
-          return {head: data, tail: []};
+      splitInitialData: function(data, visibleDataPoints) {
+        if (!data || !Array.isArray(data)) {
+          console.warn('Chart need at least a data point to initialize the axises.');
+          data = [];
         }
-        var result = {head: angular.copy(data), tail: []};
-        if (result.head.length > visibleDataPoints) {
-          result.tail = result.head.splice(visibleDataPoints);
-        } else {
-          var reference = result.head[0];
-          for (var i = 0; i < visibleDataPoints - 1; i++) {
-            result.head.unshift(reference);
-          }
+        if (data.length <= visibleDataPoints) {
+          return {round0: data, round1: []};
         }
-        return result;
+        return {
+          round0: data.slice(0, visibleDataPoints),
+          round1: data.slice(visibleDataPoints)
+        };
       },
       /**
        * Return an array of color objects regarding the num of data series.

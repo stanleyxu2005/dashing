@@ -67,10 +67,10 @@ th[st-sort].st-sort-descent:not(.text-right):after,
 th[st-sort].st-sort-descent.text-right:before {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAICAIAAACkr0LiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABgSURBVBhXY/z//z8DDsAExF9+QNgIABEByaXO+brj0h8QDwyAbKAIiAU08/aLvz7dn7df/A1kA0kgGygCsguIgQAi3bXlB1wCCKByQHDx4V/n1s9AEsr//5+QO7EDBgYAc+haKbT8GukAAAAASUVORK5CYII=);
 }
-th > span {
+th .unit {
   color: #888;
   display: block;
-  font-size: .9em;
+  font-size: 1em;
   font-weight: 400;
 }
 .nav-tabs {

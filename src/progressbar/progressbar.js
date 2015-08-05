@@ -8,7 +8,7 @@ angular.module('dashing.progressbar', [])
  * determined by the progress value.
  *
  * @example
- *  <progressbar current="50" max="100"></progressbar>
+ *  <progressbar current="50" max="100" color-mapper-fn="customColorMapperFn"></progressbar>
  */
   .directive('progressbar', function() {
     'use strict';
@@ -18,7 +18,8 @@ angular.module('dashing.progressbar', [])
       templateUrl: 'progressbar/progressbar.html',
       scope: {
         current: '@',
-        max: '@'
+        max: '@',
+        colorMapperFn: '='
       },
       link: function(scope, elem, attrs) {
         attrs.$observe('current', function(current) {
@@ -29,11 +30,14 @@ angular.module('dashing.progressbar', [])
         });
 
         function updateUsageAndClass(current, max) {
-          scope.usage = max > 0 ?
-            Math.round(current * 100 / max) : -1;
-          // todo: provide a range array for colors
-          scope.usageClass = 'progress-bar-' +
-            (scope.usage < 50 ? 'info' : (scope.usage < 75 ? 'warning' : 'danger'));
+          scope.usage = max > 0 ? Math.round(current * 100 / max) : -1;
+          scope.usageClass = (scope.colorMapperFn ?
+            scope.colorMapperFn : defaultColorMapperFn)(scope.usage);
+        }
+
+        function defaultColorMapperFn(usage) {
+          return 'progress-bar-' +
+            (usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger'));
         }
       }
     };

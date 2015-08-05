@@ -86,10 +86,6 @@ angular.module('dashing.tables.sortable-table', [
 
         // Expose isArray into template.
         scope.isArray = angular.isArray;
-        // Return element at particular index or fallback to the object
-        scope.get = function(obj, index) {
-          return angular.isArray(obj) ? obj[index] : obj;
-        };
       }
     };
   })

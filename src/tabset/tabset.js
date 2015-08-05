@@ -4,19 +4,20 @@
  */
 angular.module('dashing.tabset', [])
 /**
- * Similar to Google's tab control.
+ * A lazy loading tab control in Google UI style.
  *
  * @example
- *  <tabset switch-to="switchTab">
+ *  <tabset id="my_tabset">
  *    <tab ng-repeat="tab in tabs track by $index"
  *      heading="{{tab.heading}}"
- *      template="{{tab.templateUrl}}
+ *      template="{{tab.templateUrl}}"
  *      controller="{{tab.controller}}"></tab>
  *  </tabset>
  *
  *  In script:
- *    var directiveScope = angular.element(tabsetElem).scope();
- *    directiveScope.selectTab(2);
+ *    var elem = document.getElementById('my_tabset');
+ *    var tabsetScope = angular.element(elem).scope();
+ *    tabsetScope.selectTab(2);
  */
   .directive('tabset', [function() {
     'use strict';

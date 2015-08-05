@@ -9,7 +9,13 @@ angular.module('dashing.contextmenu', [
  * A context menu helper that can popup an element (e.g. dropdown menu) at any position of any surface.
  *
  * @example
- *  <div bs-dropdown="..."></div>
+ *  <div class="cm-container" id="my_contextmenu"
+ *    bs-dropdown data-animation="am-fade"
+ *    html="true" template-url="path/to/contextmenu.html"></div>
+ *
+ *  In script:
+ *    var elem = document.getElementById('my_contextmenu');
+ *    $contextmenu.popup(elem, {x: 100, y: 100});
  */
   .factory('$contextmenu', function() {
     'use strict';

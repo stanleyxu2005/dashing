@@ -1,20 +1,22 @@
 <table class="table table-striped table-hover">
-  <caption ng-if="caption" ng-bind="caption"></caption>
+  <caption ng-if="caption"
+           ng-bind="caption"></caption>
   <tbody>
   <tr ng-repeat="prop in props track by $index">
     <td ng-attr-ng-class="propNameClass">
       <span ng-bind="prop.name"></span>
-      <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark>
+      <remark ng-if="prop.help"
+              type="question" tooltip="{{prop.help}}"></remark>
     </td>
     <td ng-attr-ng-class="propValueClass">
       <ng-switch on="prop.hasOwnProperty('values')">
         <property
           ng-switch-when="true"
           ng-repeat="value in prop.values track by $index"
-          value-bind="value" renderer="{{prop.renderer}}"></property>
+          value-bind="value" renderer="{{::prop.renderer}}"></property>
         <property
           ng-switch-when="false"
-          value-bind="prop.value" renderer="{{prop.renderer}}"></property>
+          value-bind="prop.value" renderer="{{::prop.renderer}}"></property>
       </ng-switch>
     </td>
   </tr>

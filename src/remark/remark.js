@@ -24,25 +24,18 @@ angular.module('dashing.remark', [
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
-        if (!attrs.type) {
-          attrs.type = 'question';
+        switch (attrs.type) {
+          case 'info':
+            scope.fontClass = 'glyphicon glyphicon-info-sign';
+            break;
+          case 'warning':
+            scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
+            break;
+          //case 'question':
+          default:
+            scope.fontClass = 'glyphicon glyphicon-question-sign';
+            break;
         }
-
-        /** Type will affect the remark shape */
-        attrs.$observe('type', function(type) {
-          switch (type) {
-            case 'info':
-              scope.fontClass = 'glyphicon glyphicon-info-sign';
-              break;
-            case 'warning':
-              scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
-              break;
-            //case 'question':
-            default:
-              scope.fontClass = 'glyphicon glyphicon-question-sign';
-              break;
-          }
-        });
       }
     };
   })

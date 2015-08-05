@@ -23,43 +23,45 @@ angular.module('dashing.property', [
         value: '=valueBind',
         renderer: '@'
       },
-      link: function(scope) {
-        scope.$watch('value', function(value) {
+      controller: ['$scope', function($scope) {
+        $scope.$watch('value', function(value) {
           if (value) {
-            switch (scope.renderer) {
+            // Note that do NOTE modify `$scope.value`, otherwise it will trigger watch
+            // notification again.
+            switch ($scope.renderer) {
               case 'ProgressBar':
-                scope.current = value.current;
-                scope.max = value.max;
+                $scope.current = value.current;
+                $scope.max = value.max;
                 break;
 
               case 'Link':
-                scope.href = value.href;
-                scope.text = value.text || value.href;
+                $scope.href = value.href;
+                $scope.text = value.text || value.href;
                 break;
 
               case 'Tag':
-                scope.href = value.href;
-                scope.text = value.text;
-                scope.condition = value.condition;
-                scope.tooltip = value.tooltip;
+                $scope.href = value.href;
+                $scope.text = value.text;
+                $scope.condition = value.condition;
+                $scope.tooltip = value.tooltip;
                 break;
 
               case 'Button':
-                scope.text = value.text;
-                scope.class = value.class;
-                scope.click = value.click;
-                scope.disabled = value.disabled;
-                scope.hide = value.hide;
+                $scope.text = value.text;
+                $scope.class = value.class;
+                $scope.click = value.click;
+                $scope.disabled = value.disabled;
+                $scope.hide = value.hide;
                 break;
 
               case 'Indicator':
-                scope.condition = value.condition;
-                scope.tooltip = value.tooltip;
+                $scope.condition = value.condition;
+                $scope.tooltip = value.tooltip;
                 break;
             }
           }
         });
-      }
+      }]
     };
   })
 ;

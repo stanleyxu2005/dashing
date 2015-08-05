@@ -38,9 +38,9 @@ $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-sw
 $templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
 $templateCache.put('state/indicator.html','<small ng-style="{color:colorStyle, cursor:cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></small>');
 $templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{cursor:cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
-$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-attr-ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-attr-ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
+$templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-attr-ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-attr-ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{::prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{::prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
-$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="column in columns track by $index" class="{{columnStyleClass[$index]}}" ng-attr-st-sort="{{column.sortKey}}" ng-attr-st-sort-default="{{column.defaultSort}}">{{column.name}} <remark ng-if="column.help" type="question" tooltip="{{column.help}}"></remark> <span ng-if="column.unit" ng-bind="column.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="column in columns track by $index" class="{{columnStyleClass[$index]}}"> <ng-switch on="isArray(column.key)"> <property ng-switch-when="true" ng-repeat="columnKeyChild in column.key track by $index" value-bind="record[columnKeyChild]" renderer="{{multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property> <property ng-switch-when="false" value-bind="record[column.key]" renderer="{{column.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
+$templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="column in columns track by $index" class="{{::columnStyleClass[$index]}}" ng-attr-st-sort="{{::column.sortKey}}" ng-attr-st-sort-default="{{::column.defaultSort}}"> <span ng-bind="::column.name"></span> <remark ng-if="column.help" type="question" tooltip="{{::column.help}}"></remark> <span ng-if="column.unit" class="unit" ng-bind="column.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="text" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="column in columns track by $index" class="{{::columnStyleClass[$index]}}"> <ng-switch on="isArray(column.key)"> <property ng-switch-when="true" ng-repeat="columnKeyChild in column.key track by $index" value-bind="record[columnKeyChild]" renderer="{{::multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property> <property ng-switch-when="false" value-bind="record[column.key]" renderer="{{::column.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
 $templateCache.put('tabset/tabset.html','<ul class="nav nav-tabs nav-tabs-underlined"> <li ng-repeat="tab in tabs track by $index" ng-class="{active:tab.selected}"> <a href="" ng-click="selectTab($index)" ng-bind="tab.heading"></a> </li> </ul> <div class="tab-content" ng-transclude></div>');}]);
 angular.module('dashing.charts.bar', [
   'dashing.charts.echarts'
@@ -603,7 +603,8 @@ angular.module('dashing.progressbar', [])
       templateUrl: 'progressbar/progressbar.html',
       scope: {
         current: '@',
-        max: '@'
+        max: '@',
+        colorMapperFn: '='
       },
       link: function(scope, elem, attrs) {
         attrs.$observe('current', function(current) {
@@ -613,10 +614,13 @@ angular.module('dashing.progressbar', [])
           updateUsageAndClass(Number(attrs.current), Number(max));
         });
         function updateUsageAndClass(current, max) {
-          scope.usage = max > 0 ?
-            Math.round(current * 100 / max) : -1;
-          scope.usageClass = 'progress-bar-' +
-            (scope.usage < 50 ? 'info' : (scope.usage < 75 ? 'warning' : 'danger'));
+          scope.usage = max > 0 ? Math.round(current * 100 / max) : -1;
+          scope.usageClass = (scope.colorMapperFn ?
+            scope.colorMapperFn : defaultColorMapperFn)(scope.usage);
+        }
+        function defaultColorMapperFn(usage) {
+          return 'progress-bar-' +
+            (usage < 50 ? 'info' : (usage < 75 ? 'warning' : 'danger'));
         }
       }
     };
@@ -634,39 +638,39 @@ angular.module('dashing.property', [
         value: '=valueBind',
         renderer: '@'
       },
-      link: function(scope) {
-        scope.$watch('value', function(value) {
+      controller: ['$scope', function($scope) {
+        $scope.$watch('value', function(value) {
           if (value) {
-            switch (scope.renderer) {
+            switch ($scope.renderer) {
               case 'ProgressBar':
-                scope.current = value.current;
-                scope.max = value.max;
+                $scope.current = value.current;
+                $scope.max = value.max;
                 break;
               case 'Link':
-                scope.href = value.href;
-                scope.text = value.text || value.href;
+                $scope.href = value.href;
+                $scope.text = value.text || value.href;
                 break;
               case 'Tag':
-                scope.href = value.href;
-                scope.text = value.text;
-                scope.condition = value.condition;
-                scope.tooltip = value.tooltip;
+                $scope.href = value.href;
+                $scope.text = value.text;
+                $scope.condition = value.condition;
+                $scope.tooltip = value.tooltip;
                 break;
               case 'Button':
-                scope.text = value.text;
-                scope.class = value.class;
-                scope.click = value.click;
-                scope.disabled = value.disabled;
-                scope.hide = value.hide;
+                $scope.text = value.text;
+                $scope.class = value.class;
+                $scope.click = value.click;
+                $scope.disabled = value.disabled;
+                $scope.hide = value.hide;
                 break;
               case 'Indicator':
-                scope.condition = value.condition;
-                scope.tooltip = value.tooltip;
+                $scope.condition = value.condition;
+                $scope.tooltip = value.tooltip;
                 break;
             }
           }
         });
-      }
+      }]
     };
   })
 ;
@@ -681,22 +685,17 @@ angular.module('dashing.remark', [
         tooltip: '@'
       },
       link: function(scope, elem, attrs) {
-        if (!attrs.type) {
-          attrs.type = 'question';
+        switch (attrs.type) {
+          case 'info':
+            scope.fontClass = 'glyphicon glyphicon-info-sign';
+            break;
+          case 'warning':
+            scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
+            break;
+          default:
+            scope.fontClass = 'glyphicon glyphicon-question-sign';
+            break;
         }
-                attrs.$observe('type', function(type) {
-          switch (type) {
-            case 'info':
-              scope.fontClass = 'glyphicon glyphicon-info-sign';
-              break;
-            case 'warning':
-              scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
-              break;
-            default:
-              scope.fontClass = 'glyphicon glyphicon-question-sign';
-              break;
-          }
-        });
       }
     };
   })
@@ -953,9 +952,6 @@ angular.module('dashing.tables.sortable-table', [
           });
         });
         scope.isArray = angular.isArray;
-        scope.get = function(obj, index) {
-          return angular.isArray(obj) ? obj[index] : obj;
-        };
       }
     };
   })

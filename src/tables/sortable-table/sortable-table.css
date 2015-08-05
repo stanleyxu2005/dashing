@@ -35,9 +35,9 @@ th[st-sort].st-sort-descent.text-right:before {
 }
 
 /** Description text (e.g. unit) should be a bit smaller */
-th > span {
+th .unit {
   color: #888;
   display: block;
-  font-size: .9em;
+  font-size: 1em;
   font-weight: 400;
 }

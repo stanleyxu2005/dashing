@@ -53,6 +53,10 @@ angular.module('dashing.tables.sortable-table', [
         // Columns are not changed after table is created, we cache frequently accessed values rather than
         // evaluating them in every digest cycle.
         scope.$watch('columns', function(columns) {
+          if (!Array.isArray(columns)) {
+            console.warn('Failed to create table, until columns are defined.');
+            return;
+          }
           // 1
           scope.columnStyleClass = columns.map(function(column) {
             function addStyleClass(dest, clazz, condition) {

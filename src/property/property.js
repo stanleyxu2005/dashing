@@ -47,9 +47,12 @@ angular.module('dashing.property', [
                 break;
 
               case 'Button':
+                $scope.click = value.click ||
+                  value.href ? function() {
+                    location.href = value.href;
+                  } : undefined;
                 $scope.text = value.text;
                 $scope.class = value.class;
-                $scope.click = value.click;
                 $scope.disabled = value.disabled;
                 $scope.hide = value.hide;
                 break;

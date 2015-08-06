@@ -12,12 +12,15 @@
   <!-- tag (clickable label in a colored box) -->
   <tag
     ng-switch-when="Tag"
+    text="{{text}}"
     ng-attr-href="{{href}}"
-    text="{{text}}" condition="{{condition}}" tooltip="{{tooltip}}"></tag>
+    ng-attr-condition="{{condition}}"
+    ng-attr-tooltip="{{tooltip}}"></tag>
   <!-- indicator -->
   <indicator
     ng-switch-when="Indicator"
-    condition="{{condition}}" tooltip="{{tooltip}}"></indicator>
+    ng-attr-condition="{{condition}}"
+    ng-attr-tooltip="{{tooltip}}"></indicator>
   <!-- progress bar -->
   <progressbar
     ng-switch-when="ProgressBar"

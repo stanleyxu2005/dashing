@@ -27,6 +27,7 @@ angular.module('dashing.charts.line', [
  */
   .directive('lineChart', function() {
     'use strict';
+
     return {
       restrict: 'E',
       template: '<echart options="::echartOptions" data="data"></echart>',

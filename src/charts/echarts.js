@@ -11,6 +11,7 @@ angular.module('dashing.charts.echarts', [])
  */
   .directive('echart', function() {
     'use strict';
+
     return {
       restrict: 'E',
       template: '<div></div>',

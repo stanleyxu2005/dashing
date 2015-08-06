@@ -10,6 +10,7 @@ angular.module('dashing.charts.bar', [
  */
   .directive('barChart', function() {
     'use strict';
+
     return {
       restrict: 'E',
       template: '<echart options="::echartOptions"></echart>',

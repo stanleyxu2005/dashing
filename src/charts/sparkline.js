@@ -25,6 +25,7 @@ angular.module('dashing.charts.sparkline', [
  */
   .directive('sparkline', function() {
     'use strict';
+
     return {
       restrict: 'E',
       template: '<echart options="::echartOptions"></echart>',

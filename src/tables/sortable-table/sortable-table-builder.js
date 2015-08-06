@@ -68,6 +68,9 @@ angular.module('dashing.tables.sortable-table.builder', [])
       link: function(title) {
         return new CB('Link', title);
       },
+      multiple: function(title, renderers) {
+        return new CB(renderers, title);
+      },
       number: function(title) {
         return new CB('Number', title);
       },

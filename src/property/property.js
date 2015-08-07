@@ -26,41 +26,28 @@ angular.module('dashing.property', [
       controller: ['$scope', function($scope) {
         $scope.$watch('value', function(value) {
           if (value) {
-            // Note that do NOTE modify `$scope.value`, otherwise it will trigger watch
-            // notification again.
             switch ($scope.renderer) {
-              case 'ProgressBar':
-                $scope.current = value.current;
-                $scope.max = value.max;
-                break;
-
               case 'Link':
-                $scope.href = value.href;
-                $scope.text = value.text || value.href;
-                break;
-
-              case 'Tag':
-                $scope.href = value.href;
-                $scope.text = value.text;
-                $scope.condition = value.condition;
-                $scope.tooltip = value.tooltip;
+                if (!value.href) {
+                  value.href = value.text;
+                }
                 break;
 
               case 'Button':
-                $scope.click = value.click ||
-                  value.href ? function() {
+                if (value.href && !value.click) {
+                  value.click = function() {
                     location.href = value.href;
-                  } : undefined;
-                $scope.text = value.text;
-                $scope.class = value.class;
-                $scope.disabled = value.disabled;
-                $scope.hide = value.hide;
+                  };
+                }
                 break;
+            }
 
-              case 'Indicator':
-                $scope.condition = value.condition;
-                $scope.tooltip = value.tooltip;
-                break;
+            if (angular.isObject(value)) {
+              if (value.hasOwnProperty('value')) {
+                // `value.value` will assign `$scope.value`, which will trigger watch notification again.
+                console.error({message: 'error', object: value});
+              }
+              angular.merge($scope, value);
             }
           }
         });

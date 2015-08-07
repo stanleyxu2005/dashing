@@ -9,7 +9,7 @@ angular.module('dashing.filters.duration', [])
   .filter('duration', function() {
     'use strict';
 
-    return function(millis) {
+    return function(millis, compact) {
       var x = parseInt(millis, 10);
       if (isNaN(x)) {
         return millis;
@@ -17,11 +17,11 @@ angular.module('dashing.filters.duration', [])
 
       var units = [
         {label: 'ms', mod: 1000},
-        {label: 'secs', mod: 60},
-        {label: 'mins', mod: 60},
-        {label: 'hours', mod: 24},
-        {label: 'days', mod: 7},
-        {label: 'weeks', mod: 52}
+        {label: compact ? 's' : 'secs', mod: 60},
+        {label: compact ? 'min' : 'mins', mod: 60},
+        {label: compact ? 'hr' : 'hours', mod: 24},
+        {label: compact ? 'd' : 'days', mod: 7},
+        {label: compact ? 'wk' : 'weeks', mod: 52}
       ];
       var duration = [];
 
@@ -40,7 +40,7 @@ angular.module('dashing.filters.duration', [])
       }
       return duration.map(function(unit) {
         return unit.value + ' ' + unit.label;
-      }).join(' and ');
+      }).join(compact ? ' ' : ' and ');
     };
   })
 ;

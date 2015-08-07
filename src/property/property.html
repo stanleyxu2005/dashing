@@ -2,13 +2,17 @@
   <!-- link -->
   <a
     ng-switch-when="Link"
-    ng-href="{{href}}" ng-bind="text"></a>
+    ng-href="{{href}}"
+    ng-bind="text"></a>
   <!-- button -->
   <button
     ng-switch-when="Button"
     ng-if="!hide"
-    type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()"
-    ng-disabled="disabled"></button>
+    type="button" class="btn btn-default {{class}}"
+    ng-bind="text"
+    ng-click="click()"
+    ng-disabled="disabled"
+    ng-attr-bs-tooltip="tooltip"></button>
   <!-- tag (clickable label in a colored box) -->
   <tag
     ng-switch-when="Tag"

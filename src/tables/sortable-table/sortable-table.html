@@ -18,7 +18,7 @@
   <tr ng-show="false">
     <th colspan="{{columns.length}}">
       <!-- Add an invisible search box that watches external search text -->
-      <input type="text" st-search/>
+      <input type="hidden" st-search/>
       <!-- Add an invisible pagination before rendering any rows, otherwise it will at least
       render all records once, even they should be shown after page 1. -->
       <div st-pagination st-items-by-page="pagination"></div>
@@ -28,15 +28,15 @@
   <tbody>
   <tr ng-repeat="record in showing track by $index">
     <td ng-repeat="column in columns track by $index"
-        class="{{::columnStyleClass[$index]}}">
+        class="{{columnStyleClass[$index]}}">
       <ng-switch on="isArray(column.key)">
         <property ng-switch-when="true"
                   ng-repeat="columnKeyChild in column.key track by $index"
                   value-bind="record[columnKeyChild]"
-                  renderer="{{::multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property>
+                  renderer="{{multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property>
         <property ng-switch-when="false"
                   value-bind="record[column.key]"
-                  renderer="{{::column.renderer}}"></property>
+                  renderer="{{column.renderer}}"></property>
       </ng-switch>
     </td>
   </tr>

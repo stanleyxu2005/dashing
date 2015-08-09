@@ -16,12 +16,12 @@ angular.module('dashing.filters.duration', [])
       }
 
       var units = [
-        {label: 'ms', mod: 1000},
-        {label: compact ? 's' : 'secs', mod: 60},
-        {label: compact ? 'min' : 'mins', mod: 60},
-        {label: compact ? 'hr' : 'hours', mod: 24},
-        {label: compact ? 'd' : 'days', mod: 7},
-        {label: compact ? 'wk' : 'weeks', mod: 52}
+        {label: ' ms', mod: 1000},
+        {label: compact ? 's' : ' secs', mod: 60},
+        {label: compact ? 'm' : ' mins', mod: 60},
+        {label: compact ? 'h' : ' hours', mod: 24},
+        {label: compact ? 'd' : ' days', mod: 7},
+        {label: compact ? 'w' : ' weeks', mod: 52}
       ];
       var duration = [];
 
@@ -39,7 +39,7 @@ angular.module('dashing.filters.duration', [])
         duration = [duration[0]];
       }
       return duration.map(function(unit) {
-        return unit.value + ' ' + unit.label;
+        return unit.value + unit.label;
       }).join(compact ? ' ' : ' and ');
     };
   })

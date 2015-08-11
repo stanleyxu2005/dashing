@@ -8,7 +8,7 @@ angular.module('dashing.forms.searchbox', [
  * A (Bootstrap style based) search box with a search icon on the right side.
  *
  * @example
- *  <searchbox ng-model="search" placeholder="Anything to search..."></searchbox>
+ *  <searchbox ng-model="search" placeholder="Search Anything"></searchbox>
  */
   .directive('searchbox', function() {
     'use strict';

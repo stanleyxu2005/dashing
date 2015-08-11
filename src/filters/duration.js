@@ -35,7 +35,7 @@ angular.module('dashing.filters.duration', [])
       }
 
       duration = duration.slice(0, 2);
-      if (duration.length > 1 && duration[1].label === 'ms') {
+      if (duration.length > 1 && duration[1].label === ' ms') {
         duration = [duration[0]];
       }
       return duration.map(function(unit) {

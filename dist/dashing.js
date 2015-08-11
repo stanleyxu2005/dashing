@@ -579,7 +579,7 @@ angular.module('dashing.filters.duration', [])
         x = (x - t) / unit.mod;
       }
       duration = duration.slice(0, 2);
-      if (duration.length > 1 && duration[1].label === 'ms') {
+      if (duration.length > 1 && duration[1].label === ' ms') {
         duration = [duration[0]];
       }
       return duration.map(function(unit) {
@@ -847,13 +847,20 @@ angular.module('dashing.tables.sortable-table.builder', [])
       this.props.key = key;
       return this;
     };
-    CB.prototype.keyCanSort = function(key, sortDefaultAscent) {
-      this.props.key = key;
-      this.props.sortKey = key;
-      if (sortDefaultAscent !== undefined) {
-        this.props.defaultSort =
-          ['reverse', false].indexOf(sortDefaultAscent) !== -1 ? 'reverse' : true;
+    CB.prototype.canSort = function(customKey) {
+      if (!this.props.key && !customKey) {
+        console.warn('Column key must be specified first');
+        return;
       }
+      this.props.sortKey = this.props.key || customKey;
+      return this;
+    };
+    CB.prototype.sortDefault = function() {
+      this.props.defaultSort = true;
+      return this;
+    };
+    CB.prototype.sortDefaultDescent = function() {
+      this.props.defaultSort = 'reverse';
       return this;
     };
     CB.prototype.styleClass = function(styleClass) {

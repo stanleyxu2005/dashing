@@ -33,11 +33,11 @@ angular.module('dashing').run(['$templateCache', function($templateCache) {$temp
 $templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
 $templateCache.put('forms/searchbox.html','<div class="form-group has-feedback"> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> <span class="glyphicon glyphicon-search form-control-feedback"></span> </div>');
 $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="subText" class="metrics-sub-text" ng-bind="subText"></small> </div>');
-$templateCache.put('progressbar/progressbar.html','<div style="width:100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width:100%" class="progress progress-tiny"> <div ng-style="{width:usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
-$templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-disabled="disabled" ng-attr-bs-tooltip="tooltip"></button>  <tag ng-switch-when="Tag" text="{{text}}" ng-attr-href="{{href}}" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></tag>  <indicator ng-switch-when="Indicator" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
+$templateCache.put('progressbar/progressbar.html','<div style="width: 100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width: 100%" class="progress progress-tiny"> <div ng-style="{\'width\': usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
+$templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-disabled="disabled" ng-attr-bs-tooltip="tooltip"></button>  <tag ng-switch-when="Tag" text="{{text}}" ng-attr-href="{{href}}" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></tag>  <indicator ng-switch-when="Indicator" ng-attr-shape="{{shape}}" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:MM:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
 $templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
-$templateCache.put('state/indicator.html','<small ng-style="{color:colorStyle, cursor:cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></small>');
-$templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{cursor:cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
+$templateCache.put('state/indicator.html','<ng-switch on="shape"> <div ng-switch-when="stripe" ng-style="{\'background-color\': colorStyle, \'cursor\': cursorStyle}" style="display: inline-block; height: 100%; width: 8px" bs-tooltip="tooltip" placement="right auto"></div> <span ng-switch-default ng-style="{\'color\': colorStyle, \'cursor\': cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></span> </ng-switch>');
+$templateCache.put('state/tag.html','<ng-switch on="!href"> <a ng-switch-when="false" ng-href="{{href}}" class="label label-lg {{labelColorClass}}" ng-bind="text" bs-tooltip="tooltip"></a> <span ng-switch-when="true" class="label label-lg {{labelColorClass}}" ng-style="{\'cursor\': cursorStyle}" ng-bind="text" bs-tooltip="tooltip"></span> </ng-switch>');
 $templateCache.put('tables/property-table/property-table.html','<table class="table table-striped table-hover"> <caption ng-if="caption" ng-bind="caption"></caption> <tbody> <tr ng-repeat="prop in props track by $index"> <td ng-attr-ng-class="propNameClass"> <span ng-bind="prop.name"></span> <remark ng-if="prop.help" type="question" tooltip="{{prop.help}}"></remark> </td> <td ng-attr-ng-class="propValueClass"> <ng-switch on="prop.hasOwnProperty(\'values\')"> <property ng-switch-when="true" ng-repeat="value in prop.values track by $index" value-bind="value" renderer="{{::prop.renderer}}"></property> <property ng-switch-when="false" value-bind="prop.value" renderer="{{::prop.renderer}}"></property> </ng-switch> </td> </tr> </tbody> </table>');
 $templateCache.put('tables/sortable-table/sortable-table-pagination.html','<div class="pull-left"> <st-summary></st-summary> </div> <div class="pull-right"> <div ng-if="pages.length >= 2" class="btn-group btn-group-xs">  <button type="button" class="btn btn-default" ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)"> &laquo;</button> <button type="button" class="btn btn-default" ng-repeat="page in pages track by $index" ng-class="{active:page==currentPage}" ng-click="selectPage(page)"> {{page}} </button> <button type="button" class="btn btn-default" ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)"> &raquo;</button>  </div> </div>');
 $templateCache.put('tables/sortable-table/sortable-table.html','<table class="table table-striped table-hover" st-table="showing" st-safe-src="records"> <caption ng-if="caption" ng-bind="caption"></caption> <thead> <tr> <th ng-repeat="column in columns track by $index" class="{{::columnStyleClass[$index]}}" ng-attr-st-sort="{{::column.sortKey}}" ng-attr-st-sort-default="{{::column.defaultSort}}"> <span ng-bind="::column.name"></span> <remark ng-if="column.help" type="question" tooltip="{{::column.help}}"></remark> <span ng-if="column.unit" class="unit" ng-bind="column.unit"></span> </th> </tr> <tr ng-show="false"> <th colspan="{{columns.length}}">  <input type="hidden" st-search>  <div st-pagination st-items-by-page="pagination"></div> </th> </tr> </thead> <tbody> <tr ng-repeat="record in showing track by $index"> <td ng-repeat="column in columns track by $index" class="{{columnStyleClass[$index]}}"> <ng-switch on="isArray(column.key)"> <property ng-switch-when="true" ng-repeat="columnKeyChild in column.key track by $index" value-bind="record[columnKeyChild]" renderer="{{multipleRendererColumnsRenderers[$parent.$index][$index]}}"></property> <property ng-switch-when="false" value-bind="record[column.key]" renderer="{{column.renderer}}"></property> </ng-switch> </td> </tr> <tr ng-if="records !== null && !showing.length"> <td colspan="{{columns.length}}" class="text-center"> <i>No data found</i> </td> </tr> </tbody> <tfoot ng-if="records.length"> <tr> <td colspan="{{columns.length}}" st-pagination st-items-by-page="pagination" st-template="tables/sortable-table/sortable-table-pagination.html"> </td> </tr> </tfoot> </table>');
@@ -179,7 +179,7 @@ angular.module('dashing.charts.echarts', [])
             '<table>' +
             '<tr>' +
             '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-            '<td style="padding-left:4px">' + valueFormatter(params[0].value) + '</td>' +
+            '<td style="padding-left: 4px">' + valueFormatter(params[0].value) + '</td>' +
             '</tr>' +
             '</table>';
         };
@@ -192,14 +192,14 @@ angular.module('dashing.charts.echarts', [])
               var color = param.series.colors.line;
               return '<tr>' +
                 '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-                '<td style="padding:0 12px 0 4px">' + param.seriesName + '</td>' +
+                '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
                 '<td>' + valueFormatter(param.value) + '</td>' +
                 '</tr>';
             }).join('') + '</table>';
         };
       },
       tooltipSeriesColorIndicatorHtml: function(color) {
-        return '<div style="width:7px;height:7px;background-color:' + color + '"></div>';
+        return '<div style="width: 7px; height: 7px; background-color: ' + color + '"></div>';
       },
             makeDataSeries: function(args) {
         args.type = args.type || 'line';
@@ -686,6 +686,16 @@ angular.module('dashing.property', [
       }]
     };
   })
+  .constant('PROPERTY_RENDERER', {
+    BUTTON: 'Button',
+    DATETIME: 'DateTime',
+    DURATION: 'Duration',
+    INDICATOR: 'Indicator',
+    LINK: 'Link',
+    NUMBER: 'Number',
+    PROGRESS_BAR: 'ProgressBar',
+    TAG: 'Tag',
+    TEXT: undefined   })
 ;
 angular.module('dashing.remark', [
   'mgcrea.ngStrap.tooltip'
@@ -722,7 +732,8 @@ angular.module('dashing.state.indicator', [
       restrict: 'E',
       templateUrl: 'state/indicator.html',
       scope: {
-        tooltip: '@'
+        tooltip: '@',
+        shape: '@'
       },
       link: function(scope, elem, attrs) {
         if (!attrs.condition) {
@@ -768,54 +779,55 @@ angular.module('dashing.state.tag', [
   }])
 ;
 angular.module('dashing.tables.property-table.builder', [])
-  .factory('$propertyTableBuilder', function() {
-    var PB = function(renderer, title) {
-      this.props = renderer ? {renderer: renderer} : {};
-      if (title) {
-        this.title(title);
-      }
-    };
-    PB.prototype.title = function(title) {
-      this.props.name = title;
-      return this;
-    };
-    PB.prototype.help = function(help) {
-      this.props.help = help;
-      return this;
-    };
-    PB.prototype.done = function() {
-      return this.props;
-    };
-    return {
-      button: function(title) {
-        return new PB('Button', title);
-      },
-      datetime: function(title) {
-        return new PB('DateTime', title);
-      },
-      duration: function(title) {
-        return new PB('Duration', title);
-      },
-      indicator: function(title) {
-        return new PB('Indicator', title);
-      },
-      link: function(title) {
-        return new PB('Link', title);
-      },
-      number: function(title) {
-        return new PB('Number', title);
-      },
-      progressbar: function(title) {
-        return new PB('ProgressBar', title);
-      },
-      tag: function(title) {
-        return new PB('Tag', title);
-      },
-      text: function(title) {
-        return new PB(undefined, title);
-      }
-    };
-  })
+  .factory('$propertyTableBuilder', ['PROPERTY_RENDERER',
+    function(PROPERTY_RENDERER) {
+      var PB = function(renderer, title) {
+        this.props = renderer ? {renderer: renderer} : {};
+        if (title) {
+          this.title(title);
+        }
+      };
+      PB.prototype.title = function(title) {
+        this.props.name = title;
+        return this;
+      };
+      PB.prototype.help = function(help) {
+        this.props.help = help;
+        return this;
+      };
+      PB.prototype.done = function() {
+        return this.props;
+      };
+      return {
+        button: function(title) {
+          return new PB(PROPERTY_RENDERER.BUTTON, title);
+        },
+        datetime: function(title) {
+          return new PB(PROPERTY_RENDERER.DATETIME, title);
+        },
+        duration: function(title) {
+          return new PB(PROPERTY_RENDERER.DURATION, title);
+        },
+        indicator: function(title) {
+          return new PB(PROPERTY_RENDERER.INDICATOR, title);
+        },
+        link: function(title) {
+          return new PB(PROPERTY_RENDERER.LINK, title);
+        },
+        number: function(title) {
+          return new PB(PROPERTY_RENDERER.NUMBER, title);
+        },
+        progressbar: function(title) {
+          return new PB(PROPERTY_RENDERER.PROGRESS_BAR, title);
+        },
+        tag: function(title) {
+          return new PB(PROPERTY_RENDERER.TAG, title);
+        },
+        text: function(title) {
+          return new PB(PROPERTY_RENDERER.TEXT, title);
+        }
+      };
+    }])
 ;
 angular.module('dashing.tables.property-table', [])
   .directive('propertyTable', function() {
@@ -831,100 +843,134 @@ angular.module('dashing.tables.property-table', [])
     };
   })
 ;
-angular.module('dashing.tables.sortable-table.builder', [])
-  .factory('$sortableTableBuilder', function() {
-    var CB = function(renderer, title) {
-      this.props = renderer ? {renderer: renderer} : {};
-      if (title) {
-        this.title(title);
-      }
-    };
-    CB.prototype.title = function(title) {
-      this.props.name = title;
-      return this;
-    };
-    CB.prototype.key = function(key) {
-      this.props.key = key;
-      return this;
-    };
-    CB.prototype.canSort = function(customKey) {
-      if (!this.props.key && !customKey) {
-        console.warn('Column key must be specified first');
-        return;
-      }
-      this.props.sortKey = this.props.key || customKey;
-      return this;
-    };
-    CB.prototype.sortDefault = function() {
-      this.props.defaultSort = true;
-      return this;
-    };
-    CB.prototype.sortDefaultDescent = function() {
-      this.props.defaultSort = 'reverse';
-      return this;
-    };
-    CB.prototype.styleClass = function(styleClass) {
-      this.props.styleClass = styleClass;
-      return this;
-    };
-    CB.prototype.sortBy = function(sortKey) {
-      this.props.sortKey = sortKey;
-      return this;
-    };
-    CB.prototype.unit = function(unit) {
-      this.props.unit = unit;
-      return this;
-    };
-    CB.prototype.help = function(help) {
-      this.props.help = help;
-      return this;
-    };
-    CB.prototype.done = function() {
-      return this.props;
-    };
-    return {
-      button: function(title) {
-        return new CB('Button', title);
-      },
-      datetime: function(title) {
-        return new CB('DateTime', title);
-      },
-      duration: function(title) {
-        return new CB('Duration', title);
-      },
-      indicator: function(title) {
-        return new CB('Indicator', title);
-      },
-      link: function(title) {
-        return new CB('Link', title);
-      },
-      multiple: function(title, renderers) {
-        return new CB(renderers, title);
-      },
-      number: function(title) {
-        return new CB('Number', title);
-      },
-      progressbar: function(title) {
-        return new CB('ProgressBar', title);
-      },
-      tag: function(title) {
-        return new CB('Tag', title);
-      },
-      text: function(title) {
-        return new CB(undefined, title);
-      },
-            $check: function(cols, model) {
-        angular.forEach(cols, function(col) {
-          var keys = Array.isArray(col.key) ? col.key : [col.key];
-          angular.forEach(keys, function(key) {
-            if (!model.hasOwnProperty(key)) {
-              console.warn('Model does not have a property matches column key `' + col + '`');
-            }
+angular.module('dashing.tables.sortable-table.builder', [
+  'dashing.property'
+])
+  .factory('$sortableTableBuilder', ['PROPERTY_RENDERER',
+    function(PROPERTY_RENDERER) {
+      var RENDERER = {
+        BUTTON: 'Button',
+        DATETIME: 'DateTime',
+        DURATION: 'Duration',
+        INDICATOR: 'Indicator',
+        LINK: 'Link',
+        NUMBER: 'Number',
+        PROGRESS_BAR: 'ProgressBar',
+        TAG: 'Tag'
+      };
+      var CB = function(renderer, title) {
+        this.props = renderer ? {renderer: renderer} : {};
+        if (title) {
+          this.title(title);
+        }
+      };
+      CB.prototype.title = function(title) {
+        this.props.name = title;
+        return this;
+      };
+      CB.prototype.key = function(key) {
+        this.props.key = key;
+        return this;
+      };
+      CB.prototype.canSort = function(overrideSortKey) {
+        if (!overrideSortKey && !this.props.key) {
+          console.warn('Specify a sort key or define column key first!');
+          return;
+        }
+        this.props.sortKey = overrideSortKey || this.props.key;
+        if (this.props.sortKey === this.props.key) {
+          switch (this.props.renderer) {
+            case PROPERTY_RENDERER.LINK:
+              this.props.sortKey += '.text';
+              break;
+            case PROPERTY_RENDERER.INDICATOR:
+            case PROPERTY_RENDERER.TAG:
+              this.props.sortKey += '.condition';
+              break;
+            case PROPERTY_RENDERER.PROGRESS_BAR:
+              this.props.sortKey += '.usage';
+              break;
+            case PROPERTY_RENDERER.BUTTON:
+              console.warn('"%s" column is not sortable.');
+              return;
+            default:
+          }
+        }
+        return this;
+      };
+      CB.prototype.sortDefault = function(descent) {
+        if (!this.props.sortKey) {
+          console.warn('Specify a sort key or define column key first!');
+          return;
+        }
+        this.props.defaultSort = descent ? 'reverse' : true;
+        return this;
+      };
+      CB.prototype.sortDefaultDescent = function() {
+        return this.sortDefault(false);
+      };
+      CB.prototype.styleClass = function(styleClass) {
+        this.props.styleClass = styleClass;
+        return this;
+      };
+      CB.prototype.sortBy = function(sortKey) {
+        this.props.sortKey = sortKey;
+        return this;
+      };
+      CB.prototype.unit = function(unit) {
+        this.props.unit = unit;
+        return this;
+      };
+      CB.prototype.help = function(help) {
+        this.props.help = help;
+        return this;
+      };
+      CB.prototype.done = function() {
+        return this.props;
+      };
+      return {
+        button: function(title) {
+          return new CB(PROPERTY_RENDERER.BUTTON, title);
+        },
+        datetime: function(title) {
+          return new CB(PROPERTY_RENDERER.DATETIME, title);
+        },
+        duration: function(title) {
+          return new CB(PROPERTY_RENDERER.DURATION, title);
+        },
+        indicator: function(title) {
+          return new CB(PROPERTY_RENDERER.INDICATOR, title);
+        },
+        link: function(title) {
+          return new CB(PROPERTY_RENDERER.LINK, title);
+        },
+        multiple: function(title, renderers) {
+          return new CB(renderers, title);
+        },
+        number: function(title) {
+          return new CB(PROPERTY_RENDERER.NUMBER, title);
+        },
+        progressbar: function(title) {
+          return new CB(PROPERTY_RENDERER.PROGRESS_BAR, title);
+        },
+        tag: function(title) {
+          return new CB(PROPERTY_RENDERER.TAG, title);
+        },
+        text: function(title) {
+          return new CB(PROPERTY_RENDERER.TEXT, title);
+        },
+                $check: function(cols, model) {
+          angular.forEach(cols, function(col) {
+            var keys = Array.isArray(col.key) ? col.key : [col.key];
+            angular.forEach(keys, function(key) {
+              if (!model.hasOwnProperty(key)) {
+                console.warn('Model does not have a property matches column key `' + col + '`');
+              }
+            });
           });
-        });
-      }
-    };
-  })
+        }
+      };
+    }])
 ;
 angular.module('dashing.tables.sortable-table', [
   'smart-table'
@@ -1095,7 +1141,7 @@ angular.module('dashing.util', [])
           case 'danger':
             return '#d9534f';
           default:
-            return '#777';
+            return '#aaa';
         }
       }
     };

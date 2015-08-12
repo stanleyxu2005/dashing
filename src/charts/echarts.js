@@ -111,7 +111,7 @@ angular.module('dashing.charts.echarts', [])
             '<table>' +
             '<tr>' +
             '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-            '<td style="padding-left:4px">' + valueFormatter(params[0].value) + '</td>' +
+            '<td style="padding-left: 4px">' + valueFormatter(params[0].value) + '</td>' +
             '</tr>' +
             '</table>';
         };
@@ -128,14 +128,14 @@ angular.module('dashing.charts.echarts', [])
               var color = param.series.colors.line;
               return '<tr>' +
                 '<td>' + self.tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-                '<td style="padding:0 12px 0 4px">' + param.seriesName + '</td>' +
+                '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
                 '<td>' + valueFormatter(param.value) + '</td>' +
                 '</tr>';
             }).join('') + '</table>';
         };
       },
       tooltipSeriesColorIndicatorHtml: function(color) {
-        return '<div style="width:7px;height:7px;background-color:' + color + '"></div>';
+        return '<div style="width: 7px; height: 7px; background-color: ' + color + '"></div>';
       },
       /**
        * Build the option object for data series.

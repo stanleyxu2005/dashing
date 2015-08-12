@@ -1,4 +1,12 @@
-<small
-  ng-style="{color:colorStyle, cursor:cursorStyle}"
-  class="glyphicon glyphicon-stop"
-  bs-tooltip="tooltip"></small>
+<ng-switch on="shape">
+  <div
+    ng-switch-when="stripe"
+    ng-style="{'background-color': colorStyle, 'cursor': cursorStyle}"
+    style="display: inline-block; height: 100%; width: 8px"
+    bs-tooltip="tooltip" placement="right auto"></div>
+  <span
+    ng-switch-default
+    ng-style="{'color': colorStyle, 'cursor': cursorStyle}"
+    class="glyphicon glyphicon-stop"
+    bs-tooltip="tooltip"></span>
+</ng-switch>

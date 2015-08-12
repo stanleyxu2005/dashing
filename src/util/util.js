@@ -31,7 +31,7 @@ angular.module('dashing.util', [])
           case 'danger':
             return '#d9534f';
           default:
-            return '#777';
+            return '#aaa';
         }
       }
     };

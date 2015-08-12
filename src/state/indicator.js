@@ -9,12 +9,18 @@ angular.module('dashing.state.indicator', [
 /**
  * A small square icon that indicates one of these states: good, concern, danger or whatever.
  *
- * @param condition good|concern|danger or fallback to default
+ * @param condition good|concern|danger
+ *          specify the background color according to condition.
+ *          fallback to gray, if condition is not specified or recognized.
  * @param tooltip string (optional)
+ * @param shape stripe string (optional)
+ *          stripe means a full filled bar (width=8px)
+ *          fallback to a small square icon, if shape is not specified or recognized.
  *
  * @example
  *  <indicator condition="good"></indicator>
  *  <indicator condition="good" tooltip="Build passed"></indicator>
+ *  <indicator condition="good" shape="stripe"></indicator>
  */
   .directive('indicator', ['$util', function($util) {
     'use strict';
@@ -22,7 +28,8 @@ angular.module('dashing.state.indicator', [
       restrict: 'E',
       templateUrl: 'state/indicator.html',
       scope: {
-        tooltip: '@'
+        tooltip: '@',
+        shape: '@'
       },
       link: function(scope, elem, attrs) {
         if (!attrs.condition) {

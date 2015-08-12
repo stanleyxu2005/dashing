@@ -54,4 +54,15 @@ angular.module('dashing.property', [
       }]
     };
   })
+  .constant('PROPERTY_RENDERER', {
+    BUTTON: 'Button',
+    DATETIME: 'DateTime',
+    DURATION: 'Duration',
+    INDICATOR: 'Indicator',
+    LINK: 'Link',
+    NUMBER: 'Number',
+    PROGRESS_BAR: 'ProgressBar',
+    TAG: 'Tag',
+    TEXT: undefined /* default renderer */
+  })
 ;

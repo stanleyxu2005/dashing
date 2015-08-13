@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.0.8
+ * @version v0.0.9
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -29,8 +29,7 @@ angular.module('dashing', [
   'dashing.util'
 ])
 ;
-angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-lr.html','<div class="row"> <metrics class="{{metricsPartClass}}" ng-class="{\'col-md-6\':!metricsPartClass}" caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}"></metrics> <sparkline class="{{chartPartClass}}" ng-class="{\'col-md-6\':!chartPartClass}" options-bind="options" datasource-bind="data"></sparkline> </div>');
-$templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
+angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
 $templateCache.put('forms/searchbox.html','<div class="form-group has-feedback"> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> <span class="glyphicon glyphicon-search form-control-feedback"></span> </div>');
 $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="subText" class="metrics-sub-text" ng-bind="subText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width: 100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width: 100%" class="progress progress-tiny"> <div ng-style="{\'width\': usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
@@ -449,28 +448,6 @@ angular.module('dashing.charts.metrics-sparkline', [
         options: '=optionsBind',
         data: '=datasourceBind'
       }
-    };
-  })
-  .directive('metricsSparklineLr', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'charts/metrics-sparkline-lr.html',
-      scope: {
-        caption: '@',
-        help: '@',
-        current: '@',
-        unit: '@',
-        subText: '@',
-        options: '=optionsBind',
-        data: '=datasourceBind',
-        metricsPartClass: '@',
-        chartPartClass: '@'
-      },
-      controller: ['$timeout', function($timeout) {
-        $timeout(function() {
-          angular.element(window).triggerHandler('resize');
-        });
-      }]
     };
   })
 ;

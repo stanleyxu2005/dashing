@@ -30,7 +30,8 @@ angular.module('dashing', [
   'dashing.util'
 ])
 ;
-angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-sparkline-td.html','<metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"></metrics> <sparkline options-bind="options" datasource-bind="data"></sparkline>');
+angular.module('dashing').run(['$templateCache', function($templateCache) {$templateCache.put('charts/metrics-ring-lr.html','<ring-chart options-bind="::options" datasource-bind="data"> </ring-chart> <metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"> </metrics>');
+$templateCache.put('charts/metrics-sparkline-td.html','<div> <div style="width:50%;display:table-cell"> <metrics caption="{{caption}}" ng-attr-help="{{help}}" value="{{current}}" unit="{{unit}}" sub-text="{{subText}}" class="metrics-thicker-bottom"> </metrics> </div> <div style="width:50%;display:table-cell"> <sparkline-chart options-bind="::options" datasource-bind="data"> </sparkline-chart> </div> </div>');
 $templateCache.put('forms/searchbox.html','<div class="form-group has-feedback"> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> <span class="glyphicon glyphicon-search form-control-feedback"></span> </div>');
 $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="subText" class="metrics-sub-text" ng-bind="subText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width: 100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width: 100%" class="progress progress-tiny"> <div ng-style="{\'width\': usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
@@ -82,7 +83,7 @@ angular.module('dashing.charts.bar', [
               )
           }),
           grid: angular.merge({
-            borderWidth: 0, x: use.yAxisLabelWidth, y: 5, x2: 5, y2: 30
+            borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
           }, use.grid),
           xAxis: [{
             axisLabel: {show: true},
@@ -117,19 +118,22 @@ angular.module('dashing.charts.bar', [
         var allBarVisibleWidth = Math.max(
           data.length * (use.barWidth + use.barSpacing) - use.barSpacing, use.barWidth);
         var chartMaxWidth = $element[0].offsetParent.offsetWidth;
+        var scrollbarHeight = 20;
+        var scrollbarPadding = 5;
         options.dataZoom = {
           show: allBarVisibleWidth + gridWidth > chartMaxWidth
         };
         if (options.dataZoom.show) {
           angular.merge(options.dataZoom, {
             zoomLock: true,
+            height: scrollbarHeight,
+            y: parseInt(use.height) - scrollbarHeight - scrollbarPadding,
             handleColor: colors.line,
             dataBackgroundColor: colors.area,
             fillerColor: zrender.tool.color.alpha(colors.line, 0.2),
             end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth)
           });
-          options.grid.y2 += 36;
-          options.height = (parseInt(use.height) + 36 + 14) + 'px';
+          options.grid.y2 += scrollbarHeight + scrollbarPadding * 2;
         } else {
           options.width = (allBarVisibleWidth + gridWidth) + 'px';
         }
@@ -234,7 +238,8 @@ angular.module('dashing.charts.echarts', [])
   })
   .factory('$echarts', function() {
     function tooltipSeriesColorIndicatorHtml(color) {
-      return '<div style="width: 12px; height: 12px; background-color: ' + color + '"></div>';
+      var border = zrender.tool.color.lift(color, -0.2);
+      return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
     }
     var self = {
             tooltip: function(args) {
@@ -380,6 +385,7 @@ angular.module('dashing.charts.line', [
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
+          showLegend: true,
           yAxisValuesNum: 3,
           yAxisLabelWidth: 60
         }, $scope.options);
@@ -461,8 +467,8 @@ angular.module('dashing.charts.line', [
           };
           options.grid.y += titleHeight;
         }
-        var showLegend = options.series.length > 1 && !use.noLegend;
-        if (showLegend) {
+        var addLegend = options.series.length > 1 && use.showLegend;
+        if (addLegend) {
           options.legend = {
             show: true,
             itemWidth: 8,
@@ -477,7 +483,7 @@ angular.module('dashing.charts.line', [
             options.grid.y += legendHeight;
           }
         }
-        if (showLegend || use.title) {
+        if (addLegend || use.title) {
           options.grid.y += 12;
         }
         $scope.echartOptions = options;
@@ -485,11 +491,31 @@ angular.module('dashing.charts.line', [
     };
   })
 ;
+angular.module('dashing.charts.metrics-ring', [
+  'dashing.charts.ring',
+  'dashing.metrics'
+])
+  .directive('metricsRingChartLr', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'charts/metrics-ring-lr.html',
+      scope: {
+        caption: '@',
+        help: '@',
+        current: '@',
+        unit: '@',
+        subText: '@',
+        options: '=optionsBind',
+        data: '=datasourceBind'
+      }
+    };
+  })
+;
 angular.module('dashing.charts.metrics-sparkline', [
   'dashing.charts.sparkline',
   'dashing.metrics'
 ])
-  .directive('metricsSparklineTd', function() {
+  .directive('metricsSparklineChartTd', function() {
     return {
       restrict: 'E',
       templateUrl: 'charts/metrics-sparkline-td.html',
@@ -508,7 +534,7 @@ angular.module('dashing.charts.metrics-sparkline', [
 angular.module('dashing.charts.ring', [
   'dashing.charts.echarts'
 ])
-  .directive('ringPieChart', function() {
+  .directive('ringChart', function() {
     return {
       restrict: 'E',
       template: '<echart options="::echartOptions"></echart>',
@@ -532,7 +558,7 @@ angular.module('dashing.charts.ring', [
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           color: 'rgb(35,183,229)',
-          showUsage: true
+          textPosition: 'inner'
         }, $scope.options);
         var data = use.data || $scope.data;
         if (!data) {
@@ -544,7 +570,7 @@ angular.module('dashing.charts.ring', [
         var itemStyleBase = {
           normal: {
             color: 'rgb(232,239,240)',
-            label: {show: true, position: 'center'},
+            label: {show: use.textPosition === 'inner', position: 'center'},
             labelLine: {show: false}
           }
         };
@@ -556,15 +582,16 @@ angular.module('dashing.charts.ring', [
           legend: {
             selectedMode: false,
             itemGap: 20,
+            itemWidth: 13,
             y: 'bottom',
             data: [data.used.label, data.available.label].map(function(label) {
-              return {name: label, textStyle: {fontWeight: 500}, icon: 'a'};
+              return {name: label, textStyle: {fontWeight: 500}, icon: 'bar'};
             })
           },
           series: [{
             type: 'pie',
             center: ['50%', outerRadius + padding],
-            radius: [Math.floor(outerRadius * 0.78), outerRadius],
+            radius: [Math.floor(outerRadius * 0.73), outerRadius],
             data: [{
               name: data.available.label,
               value: data.available.value,
@@ -578,22 +605,45 @@ angular.module('dashing.charts.ring', [
             }]
           }]
         };
-        if (use.showUsage) {
-          options.series[0].itemStyle = {
-            normal: {
-              label: {
-                formatter: function() {
-                  return $scope.data.used.value + ($scope.data.used.unit || '');
-                },
-                textStyle: {
-                  color: '#111',
-                  fontSize: 28,
-                  fontWeight: 500,
-                  baseline: 'middle'
+        switch (use.textPosition) {
+          case 'inner':
+            options.series[0].itemStyle = {
+              normal: {
+                label: {
+                  formatter: function() {
+                    return Math.round($scope.data.used.value * 100 /
+                        ($scope.data.used.value + $scope.data.available.value)) + '%';
+                  },
+                  textStyle: {
+                    color: '#111',
+                    fontSize: 28,
+                    fontWeight: 500,
+                    baseline: 'middle'
+                  }
                 }
               }
+            };
+            break;
+          case 'right':
+            if (use.title) {
+              options.series[0].center[0] = outerRadius + padding;
+              options.legend.x = padding;
+              options.title = {
+                text: $scope.data.used.value + ($scope.data.used.unit || ''),
+                subtext: use.title,
+                itemGap: 11,
+                x: (outerRadius + padding) * 2 + padding,
+                y: outerRadius + padding - 40,
+                textStyle: {
+                  fontSize: 40,
+                  fontWeight: 500
+                },
+                subtextStyle: {
+                  fontSize: 14
+                }
+              };
             }
-          };
+            break;
         }
         $scope.echartOptions = options;
       }]

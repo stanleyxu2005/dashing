@@ -20,7 +20,7 @@ angular.module('dashing.charts.line', [
  *   width: string // the css width of the chart
  *   maxDataNum: number // the maximal number of data points (of a series) in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
- *   noLegend: boolean // do not show legend even when multiple data series on chart (default: false)
+ *   showLegend: boolean // show legend even when multiple data series on chart (default: true)
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
@@ -53,6 +53,7 @@ angular.module('dashing.charts.line', [
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
+          showLegend: true,
           yAxisValuesNum: 3,
           yAxisLabelWidth: 60
         }, $scope.options);
@@ -145,8 +146,8 @@ angular.module('dashing.charts.line', [
         }
 
         // Add legend if there multiple data series
-        var showLegend = options.series.length > 1 && !use.noLegend;
-        if (showLegend) {
+        var addLegend = options.series.length > 1 && use.showLegend;
+        if (addLegend) {
           options.legend = {
             show: true,
             itemWidth: 8,
@@ -162,7 +163,7 @@ angular.module('dashing.charts.line', [
           }
         }
 
-        if (showLegend || use.title) {
+        if (addLegend || use.title) {
           options.grid.y += 12;
         }
 

@@ -12,21 +12,21 @@ angular.module('dashing.charts.ring', [
  * the chart will have a data zoom control to scroll the value bars.
  *
  * @example
- *   <ring-pie-chart
+ *   <ring-chart
  *     options-bind="::chartOptions"
  *     datasource-bind="chartData">
- *   </ring-pie-chart>
+ *   </ring-chart>
  *
  * @param options-bind - the option object, which the following elements:
  * {
  *   height: string // the css height of the chart
- *   showUsage: boolean // show current usage in the middle of the ring (default: false)
- *   color: string // optional to override bar color
+ *   textPosition: 'inner'|'right' // either show current usage inside the ring or show total value at right (default: inner)
+ *   color: string // optional to override ring color
  * }
  * @param datasource-bind - array of data objects
  *   every data object is {x: time|string, y: [number]}
  */
-  .directive('ringPieChart', function() {
+  .directive('ringChart', function() {
     'use strict';
 
     return {
@@ -52,7 +52,7 @@ angular.module('dashing.charts.ring', [
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           color: 'rgb(35,183,229)',
-          showUsage: true
+          textPosition: 'inner'
         }, $scope.options);
 
         var data = use.data || $scope.data;
@@ -65,7 +65,7 @@ angular.module('dashing.charts.ring', [
         var itemStyleBase = {
           normal: {
             color: 'rgb(232,239,240)',
-            label: {show: true, position: 'center'},
+            label: {show: use.textPosition === 'inner', position: 'center'},
             labelLine: {show: false}
           }
         };
@@ -78,15 +78,16 @@ angular.module('dashing.charts.ring', [
           legend: {
             selectedMode: false,
             itemGap: 20,
+            itemWidth: 13,
             y: 'bottom',
             data: [data.used.label, data.available.label].map(function(label) {
-              return {name: label, textStyle: {fontWeight: 500}, icon: 'a'};
+              return {name: label, textStyle: {fontWeight: 500}, icon: 'bar'};
             })
           },
           series: [{
             type: 'pie',
             center: ['50%', outerRadius + padding],
-            radius: [Math.floor(outerRadius * 0.78), outerRadius],
+            radius: [Math.floor(outerRadius * 0.73), outerRadius],
             data: [{
               name: data.available.label,
               value: data.available.value,
@@ -101,23 +102,47 @@ angular.module('dashing.charts.ring', [
           }]
         };
 
-        if (use.showUsage) {
-          options.series[0].itemStyle = {
-            normal: {
-              label: {
-                formatter: function() {
-                  return $scope.data.used.value + ($scope.data.used.unit || '');
-                },
-                textStyle: {
-                  color: '#111',
-                  fontSize: 28,
-                  fontWeight: 500,
-                  baseline: 'middle'
+        switch (use.textPosition) {
+          case 'inner':
+            options.series[0].itemStyle = {
+              normal: {
+                label: {
+                  formatter: function() {
+                    return Math.round($scope.data.used.value * 100 /
+                        ($scope.data.used.value + $scope.data.available.value)) + '%';
+                  },
+                  textStyle: {
+                    color: '#111',
+                    fontSize: 28, // todo: auto-adjust font size?
+                    fontWeight: 500,
+                    baseline: 'middle'
+                  }
                 }
               }
+            };
+            break;
+          case 'right':
+            if (use.title) {
+              options.series[0].center[0] = outerRadius + padding;
+              options.legend.x = padding;
+              options.title = {
+                text: $scope.data.used.value + ($scope.data.used.unit || ''),
+                subtext: use.title,
+                itemGap: 11,
+                x: (outerRadius + padding) * 2 + padding,
+                y: outerRadius + padding - 40,
+                textStyle: {
+                  fontSize: 40,
+                  fontWeight: 500
+                },
+                subtextStyle: {
+                  fontSize: 14
+                }
+              };
             }
-          };
+            break;
         }
+
         $scope.echartOptions = options;
       }]
     };

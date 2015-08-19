@@ -137,7 +137,8 @@ angular.module('dashing.charts.echarts', [])
     'use strict';
 
     function tooltipSeriesColorIndicatorHtml(color) {
-      return '<div style="width: 12px; height: 12px; background-color: ' + color + '"></div>';
+      var border = zrender.tool.color.lift(color, -0.2);
+      return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
     }
 
     var self = {

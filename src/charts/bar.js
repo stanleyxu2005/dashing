@@ -73,7 +73,7 @@ angular.module('dashing.charts.bar', [
               )
           }),
           grid: angular.merge({
-            borderWidth: 0, x: use.yAxisLabelWidth, y: 5, x2: 5, y2: 30
+            borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
           }, use.grid),
           xAxis: [{
             axisLabel: {show: true},
@@ -110,6 +110,8 @@ angular.module('dashing.charts.bar', [
         var allBarVisibleWidth = Math.max(
           data.length * (use.barWidth + use.barSpacing) - use.barSpacing, use.barWidth);
         var chartMaxWidth = $element[0].offsetParent.offsetWidth;
+        var scrollbarHeight = 20;
+        var scrollbarPadding = 5;
 
         options.dataZoom = {
           show: allBarVisibleWidth + gridWidth > chartMaxWidth
@@ -118,13 +120,14 @@ angular.module('dashing.charts.bar', [
         if (options.dataZoom.show) {
           angular.merge(options.dataZoom, {
             zoomLock: true,
+            height: scrollbarHeight,
+            y: parseInt(use.height) - scrollbarHeight - scrollbarPadding,
             handleColor: colors.line,
             dataBackgroundColor: colors.area,
             fillerColor: zrender.tool.color.alpha(colors.line, 0.2),
             end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth)
           });
-          options.grid.y2 += 36;
-          options.height = (parseInt(use.height) + 36 + 14) + 'px';
+          options.grid.y2 += scrollbarHeight + scrollbarPadding * 2;
         } else {
           options.width = (allBarVisibleWidth + gridWidth) + 'px';
         }

@@ -1,16 +1,8 @@
-<div>
-  <div style="width:50%;display:table-cell">
-    <metrics
-      caption="{{caption}}" ng-attr-help="{{help}}"
-      value="{{current}}" unit="{{unit}}"
-      sub-text="{{subText}}"
-      class="metrics-thicker-bottom">
-    </metrics>
-  </div>
-  <div style="width:50%;display:table-cell">
-    <sparkline-chart
-      options-bind="::options"
-      datasource-bind="data">
-    </sparkline-chart>
-  </div>
-</div>
+<metrics
+  caption="{{caption}}" ng-attr-help="{{help}}"
+  value="{{current}}" unit="{{unit}}"
+  sub-text="{{subText}}"
+  class="metrics-thicker-bottom">
+</metrics>
+<sparkline-chart options-bind="options" datasource-bind="data">
+</sparkline-chart>

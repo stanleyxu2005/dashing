@@ -9,7 +9,10 @@ angular.module('dashing.charts.line', [
  * Line chart control.
  *
  * @example
- *   <line-chart options-bind="lineChartOptions" datasource-bind="lineChartData"></line-chart>
+ *   <line-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </line-chart>
  *
  * @param options-bind - the option object, which the following elements:
  * {
@@ -17,13 +20,17 @@ angular.module('dashing.charts.line', [
  *   width: string // the css width of the chart
  *   maxDataNum: number // the maximal number of data points (of a series) in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
- *   showDataOnLegend: boolean // show current data on legend (default: false)
+ *   noLegend: boolean // do not show legend even when multiple data series on chart (default: false)
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
+ *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
+ *   yAxisLabelFormatter: function // optional to override the label formatter
  *   stacked: boolean // should stack all data series (default: true)
+ *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)\
+ *   scale: boolean // scale values on y-axis (default: false)
  *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
- *  every data object is {x: time|string, y: [number]}
+ *   every data object is {x: time|string, y: [number]}
  */
   .directive('lineChart', function() {
     'use strict';
@@ -35,9 +42,8 @@ angular.module('dashing.charts.line', [
         options: '=optionsBind',
         data: '=datasourceBind'
       },
-      link: function(scope, elem) {
-        var echartElem = elem.find('div')[0];
-        var echartScope = angular.element(echartElem).isolateScope();
+      link: function(scope) {
+        var echartScope = scope.$$childHead;
 
         // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
@@ -47,11 +53,18 @@ angular.module('dashing.charts.line', [
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
-          yAxisValuesNum: 3
+          yAxisValuesNum: 3,
+          yAxisLabelWidth: 60
         }, $scope.options);
 
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
-        var colorPalette = $echarts.colorPalette(use.seriesNames.length);
+        if (!use.seriesNames) {
+          console.warn('seriesName not defined');
+          use.seriesNames = data.older[0].y.map(function(_, i) {
+            return 'Series ' + (i + 1);
+          });
+        }
+        var colors = $echarts.colorPalette(use.seriesNames.length);
         var borderLineStyle = {
           lineStyle: {
             width: 1,
@@ -73,19 +86,16 @@ angular.module('dashing.charts.line', [
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
-          grid: {
-            borderWidth: 0,
-            y: 20,
-            x2: 5,
-            y2: 23
-          },
+          grid: angular.merge({
+            borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
+          }, use.grid),
           xAxis: [{
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false,
-            data: data.round0.map(function(item) {
+            data: data.older.map(function(item) {
               return item.x;
             })
           }],
@@ -93,27 +103,28 @@ angular.module('dashing.charts.line', [
             splitNumber: use.yAxisValuesNum,
             splitLine: {show: false},
             axisLine: {show: false},
+            axisLabel: {formatter: use.yAxisLabelFormatter},
             scale: use.scale
           }],
           series: [],
           // override the default color colorPalette, otherwise the colors look messy.
           color: use.seriesNames.map(function(_, i) {
-            return colorPalette[i % colorPalette.length].line;
+            return colors[i % colors.length].line;
           }),
           // own properties
           xAxisDataNum: use.maxDataNum,
-          initialDataRound1: data.round1
+          dataPointsQueue: data.newer
         };
 
         angular.forEach(use.seriesNames, function(name, i) {
           options.series.push(
             $echarts.makeDataSeries({
               name: name,
-              colors: colorPalette[i % colorPalette.length],
+              colors: colors[i % colors.length],
               stack: use.stacked,
               showAllSymbol: true,
-              data: data.round0.map(function(item) {
-                return item.y[i];
+              data: data.older.map(function(item) {
+                return Array.isArray(item.y) ? item.y[i] : item.y;
               })
             })
           );
@@ -134,8 +145,8 @@ angular.module('dashing.charts.line', [
         }
 
         // Add legend if there multiple data series
-        $scope.showLegend = options.series.length > 1;
-        if ($scope.showLegend) {
+        var showLegend = options.series.length > 1 && !use.noLegend;
+        if (showLegend) {
           options.legend = {
             show: true,
             itemWidth: 8,
@@ -151,7 +162,7 @@ angular.module('dashing.charts.line', [
           }
         }
 
-        if ($scope.showLegend || use.title) {
+        if (showLegend || use.title) {
           options.grid.y += 12;
         }
 

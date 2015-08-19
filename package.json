@@ -1,7 +1,7 @@
 {
   "name": "dashing",
   "description": "Assembled dashing widgets for (AngularJS based) webapps",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "Apache-2.0",
   "keywords": [
     "angular",
@@ -37,14 +37,6 @@
     "url": "https://github.com/stanleyxu2005/dashing/issues"
   },
   "main": "gulpfile.js",
-  "vendors": {
-    "angular": "^1.4.3",
-    "angular-smart-table": "^2.1.1",
-    "angular-strap": "^2.3.1",
-    "angular-motion": "^0.4.2",
-    "bootstrap": "^3.3.5",
-    "echarts": "^2.2.7"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

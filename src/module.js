@@ -7,6 +7,7 @@ angular.module('dashing', [
   'dashing.charts.bar',
   'dashing.charts.line',
   'dashing.charts.metrics-sparkline',
+  'dashing.charts.ring',
   'dashing.charts.sparkline',
   'dashing.contextmenu',
   'dashing.filters.duration',

@@ -9,7 +9,10 @@ angular.module('dashing.charts.sparkline', [
  * Sparkline is an one data series line chart without axis labels.
  *
  * @example
- *   <sparkline options-bind="sparkLineOptions" datasource-bind="sparkLineData"></sparkline>
+ *   <sparkline-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </sparkline-chart>
  *
  * @param options-bind - the option object, which the following elements:
  * {
@@ -17,13 +20,12 @@ angular.module('dashing.charts.sparkline', [
  *   width: string // the css width of the chart
  *   maxDataNum: number // the maximal number of data points in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
- *   seriesNames: [string] // name of data series in an array
  *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
- *  every data object is {x: time|string, y: number}
+ *   every data object is {x: time|string, y: number}
  */
-  .directive('sparkline', function() {
+  .directive('sparklineChart', function() {
     'use strict';
 
     return {
@@ -33,9 +35,8 @@ angular.module('dashing.charts.sparkline', [
         options: '=optionsBind',
         data: '=datasourceBind'
       },
-      link: function(scope, elem) {
-        var echartElem = elem.find('div')[0];
-        var echartScope = angular.element(echartElem).isolateScope();
+      link: function(scope) {
+        var echartScope = scope.$$childHead;
 
         // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
@@ -44,8 +45,8 @@ angular.module('dashing.charts.sparkline', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
-        var colors = $echarts.colorPalette(1)[0];
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
+        var colors = $echarts.colorPalette(1)[0];
 
         $scope.echartOptions = {
           height: use.height,
@@ -62,17 +63,14 @@ angular.module('dashing.charts.sparkline', [
           dataZoom: {show: false},
           // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
           grid: angular.merge({
-            borderWidth: 1,
-            x: 5,
-            y: 5,
-            x2: 5,
+            borderWidth: 1, x: 5, y: 5, x2: 5,
             y2: 1 /* set 5px will have a thick ugly grey border */
           }, use.grid),
           xAxis: [{
             boundaryGap: false,
             axisLabel: false,
             splitLine: false,
-            data: data.round0.map(function(item) {
+            data: data.older.map(function(item) {
               return item.x;
             })
           }],
@@ -83,13 +81,13 @@ angular.module('dashing.charts.sparkline', [
           series: [$echarts.makeDataSeries({
             colors: colors,
             stack: true /* stack=true means fill area */,
-            data: data.round0.map(function(item) {
-              return item.y;
+            data: data.older.map(function(item) {
+              return Array.isArray(item.y) ? item.y[0] : item.y;
             })
           })],
           // own properties
           xAxisDataNum: use.maxDataNum,
-          initialDataRound1: data.round1
+          dataPointsQueue: data.newer
         };
       }]
     };

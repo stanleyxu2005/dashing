@@ -127,7 +127,8 @@ gulp.task('doc', function() {
 
 // DEV: trigger build automatically when file is changed
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.*', ['min-css', 'min-js']);
+  gulp.watch('src/**/*.css', ['min-css']);
+  gulp.watch('src/**/*.js', ['min-js']);
 });
 
 // DEV: static check before project commit

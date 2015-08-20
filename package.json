@@ -39,5 +39,11 @@
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist/",
+    "additions/"
+  ]
 }

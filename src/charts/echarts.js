@@ -116,7 +116,7 @@ angular.module('dashing.charts.echarts', [])
 
         $scope.setOptions = function(options) {
           chart.setOption(options);
-        }
+        };
 
         // If data points are more than the maximal visible data points, we put them into a queue and then
         // add them to the chart after the option is applied, otherwise all data points will be shown on

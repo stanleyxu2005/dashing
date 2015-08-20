@@ -25,6 +25,8 @@ angular.module('dashing.charts.bar', [
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
+ *   barMinWidth: number // when bar width is narrower than the value, data zoom control will be shown (default: 14)
+ *   barMinSpacing: number // when bar spacing is narrower than the value, data zoom control will be shown (default: 4)
  *   color: string // optional to override bar color
  *   data: // an array of initial data points (will fallback to $scope.data)
  * }
@@ -51,8 +53,8 @@ angular.module('dashing.charts.bar', [
       },
       controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
         var use = angular.merge({
-          barWidth: 14,
-          barSpacing: 4,
+          barMinWidth: 14,
+          barMinSpacing: 4,
           color: $echarts.colorPalette(0)[0].line,
           yAxisValuesNum: 3,
           yAxisLabelWidth: 60
@@ -62,6 +64,7 @@ angular.module('dashing.charts.bar', [
         var colors = $echarts.buildColorStates(use.color);
         var options = {
           height: use.height,
+          width: use.width,
           ignoreContainerResizeEvent: true,
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
@@ -94,10 +97,6 @@ angular.module('dashing.charts.bar', [
           series: [$echarts.makeDataSeries({
             colors: colors,
             type: 'bar',
-            barWidth: use.barWidth,
-            barMaxWidth: use.barWidth,
-            barGap: use.barSpacing,
-            barCategoryGap: use.barSpacing,
             data: data.map(function(item) {
               return Array.isArray(item.y) ? item.y[0] : item.y;
             })
@@ -107,29 +106,26 @@ angular.module('dashing.charts.bar', [
         };
 
         var gridWidth = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-        var allBarVisibleWidth = Math.max(
-          data.length * (use.barWidth + use.barSpacing) - use.barSpacing, use.barWidth);
+        var allBarVisibleWidth = data.length * (use.barMinWidth + use.barMinSpacing) - use.barMinSpacing;
         var chartMaxWidth = $element[0].offsetParent.offsetWidth;
-        var scrollbarHeight = 20;
-        var scrollbarPadding = 5;
 
-        options.dataZoom = {
-          show: allBarVisibleWidth + gridWidth > chartMaxWidth
-        };
-
-        if (options.dataZoom.show) {
-          angular.merge(options.dataZoom, {
+        if (allBarVisibleWidth > 0 && allBarVisibleWidth + gridWidth > chartMaxWidth) {
+          var scrollbarHeight = 20;
+          var scrollbarPadding = 5;
+          options.dataZoom = {
+            show: true,
+            barWidth: use.barMinWidth,
+            barGap: use.barMinSpacing,
+            barCategoryGap: use.barMinSpacing,
+            end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth),
             zoomLock: true,
             height: scrollbarHeight,
             y: parseInt(use.height) - scrollbarHeight - scrollbarPadding,
             handleColor: colors.line,
             dataBackgroundColor: colors.area,
-            fillerColor: zrender.tool.color.alpha(colors.line, 0.2),
-            end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth)
-          });
+            fillerColor: zrender.tool.color.alpha(colors.line, 0.2)
+          };
           options.grid.y2 += scrollbarHeight + scrollbarPadding * 2;
-        } else {
-          options.width = (allBarVisibleWidth + gridWidth) + 'px';
         }
 
         $scope.echartOptions = options;

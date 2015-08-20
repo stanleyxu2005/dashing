@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.1.0
+ * @version v0.1.1
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -61,8 +61,8 @@ angular.module('dashing.charts.bar', [
       },
       controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
         var use = angular.merge({
-          barWidth: 14,
-          barSpacing: 4,
+          barMinWidth: 14,
+          barMinSpacing: 4,
           color: $echarts.colorPalette(0)[0].line,
           yAxisValuesNum: 3,
           yAxisLabelWidth: 60
@@ -71,6 +71,7 @@ angular.module('dashing.charts.bar', [
         var colors = $echarts.buildColorStates(use.color);
         var options = {
           height: use.height,
+          width: use.width,
           ignoreContainerResizeEvent: true,
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
@@ -103,10 +104,6 @@ angular.module('dashing.charts.bar', [
           series: [$echarts.makeDataSeries({
             colors: colors,
             type: 'bar',
-            barWidth: use.barWidth,
-            barMaxWidth: use.barWidth,
-            barGap: use.barSpacing,
-            barCategoryGap: use.barSpacing,
             data: data.map(function(item) {
               return Array.isArray(item.y) ? item.y[0] : item.y;
             })
@@ -114,27 +111,25 @@ angular.module('dashing.charts.bar', [
           xAxisDataNum: use.maxDataNum
         };
         var gridWidth = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-        var allBarVisibleWidth = Math.max(
-          data.length * (use.barWidth + use.barSpacing) - use.barSpacing, use.barWidth);
+        var allBarVisibleWidth = data.length * (use.barMinWidth + use.barMinSpacing) - use.barMinSpacing;
         var chartMaxWidth = $element[0].offsetParent.offsetWidth;
-        var scrollbarHeight = 20;
-        var scrollbarPadding = 5;
-        options.dataZoom = {
-          show: allBarVisibleWidth + gridWidth > chartMaxWidth
-        };
-        if (options.dataZoom.show) {
-          angular.merge(options.dataZoom, {
+        if (allBarVisibleWidth > 0 && allBarVisibleWidth + gridWidth > chartMaxWidth) {
+          var scrollbarHeight = 20;
+          var scrollbarPadding = 5;
+          options.dataZoom = {
+            show: true,
+            barWidth: use.barMinWidth,
+            barGap: use.barMinSpacing,
+            barCategoryGap: use.barMinSpacing,
+            end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth),
             zoomLock: true,
             height: scrollbarHeight,
             y: parseInt(use.height) - scrollbarHeight - scrollbarPadding,
             handleColor: colors.line,
             dataBackgroundColor: colors.area,
-            fillerColor: zrender.tool.color.alpha(colors.line, 0.2),
-            end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth)
-          });
+            fillerColor: zrender.tool.color.alpha(colors.line, 0.2)
+          };
           options.grid.y2 += scrollbarHeight + scrollbarPadding * 2;
-        } else {
-          options.width = (allBarVisibleWidth + gridWidth) + 'px';
         }
         $scope.echartOptions = options;
       }]
@@ -227,7 +222,7 @@ angular.module('dashing.charts.echarts', [])
         };
         $scope.setOptions = function(options) {
           chart.setOption(options);
-        }
+        };
         if (options.dataPointsQueue) {
           $scope.addDataPoints(options.dataPointsQueue);
         }
@@ -999,16 +994,6 @@ angular.module('dashing.tables.sortable-table.builder', [
 ])
   .factory('$sortableTableBuilder', ['PROPERTY_RENDERER',
     function(PROPERTY_RENDERER) {
-      var RENDERER = {
-        BUTTON: 'Button',
-        DATETIME: 'DateTime',
-        DURATION: 'Duration',
-        INDICATOR: 'Indicator',
-        LINK: 'Link',
-        NUMBER: 'Number',
-        PROGRESS_BAR: 'ProgressBar',
-        TAG: 'Tag'
-      };
       var CB = function(renderer, title) {
         this.props = renderer ? {renderer: renderer} : {};
         if (title) {

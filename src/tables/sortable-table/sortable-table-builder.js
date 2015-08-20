@@ -12,18 +12,6 @@ angular.module('dashing.tables.sortable-table.builder', [
     function(PROPERTY_RENDERER) {
       'use strict';
 
-      var RENDERER = {
-        BUTTON: 'Button',
-        DATETIME: 'DateTime',
-        DURATION: 'Duration',
-        INDICATOR: 'Indicator',
-        LINK: 'Link',
-        NUMBER: 'Number',
-        PROGRESS_BAR: 'ProgressBar',
-        TAG: 'Tag'
-        //TEXT: undefined /* default renderer */
-      };
-
       var CB = function(renderer, title) {
         this.props = renderer ? {renderer: renderer} : {};
         if (title) {

@@ -1,14 +1,12 @@
 {
   "name": "dashing",
   "description": "Assembled dashing widgets for (AngularJS based) webapps",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "Apache-2.0",
   "keywords": [
     "angular",
     "bootstrap",
-    "widgets",
-    "table",
-    "chart"
+    "widgets"
   ],
   "homepage": "https://github.com/stanleyxu2005/dashing",
   "author": "Qian Xu (https://github.com/stanleyxu2005)",
@@ -43,7 +41,6 @@
   "files": [
     "LICENSE",
     "README.md",
-    "dist/",
-    "additions/"
+    "dist/"
   ]
 }

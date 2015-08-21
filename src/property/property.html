@@ -30,6 +30,12 @@
   <progressbar
     ng-switch-when="ProgressBar"
     current="{{current}}" max="{{max}}"></progressbar>
+  <!-- bytes-->
+  <bytes
+    ng-switch-when="Bytes"
+    raw="{{raw}}"
+    ng-attr-unit="{{unit}}"
+    ng-attr-readable="{{readable}}"></bytes>
   <!-- duration-->
   <span
     ng-switch-when="Duration"
@@ -39,10 +45,9 @@
     ng-switch-when="DateTime"
     ng-bind="value|date:'yyyy-MM-dd HH:MM:ss'"></span>
   <!-- number-->
-  <number
+  <span
     ng-switch-when="Number"
-    number="{{number}}"
-    ng-attr-unit="{{unit}}"></number>
+    ng-bind="value|number:0"></span>
   <!-- default -->
   <span
     ng-switch-default

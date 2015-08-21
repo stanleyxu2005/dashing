@@ -41,9 +41,9 @@ angular.module('dashing.property', [
                 }
                 break;
 
-              case 'Number':
-                if (!value.hasOwnProperty('number')) {
-                  $scope.number = value;
+              case 'Bytes':
+                if (!value.hasOwnProperty('raw')) {
+                  $scope.raw = value;
                 }
                 break;
             }
@@ -65,6 +65,7 @@ angular.module('dashing.property', [
   /** Renderer constants */
   .constant('PROPERTY_RENDERER', {
     BUTTON: 'Button',
+    BYTES: 'Bytes',
     DATETIME: 'DateTime',
     DURATION: 'Duration',
     INDICATOR: 'Indicator',

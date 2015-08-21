@@ -27,6 +27,20 @@ angular.module('dashing.tables.property-table.builder', [])
         return this;
       };
 
+      PB.prototype.value = function(value) {
+        this.props.value = value;
+        return this;
+      };
+
+      PB.prototype.values = function(values) {
+        if (!Array.isArray(values)) {
+          console.warn('values must be an array');
+          values = [values];
+        }
+        this.props.values = values;
+        return this;
+      };
+
       PB.prototype.done = function() {
         return this.props;
       };
@@ -34,6 +48,9 @@ angular.module('dashing.tables.property-table.builder', [])
       return {
         button: function(title) {
           return new PB(PROPERTY_RENDERER.BUTTON, title);
+        },
+        bytes: function(title) {
+          return new PB(PROPERTY_RENDERER.BYTES, title);
         },
         datetime: function(title) {
           return new PB(PROPERTY_RENDERER.DATETIME, title);

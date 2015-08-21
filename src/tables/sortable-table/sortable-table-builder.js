@@ -48,6 +48,9 @@ angular.module('dashing.tables.sortable-table.builder', [
             case PROPERTY_RENDERER.PROGRESS_BAR:
               this.props.sortKey += '.usage';
               break;
+            case PROPERTY_RENDERER.BYTES:
+              this.props.sortKey += '.raw';
+              break;
             case PROPERTY_RENDERER.BUTTON:
               console.warn('"%s" column is not sortable.');
               return;
@@ -97,6 +100,9 @@ angular.module('dashing.tables.sortable-table.builder', [
       return {
         button: function(title) {
           return new CB(PROPERTY_RENDERER.BUTTON, title);
+        },
+        bytes: function(title) {
+          return new CB(PROPERTY_RENDERER.BYTES, title);
         },
         datetime: function(title) {
           return new CB(PROPERTY_RENDERER.DATETIME, title);

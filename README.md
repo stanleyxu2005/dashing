@@ -1,6 +1,6 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
-[![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) [![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies)
+[![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) [![Dependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies) [![DevDependency Status](http://img.shields.io/david/stanleyxu2005/dashing.svg?style=flat)](https://david-dm.org/stanleyxu2005/dashing#info=devDependencies)
 
 **Want to be dashing? Use Dashing!** Dashing is a set of assembled widgets based on Bootstrap and AngularJS.
 
@@ -26,7 +26,7 @@ $ gulp
 <script src="vendors/angular-strap/angular-strap.min.js"></script>
 <script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
 <script src="vendors/smart-table/smart-table.min.js"></script>
-<script src="vendors/echarts/echarts-all.js"></script>
+<script src="vendors/dashing-deps/echarts/echart-all.min.js"></script>
 <script src="dashing/dashing.min.js"></script>
 ```
 

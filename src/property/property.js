@@ -29,15 +29,21 @@ angular.module('dashing.property', [
             switch ($scope.renderer) {
               case 'Link':
                 if (!value.href) {
-                  value.href = value.text;
+                  $scope.href = value.text;
                 }
                 break;
 
               case 'Button':
                 if (value.href && !value.click) {
-                  value.click = function() {
+                  $scope.click = function() {
                     location.href = value.href;
                   };
+                }
+                break;
+
+              case 'Number':
+                if (!value.hasOwnProperty('number')) {
+                  $scope.number = value;
                 }
                 break;
             }
@@ -45,8 +51,10 @@ angular.module('dashing.property', [
             if (angular.isObject(value)) {
               if (value.hasOwnProperty('value')) {
                 // `value.value` will assign `$scope.value`, which will trigger watch notification again.
-                console.error({message: 'error', object: value});
+                console.warn({message: 'Property should not have value.value', object: value});
+                delete value.value;
               }
+              // bind all value fields to scope.
               angular.merge($scope, value);
             }
           }
@@ -54,6 +62,7 @@ angular.module('dashing.property', [
       }]
     };
   })
+  /** Renderer constants */
   .constant('PROPERTY_RENDERER', {
     BUTTON: 'Button',
     DATETIME: 'DateTime',

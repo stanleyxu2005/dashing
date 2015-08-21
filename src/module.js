@@ -15,6 +15,7 @@ angular.module('dashing', [
   'dashing.metrics',
   'dashing.progressbar',
   'dashing.property',
+  'dashing.property.number',
   'dashing.remark',
   'dashing.state.indicator',
   'dashing.state.tag',

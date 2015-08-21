@@ -39,9 +39,10 @@
     ng-switch-when="DateTime"
     ng-bind="value|date:'yyyy-MM-dd HH:MM:ss'"></span>
   <!-- number-->
-  <span
+  <number
     ng-switch-when="Number"
-    ng-bind="value|number:0"></span>
+    number="{{number}}"
+    ng-attr-unit="{{unit}}"></number>
   <!-- default -->
   <span
     ng-switch-default

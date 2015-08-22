@@ -81,13 +81,13 @@ angular.module('dashing.charts.ring', [
             itemWidth: 13,
             y: 'bottom',
             data: [data.used.label, data.available.label].map(function(label) {
-              return {name: label, textStyle: {fontWeight: 500}, icon: 'bar'};
+              return {name: label, textStyle: {fontWeight: 500}, icon: 'a'};
             })
           },
           series: [{
             type: 'pie',
             center: ['50%', outerRadius + padding],
-            radius: [Math.floor(outerRadius * 0.73), outerRadius],
+            radius: [Math.floor(outerRadius * 0.74), outerRadius],
             data: [{
               name: data.available.label,
               value: data.available.value,

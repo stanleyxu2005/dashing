@@ -44,6 +44,7 @@ angular.module('dashing.property', [
               case 'Bytes':
                 if (!value.hasOwnProperty('raw')) {
                   $scope.raw = value;
+                  return; // fallback to simple value
                 }
                 break;
             }

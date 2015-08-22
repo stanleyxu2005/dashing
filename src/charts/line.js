@@ -91,6 +91,7 @@ angular.module('dashing.charts.line', [
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
@@ -123,7 +124,7 @@ angular.module('dashing.charts.line', [
               name: name,
               colors: colors[i % colors.length],
               stack: use.stacked,
-              showAllSymbol: true,
+              showAllSymbol: use.showAllSymbol,
               data: data.older.map(function(item) {
                 return Array.isArray(item.y) ? item.y[i] : item.y;
               })

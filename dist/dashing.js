@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.1.3
+ * @version v0.1.4
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -417,6 +417,7 @@ angular.module('dashing.charts.line', [
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
@@ -446,7 +447,7 @@ angular.module('dashing.charts.line', [
               name: name,
               colors: colors[i % colors.length],
               stack: use.stacked,
-              showAllSymbol: true,
+              showAllSymbol: use.showAllSymbol,
               data: data.older.map(function(item) {
                 return Array.isArray(item.y) ? item.y[i] : item.y;
               })
@@ -561,13 +562,13 @@ angular.module('dashing.charts.ring', [
             itemWidth: 13,
             y: 'bottom',
             data: [data.used.label, data.available.label].map(function(label) {
-              return {name: label, textStyle: {fontWeight: 500}, icon: 'bar'};
+              return {name: label, textStyle: {fontWeight: 500}, icon: 'a'};
             })
           },
           series: [{
             type: 'pie',
             center: ['50%', outerRadius + padding],
-            radius: [Math.floor(outerRadius * 0.73), outerRadius],
+            radius: [Math.floor(outerRadius * 0.74), outerRadius],
             data: [{
               name: data.available.label,
               value: data.available.value,
@@ -849,6 +850,7 @@ angular.module('dashing.property', [
               case 'Bytes':
                 if (!value.hasOwnProperty('raw')) {
                   $scope.raw = value;
+                  return;
                 }
                 break;
             }
@@ -1019,6 +1021,11 @@ angular.module('dashing.tables.property-table.builder', [])
         },
         text: function(title) {
           return new PB(PROPERTY_RENDERER.TEXT, title);
+        },
+                $update: function(table, values) {
+          angular.forEach(values, function(value, key) {
+            table[key][Array.isArray(value) ? 'values' : 'value'] = value;
+          });
         }
       };
     }])

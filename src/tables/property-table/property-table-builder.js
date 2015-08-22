@@ -75,6 +75,12 @@ angular.module('dashing.tables.property-table.builder', [])
         },
         text: function(title) {
           return new PB(PROPERTY_RENDERER.TEXT, title);
+        },
+        /** Updates table values */
+        $update: function(table, values) {
+          angular.forEach(values, function(value, key) {
+            table[key][Array.isArray(value) ? 'values' : 'value'] = value;
+          });
         }
       };
 

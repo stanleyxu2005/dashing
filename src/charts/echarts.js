@@ -209,9 +209,10 @@ angular.module('dashing.charts.echarts', [])
       axisLabelFormatter: function(unit) {
         return function(value) {
           if (value !== 0) {
+            var base = 1000;
             var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(value) / Math.log(1024));
-            value = value / Math.pow(1024, e);
+            var e = Math.floor(Math.log(value) / Math.log(base));
+            value = value / Math.pow(base, e);
             // Label below can be 1000 and this label is 1500, which is expected to be "1.5 K" not "1 K".
             value = $filter('number')(value, Number(Math.floor(value) === 1));
             value += ' ' + s[e] + (unit || '');

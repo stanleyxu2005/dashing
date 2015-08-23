@@ -287,9 +287,10 @@ angular.module('dashing.charts.echarts', [])
             axisLabelFormatter: function(unit) {
         return function(value) {
           if (value !== 0) {
+            var base = 1000;
             var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(value) / Math.log(1024));
-            value = value / Math.pow(1024, e);
+            var e = Math.floor(Math.log(value) / Math.log(base));
+            value = value / Math.pow(base, e);
             value = $filter('number')(value, Number(Math.floor(value) === 1));
             value += ' ' + s[e] + (unit || '');
           }
@@ -466,6 +467,9 @@ angular.module('dashing.charts.line', [
             })
           );
         });
+        if (options.series.length === 1) {
+          options.yAxis.boundaryGap = [0, 0.15];
+        }
         var titleHeight = 20;
         var legendHeight = 16;
         if (use.title) {

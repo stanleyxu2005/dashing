@@ -129,6 +129,10 @@ angular.module('dashing.charts.line', [
           );
         });
 
+        if (options.series.length === 1) {
+          options.yAxis.boundaryGap = [0, 0.15];
+        }
+
         // todo: external font size and style should fit global style automatically (e.g. use sass)
         var titleHeight = 20;
         var legendHeight = 16;

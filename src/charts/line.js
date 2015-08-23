@@ -24,6 +24,7 @@ angular.module('dashing.charts.line', [
  *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
+ *   yAxisSplitLine: boolean // show multiple y-axis split line  (default: true)
  *   stacked: boolean // should stack all data series (default: true)
  *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)\
  *   scale: boolean // scale values on y-axis (default: false)
@@ -55,7 +56,8 @@ angular.module('dashing.charts.line', [
           stacked: true,
           showLegend: true,
           yAxisValuesNum: 3,
-          yAxisLabelWidth: 60
+          yAxisLabelWidth: 60,
+          yAxisSplitLine: true
         }, $scope.options);
 
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
@@ -79,11 +81,7 @@ angular.module('dashing.charts.line', [
             color: 'rgb(235,235,235)',
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipAllSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipAllSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
@@ -91,7 +89,6 @@ angular.module('dashing.charts.line', [
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
-            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
@@ -103,7 +100,7 @@ angular.module('dashing.charts.line', [
           }],
           yAxis: [{
             splitNumber: use.yAxisValuesNum,
-            splitLine: {show: false},
+            splitLine: {show: use.yAxisSplitLine},
             axisLine: {show: false},
             axisLabel: {formatter: use.yAxisLabelFormatter},
             scale: use.scale

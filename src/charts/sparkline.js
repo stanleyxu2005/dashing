@@ -54,11 +54,7 @@ angular.module('dashing.charts.sparkline', [
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
@@ -75,6 +71,7 @@ angular.module('dashing.charts.sparkline', [
             })
           }],
           yAxis: [{
+            boundaryGap: [0, 0.15],
             show: false,
             scale: use.scale
           }],

@@ -133,12 +133,17 @@ angular.module('dashing.charts.echarts', [])
 /**
  * Customize chart's look and feel.
  */
-  .factory('$echarts', function() {
+  .factory('$echarts', ['$filter', function($filter) {
     'use strict';
 
     function tooltipSeriesColorIndicatorHtml(color) {
       var border = zrender.tool.color.lift(color, -0.2);
       return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+    }
+
+    function defaultNameFormatter(name) {
+      return angular.isDate(name) ?
+        $filter('date')(name, 'YYYY-MM-DD HH:mm:ss') : name;
     }
 
     var self = {
@@ -172,27 +177,46 @@ angular.module('dashing.charts.echarts', [])
       /**
        * Tooltip content formatter for a single data series chart.
        */
-      tooltipFirstSeriesFormatter: function(valueFormatter) {
+      tooltipFirstSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          return params[0].name + '<br/>' + valueFormatter(params[0].value);
+          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
+          var value = (valueFormatter ? valueFormatter(params[0].value) : params[0].value);
+          return name + '<br/>' + value;
         };
       },
       /**
        * Tooltip content formatter for a multiple data series chart. Every
        * data series will have a colored legend in tooltip.
        */
-      tooltipAllSeriesFormatter: function(valueFormatter) {
+      tooltipAllSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          return params[0].name +
-            '<table>' +
+          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
+          return name + '<table>' +
             params.map(function(param) {
               var color = param.series.colors.line;
+              var value = (valueFormatter ? valueFormatter(param.value) : param.value);
               return '<tr>' +
                 '<td>' + tooltipSeriesColorIndicatorHtml(color) + '</td>' +
                 '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
-                '<td>' + valueFormatter(param.value) + '</td>' +
+                '<td>' + value + '</td>' +
                 '</tr>';
             }).join('') + '</table>';
+        };
+      },
+      /**
+       * Formatter to change axis label to human readable values.
+       */
+      axisLabelFormatter: function(unit) {
+        return function(value) {
+          if (value !== 0) {
+            var s = ['', 'K', 'M', 'G', 'T', 'P'];
+            var e = Math.floor(Math.log(value) / Math.log(1024));
+            value = value / Math.pow(1024, e);
+            // Label below can be 1000 and this label is 1500, which is expected to be "1.5 K" not "1 K".
+            value = $filter('number')(value, Number(Math.floor(value) === 1));
+            value += ' ' + s[e] + (unit || '');
+          }
+          return value;
         };
       },
       /**
@@ -200,6 +224,7 @@ angular.module('dashing.charts.echarts', [])
        */
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
+        var lineWidth = args.stack ? 4 : 3;
         var options = {
           symbol: 'circle',
           smooth: args.smooth || true,
@@ -208,14 +233,14 @@ angular.module('dashing.charts.echarts', [])
               color: args.colors.line,
               lineStyle: {
                 color: args.colors.line,
-                width: 3
+                width: lineWidth
               }
             },
             emphasis: {
               color: args.colors.hover,
               lineStyle: {
                 color: args.colors.line,
-                width: 5
+                width: lineWidth
               }
             }
           }
@@ -291,5 +316,5 @@ angular.module('dashing.charts.echarts', [])
     };
 
     return self;
-  })
+  }])
 ;

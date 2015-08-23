@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.1.4
+ * @version v0.1.5
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -78,11 +78,7 @@ angular.module('dashing.charts.bar', [
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
@@ -232,10 +228,14 @@ angular.module('dashing.charts.echarts', [])
       }]
     };
   })
-  .factory('$echarts', function() {
+  .factory('$echarts', ['$filter', function($filter) {
     function tooltipSeriesColorIndicatorHtml(color) {
       var border = zrender.tool.color.lift(color, -0.2);
       return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+    }
+    function defaultNameFormatter(name) {
+      return angular.isDate(name) ?
+        $filter('date')(name, 'YYYY-MM-DD HH:mm:ss') : name;
     }
     var self = {
             tooltip: function(args) {
@@ -262,27 +262,43 @@ angular.module('dashing.charts.echarts', [])
         }
         return result;
       },
-            tooltipFirstSeriesFormatter: function(valueFormatter) {
+            tooltipFirstSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          return params[0].name + '<br/>' + valueFormatter(params[0].value);
+          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
+          var value = (valueFormatter ? valueFormatter(params[0].value) : params[0].value);
+          return name + '<br/>' + value;
         };
       },
-            tooltipAllSeriesFormatter: function(valueFormatter) {
+            tooltipAllSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          return params[0].name +
-            '<table>' +
+          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
+          return name + '<table>' +
             params.map(function(param) {
               var color = param.series.colors.line;
+              var value = (valueFormatter ? valueFormatter(param.value) : param.value);
               return '<tr>' +
                 '<td>' + tooltipSeriesColorIndicatorHtml(color) + '</td>' +
                 '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
-                '<td>' + valueFormatter(param.value) + '</td>' +
+                '<td>' + value + '</td>' +
                 '</tr>';
             }).join('') + '</table>';
         };
       },
+            axisLabelFormatter: function(unit) {
+        return function(value) {
+          if (value !== 0) {
+            var s = ['', 'K', 'M', 'G', 'T', 'P'];
+            var e = Math.floor(Math.log(value) / Math.log(1024));
+            value = value / Math.pow(1024, e);
+            value = $filter('number')(value, Number(Math.floor(value) === 1));
+            value += ' ' + s[e] + (unit || '');
+          }
+          return value;
+        };
+      },
             makeDataSeries: function(args) {
         args.type = args.type || 'line';
+        var lineWidth = args.stack ? 4 : 3;
         var options = {
           symbol: 'circle',
           smooth: args.smooth || true,
@@ -291,14 +307,14 @@ angular.module('dashing.charts.echarts', [])
               color: args.colors.line,
               lineStyle: {
                 color: args.colors.line,
-                width: 3
+                width: lineWidth
               }
             },
             emphasis: {
               color: args.colors.hover,
               lineStyle: {
                 color: args.colors.line,
-                width: 5
+                width: lineWidth
               }
             }
           }
@@ -359,7 +375,7 @@ angular.module('dashing.charts.echarts', [])
       }
     };
     return self;
-  })
+  }])
 ;
 angular.module('dashing.charts.line', [
   'dashing.charts.echarts'
@@ -383,7 +399,8 @@ angular.module('dashing.charts.line', [
           stacked: true,
           showLegend: true,
           yAxisValuesNum: 3,
-          yAxisLabelWidth: 60
+          yAxisLabelWidth: 60,
+          yAxisSplitLine: true
         }, $scope.options);
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         if (!use.seriesNames) {
@@ -406,18 +423,13 @@ angular.module('dashing.charts.line', [
             color: 'rgb(235,235,235)',
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipAllSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipAllSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
-            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
@@ -429,7 +441,7 @@ angular.module('dashing.charts.line', [
           }],
           yAxis: [{
             splitNumber: use.yAxisValuesNum,
-            splitLine: {show: false},
+            splitLine: {show: use.yAxisSplitLine},
             axisLine: {show: false},
             axisLabel: {formatter: use.yAxisLabelFormatter},
             scale: use.scale
@@ -654,11 +666,7 @@ angular.module('dashing.charts.sparkline', [
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           grid: angular.merge({
@@ -673,6 +681,7 @@ angular.module('dashing.charts.sparkline', [
             })
           }],
           yAxis: [{
+            boundaryGap: [0, 0.15],
             show: false,
             scale: use.scale
           }],

@@ -69,11 +69,7 @@ angular.module('dashing.charts.bar', [
           tooltip: $echarts.tooltip({
             formatter: use.tooltipFormatter ?
               use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(
-                use.valueFormatter || function(value) {
-                  return value;
-                }
-              )
+              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28

@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.1.6
+ * @version v0.1.7
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -197,9 +197,18 @@ angular.module('dashing.charts.echarts', [])
             chart = null;
           });
         }
+        if (!options.xAxis[0].data.length) {
+          options.xAxis[0].data = [''];
+          angular.forEach(options.series, function(series) {
+            series.data = [0];
+          });
+        }
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, true);
                 $scope.addDataPoints = function(data, newYAxisMaxValue) {
+          if (!data || !data.length) {
+            return;
+          }
           try {
             var currentOption = chart.getOption();
             var actualVisibleDataPoints = currentOption.xAxis[0].data.length;
@@ -1114,7 +1123,7 @@ angular.module('dashing.tables.sortable-table.builder', [
         return this;
       };
       CB.prototype.sortDefaultDescent = function() {
-        return this.sortDefault(false);
+        return this.sortDefault(true);
       };
       CB.prototype.styleClass = function(styleClass) {
         this.props.styleClass = styleClass;

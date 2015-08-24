@@ -70,7 +70,7 @@ angular.module('dashing.tables.sortable-table.builder', [
       };
 
       CB.prototype.sortDefaultDescent = function() {
-        return this.sortDefault(false);
+        return this.sortDefault(/*descent=*/true);
       };
 
       CB.prototype.styleClass = function(styleClass) {

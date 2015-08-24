@@ -90,11 +90,22 @@ angular.module('dashing.charts.echarts', [])
           });
         }
 
+        if (!options.xAxis[0].data.length) {
+          // todo: if no data is provided at initialization, the chart will break. so we draw a meaningless point.
+          options.xAxis[0].data = [''];
+          angular.forEach(options.series, function(series) {
+            series.data = [0];
+          });
+        }
+
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, /*overwrite=*/true);
 
         /** Method to add data points to chart */
         $scope.addDataPoints = function(data, newYAxisMaxValue) {
+          if (!data || !data.length) {
+            return;
+          }
           try {
             var currentOption = chart.getOption();
             var actualVisibleDataPoints = currentOption.xAxis[0].data.length;

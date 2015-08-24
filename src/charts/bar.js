@@ -22,16 +22,16 @@ angular.module('dashing.charts.bar', [
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
  *   tooltipFormatter: function // optional to override the tooltip formatter
- *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
+ *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
  *   barMinWidth: number // when bar width is narrower than the value, data zoom control will be shown (default: 14)
  *   barMinSpacing: number // when bar spacing is narrower than the value, data zoom control will be shown (default: 4)
  *   color: string // optional to override bar color
- *   data: // an array of initial data points (will fallback to $scope.data)
+ *   data: // an array of initial data points (will fallback to $scope.data).
  * }
  * @param datasource-bind - array of data objects
- *   every data object is {x: time|string, y: [number]}
+ *   every data object is {x: string, y: [number]}
  */
   .directive('barChart', function() {
     'use strict';
@@ -48,7 +48,9 @@ angular.module('dashing.charts.bar', [
 
         // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
@@ -56,7 +58,7 @@ angular.module('dashing.charts.bar', [
           barMinWidth: 14,
           barMinSpacing: 4,
           color: $echarts.colorPalette(0)[0].line,
-          yAxisValuesNum: 3,
+          yAxisSplitNum: 3,
           yAxisLabelWidth: 60
         }, $scope.options);
 
@@ -67,14 +69,14 @@ angular.module('dashing.charts.bar', [
           width: use.width,
           ignoreContainerResizeEvent: true,
           tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
           }, use.grid),
           xAxis: [{
+            // dashing bar-chart does not support time as x-axis values
             axisLabel: {show: true},
             axisLine: {show: false},
             axisTick: {show: false},
@@ -84,7 +86,7 @@ angular.module('dashing.charts.bar', [
             })
           }],
           yAxis: [{
-            splitNumber: use.yAxisValuesNum,
+            splitNumber: use.yAxisSplitNum,
             splitLine: {show: false},
             axisLine: {show: false},
             axisLabel: {formatter: use.yAxisLabelFormatter},

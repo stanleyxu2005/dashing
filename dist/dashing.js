@@ -58,7 +58,9 @@ angular.module('dashing.charts.bar', [
       link: function(scope) {
         var echartScope = scope.$$childHead;
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
@@ -66,7 +68,7 @@ angular.module('dashing.charts.bar', [
           barMinWidth: 14,
           barMinSpacing: 4,
           color: $echarts.colorPalette(0)[0].line,
-          yAxisValuesNum: 3,
+          yAxisSplitNum: 3,
           yAxisLabelWidth: 60
         }, $scope.options);
         var data = use.data;
@@ -76,9 +78,8 @@ angular.module('dashing.charts.bar', [
           width: use.width,
           ignoreContainerResizeEvent: true,
           tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
@@ -93,7 +94,7 @@ angular.module('dashing.charts.bar', [
             })
           }],
           yAxis: [{
-            splitNumber: use.yAxisValuesNum,
+            splitNumber: use.yAxisSplitNum,
             splitLine: {show: false},
             axisLine: {show: false},
             axisLabel: {formatter: use.yAxisLabelFormatter},
@@ -143,10 +144,16 @@ angular.module('dashing.charts.echarts', [])
       var array = [];
       angular.forEach(ensureArray(data), function(datum) {
         var dataGrow = visibleDataPointsNum-- > 0;
+        var xAxisIsTime = angular.isDate(datum.x);
         angular.forEach(ensureArray(datum.y), function(yValue, seriesIndex) {
-          var params = [seriesIndex, yValue, false, dataGrow];
-          if (seriesIndex === 0) {
-            params.push(datum.x);
+          var params;
+          if (xAxisIsTime) {
+            params = [seriesIndex, [datum.x, yValue], false, dataGrow];
+          } else {
+            params = [seriesIndex, yValue, false, dataGrow];
+            if (seriesIndex === 0) {
+              params.push(datum.x);
+            }
           }
           array.push(params);
         });
@@ -197,21 +204,16 @@ angular.module('dashing.charts.echarts', [])
             chart = null;
           });
         }
-        if (!options.xAxis[0].data.length) {
-          options.xAxis[0].data = [''];
-          angular.forEach(options.series, function(series) {
-            series.data = [0];
-          });
-        }
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, true);
+        console.log(options.series[0].data.length);
                 $scope.addDataPoints = function(data, newYAxisMaxValue) {
           if (!data || !data.length) {
             return;
           }
           try {
             var currentOption = chart.getOption();
-            var actualVisibleDataPoints = currentOption.xAxis[0].data.length;
+            var actualVisibleDataPoints = currentOption.series[0].data.length;
             var visibleDataPointsNum = Math.min(
               80 ,
               Math.max(0, currentOption.xAxisDataNum - actualVisibleDataPoints));
@@ -238,13 +240,27 @@ angular.module('dashing.charts.echarts', [])
     };
   })
   .factory('$echarts', ['$filter', function($filter) {
-    function tooltipSeriesColorIndicatorHtml(color) {
-      var border = zrender.tool.color.lift(color, -0.2);
-      return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+    function buildTooltipSeriesTable(array) {
+      function tooltipSeriesColorIndicatorHtml(color) {
+        var border = zrender.tool.color.lift(color, -0.2);
+        return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+      }
+      return '<table>' +
+        array.map(function(obj) {
+          if (!obj.name) {
+            obj.name = obj.value;
+            obj.value = '';
+          }
+          return '<tr>' +
+            '<td>' + tooltipSeriesColorIndicatorHtml(obj.color) + '</td>' +
+            '<td style="padding: 0 12px 0 4px">' + obj.name + '</td>' +
+            '<td>' + obj.value + '</td>' +
+            '</tr>';
+        }).join('') + '</table>';
     }
     function defaultNameFormatter(name) {
       return angular.isDate(name) ?
-        $filter('date')(name, 'YYYY-MM-DD HH:mm:ss') : name;
+        $filter('date')(name, 'yyyy-MM-dd HH:MM:ss') : name;
     }
     var self = {
             tooltip: function(args) {
@@ -259,11 +275,11 @@ angular.module('dashing.charts.echarts', [])
             return [p[0], 22];
           }
         };
-        if (args.color) {
+        if (args.guideLineColor) {
           result.axisPointer = {
             type: 'line',
             lineStyle: {
-              color: args.color,
+              color: args.guideLineColor,
               width: 3,
               type: 'dotted'
             }
@@ -273,24 +289,41 @@ angular.module('dashing.charts.echarts', [])
       },
             tooltipFirstSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
-          var value = (valueFormatter ? valueFormatter(params[0].value) : params[0].value);
-          return name + '<br/>' + value;
+          var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+          return name +
+            buildTooltipSeriesTable([{
+              color: params[0].series.colors.line,
+              name: params[0].series.name,
+              value: valueFormatter ? valueFormatter(params[0].value) : params[0].value
+            }]);
         };
       },
             tooltipAllSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
-          return name + '<table>' +
-            params.map(function(param) {
-              var color = param.series.colors.line;
-              var value = (valueFormatter ? valueFormatter(param.value) : param.value);
-              return '<tr>' +
-                '<td>' + tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-                '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
-                '<td>' + value + '</td>' +
-                '</tr>';
-            }).join('') + '</table>';
+          var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+          return name +
+            buildTooltipSeriesTable(params.map(function(param) {
+              return {
+                color: param.series.colors.line,
+                name: param.seriesName,
+                value: valueFormatter ? valueFormatter(param.value) : param.value
+              };
+            }));
+        };
+      },
+            timelineTooltip: function(args) {
+        args = args || {};
+        return {
+          trigger: 'item',
+          formatter: function(params) {
+            var name = $filter('date')(params.value[0], 'yyyy-MM-dd HH:MM:ss');
+            return name +
+              buildTooltipSeriesTable([{
+                color: params.series.colors.line,
+                name: params.series.name,
+                value: args.valueFormatter ? args.valueFormatter(params.value[1]) : params.value[1]
+              }]);
+          }
         };
       },
             axisLabelFormatter: function(unit) {
@@ -352,6 +385,31 @@ angular.module('dashing.charts.echarts', [])
           newer: data.slice(visibleDataPoints)
         };
       },
+            fillAxisData: function(options, data) {
+        angular.forEach(options.series, function(series) {
+          series.data = [];
+        });
+        if (options.xAxis[0].type === 'time') {
+          delete options.xAxis[0].boundaryGap;
+          delete options.xAxis[0].data;
+          angular.forEach(data, function(datum) {
+            angular.forEach(options.series, function(series, seriesIndex) {
+              series.data.push([
+                datum.x,
+                Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y]);
+            });
+          });
+        } else {
+          options.xAxis[0].data = [];
+          angular.forEach(data, function(datum) {
+            options.xAxis[0].data.push(datum.x);
+            angular.forEach(options.series, function(series, seriesIndex) {
+              series.data.push(
+                Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y);
+            });
+          });
+        }
+      },
             colorPalette: function(size) {
         function _suggestColorPalette(size) {
           var colors = {
@@ -401,16 +459,18 @@ angular.module('dashing.charts.line', [
       link: function(scope) {
         var echartScope = scope.$$childHead;
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
           showLegend: true,
-          yAxisValuesNum: 3,
-          yAxisLabelWidth: 60,
-          yAxisSplitLine: true
+          yAxisSplitNum: 3,
+          yAxisShowSplitLine: true,
+          yAxisLabelWidth: 60
         }, $scope.options);
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         if (!use.seriesNames) {
@@ -426,33 +486,32 @@ angular.module('dashing.charts.line', [
             color: '#ddd'
           }
         };
+        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
+        use.stacked = use.stacked && (use.xAxisType !== 'time');
         var options = {
           height: use.height,
           width: use.width,
           tooltip: $echarts.tooltip({
-            color: 'rgb(235,235,235)',
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipAllSeriesFormatter(use.valueFormatter)
+            guideLineColor: 'rgb(235,235,235)',
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipAllSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           grid: angular.merge({
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
             axisLabel: {show: true},
-            splitLine: false,
-            data: data.older.map(function(item) {
-              return item.x;
-            })
+            splitLine: false
           }],
           yAxis: [{
-            splitNumber: use.yAxisValuesNum,
-            splitLine: {show: use.yAxisSplitLine},
-            axisLine: {show: false},
+            splitNumber: use.yAxisSplitNum,
+            splitLine: {show: use.yAxisShowSplitLine},
+            axisLine: false,
             axisLabel: {formatter: use.yAxisLabelFormatter},
             scale: use.scale
           }],
@@ -469,13 +528,14 @@ angular.module('dashing.charts.line', [
               name: name,
               colors: colors[i % colors.length],
               stack: use.stacked,
-              showAllSymbol: use.showAllSymbol,
-              data: data.older.map(function(item) {
-                return Array.isArray(item.y) ? item.y[i] : item.y;
-              })
+              showAllSymbol: use.showAllSymbol
             })
           );
         });
+        $echarts.fillAxisData(options, data.older);
+        if (use.xAxisType === 'time') {
+          options.tooltip = $echarts.timelineTooltip();
+        }
         if (options.series.length === 1) {
           options.yAxis.boundaryGap = [0, 0.15];
         }
@@ -666,32 +726,33 @@ angular.module('dashing.charts.sparkline', [
       link: function(scope) {
         var echartScope = scope.$$childHead;
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = $scope.options;
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         var colors = $echarts.colorPalette(1)[0];
-        $scope.echartOptions = {
+        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
+        use.stacked = use.stacked && (use.xAxisType !== 'time');
+        var options = {
           height: use.height,
           width: use.width,
           tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           grid: angular.merge({
             borderWidth: 1, x: 5, y: 5, x2: 5,
             y2: 1           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLabel: false,
-            splitLine: false,
-            data: data.older.map(function(item) {
-              return item.x;
-            })
+            splitLine: false
           }],
           yAxis: [{
             boundaryGap: [0, 0.15],
@@ -700,14 +761,17 @@ angular.module('dashing.charts.sparkline', [
           }],
           series: [$echarts.makeDataSeries({
             colors: colors,
-            stack: true ,
-            data: data.older.map(function(item) {
-              return Array.isArray(item.y) ? item.y[0] : item.y;
-            })
-          })],
+            stack: true           })],
           xAxisDataNum: use.maxDataNum,
           dataPointsQueue: data.newer
         };
+        $echarts.fillAxisData(options, data.older);
+        if (use.xAxisType === 'time') {
+          options.tooltip = $echarts.timelineTooltip();
+          options.series[0].showAllSymbol = true;
+          options.series[0].stack = false;
+        }
+        $scope.echartOptions = options;
       }]
     };
   })

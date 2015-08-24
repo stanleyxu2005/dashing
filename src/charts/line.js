@@ -21,10 +21,11 @@ angular.module('dashing.charts.line', [
  *   maxDataNum: number // the maximal number of data points (of a series) in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
  *   showLegend: boolean // show legend even when multiple data series on chart (default: true)
- *   yAxisValuesNum: number // the number of values on y-axis (default: 3)
+ *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
+ *   yAxisShowSplitLine: boolean // show split lines on y-axis (default: true)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
- *   yAxisSplitLine: boolean // show multiple y-axis split line  (default: true)
+ *   xAxisType: ''|'time // empty sting or 'category' is string, 'time' need to feed x-axis data as date objects
  *   stacked: boolean // should stack all data series (default: true)
  *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)\
  *   scale: boolean // scale values on y-axis (default: false)
@@ -48,16 +49,18 @@ angular.module('dashing.charts.line', [
 
         // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
           stacked: true,
           showLegend: true,
-          yAxisValuesNum: 3,
-          yAxisLabelWidth: 60,
-          yAxisSplitLine: true
+          yAxisSplitNum: 3,
+          yAxisShowSplitLine: true,
+          yAxisLabelWidth: 60
         }, $scope.options);
 
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
@@ -74,14 +77,19 @@ angular.module('dashing.charts.line', [
             color: '#ddd'
           }
         };
+
+        // todo: https://github.com/ecomfe/echarts/issues/1954
+        // for timeline x-axis, without showing all symbols no symbol will be shown.
+        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
+        use.stacked = use.stacked && (use.xAxisType !== 'time');
+
         var options = {
           height: use.height,
           width: use.width,
           tooltip: $echarts.tooltip({
-            color: 'rgb(235,235,235)',
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipAllSeriesFormatter(use.valueFormatter)
+            guideLineColor: 'rgb(235,235,235)',
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipAllSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
@@ -89,19 +97,17 @@ angular.module('dashing.charts.line', [
             borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
             axisLabel: {show: true},
-            splitLine: false,
-            data: data.older.map(function(item) {
-              return item.x;
-            })
+            splitLine: false
           }],
           yAxis: [{
-            splitNumber: use.yAxisValuesNum,
-            splitLine: {show: use.yAxisSplitLine},
-            axisLine: {show: false},
+            splitNumber: use.yAxisSplitNum,
+            splitLine: {show: use.yAxisShowSplitLine},
+            axisLine: false,
             axisLabel: {formatter: use.yAxisLabelFormatter},
             scale: use.scale
           }],
@@ -121,13 +127,16 @@ angular.module('dashing.charts.line', [
               name: name,
               colors: colors[i % colors.length],
               stack: use.stacked,
-              showAllSymbol: use.showAllSymbol,
-              data: data.older.map(function(item) {
-                return Array.isArray(item.y) ? item.y[i] : item.y;
-              })
+              showAllSymbol: use.showAllSymbol
             })
           );
         });
+
+        $echarts.fillAxisData(options, data.older);
+        if (use.xAxisType === 'time') {
+          // todo: https://github.com/ecomfe/echarts/issues/1954
+          options.tooltip = $echarts.timelineTooltip();
+        }
 
         if (options.series.length === 1) {
           options.yAxis.boundaryGap = [0, 0.15];

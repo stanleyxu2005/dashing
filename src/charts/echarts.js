@@ -29,10 +29,16 @@ angular.module('dashing.charts.echarts', [])
       var array = [];
       angular.forEach(ensureArray(data), function(datum) {
         var dataGrow = visibleDataPointsNum-- > 0;
+        var xAxisIsTime = angular.isDate(datum.x);
         angular.forEach(ensureArray(datum.y), function(yValue, seriesIndex) {
-          var params = [seriesIndex, yValue, /*isHead=*/false, dataGrow];
-          if (seriesIndex === 0) {
-            params.push(datum.x);
+          var params;
+          if (xAxisIsTime) {
+            params = [seriesIndex, [datum.x, yValue], /*isHead=*/false, dataGrow];
+          } else {
+            params = [seriesIndex, yValue, /*isHead=*/false, dataGrow];
+            if (seriesIndex === 0) {
+              params.push(datum.x);
+            }
           }
           array.push(params);
         });
@@ -90,14 +96,6 @@ angular.module('dashing.charts.echarts', [])
           });
         }
 
-        if (!options.xAxis[0].data.length) {
-          // todo: if no data is provided at initialization, the chart will break. so we draw a meaningless point.
-          options.xAxis[0].data = [''];
-          angular.forEach(options.series, function(series) {
-            series.data = [0];
-          });
-        }
-
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, /*overwrite=*/true);
 
@@ -108,7 +106,7 @@ angular.module('dashing.charts.echarts', [])
           }
           try {
             var currentOption = chart.getOption();
-            var actualVisibleDataPoints = currentOption.xAxis[0].data.length;
+            var actualVisibleDataPoints = currentOption.series[0].data.length;
             var visibleDataPointsNum = Math.min(
               80 /* maximal visible data points per series */,
               Math.max(0, currentOption.xAxisDataNum - actualVisibleDataPoints));
@@ -147,14 +145,30 @@ angular.module('dashing.charts.echarts', [])
   .factory('$echarts', ['$filter', function($filter) {
     'use strict';
 
-    function tooltipSeriesColorIndicatorHtml(color) {
-      var border = zrender.tool.color.lift(color, -0.2);
-      return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+    function buildTooltipSeriesTable(array) {
+
+      function tooltipSeriesColorIndicatorHtml(color) {
+        var border = zrender.tool.color.lift(color, -0.2);
+        return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
+      }
+
+      return '<table>' +
+        array.map(function(obj) {
+          if (!obj.name) {
+            obj.name = obj.value;
+            obj.value = '';
+          }
+          return '<tr>' +
+            '<td>' + tooltipSeriesColorIndicatorHtml(obj.color) + '</td>' +
+            '<td style="padding: 0 12px 0 4px">' + obj.name + '</td>' +
+            '<td>' + obj.value + '</td>' +
+            '</tr>';
+        }).join('') + '</table>';
     }
 
     function defaultNameFormatter(name) {
       return angular.isDate(name) ?
-        $filter('date')(name, 'YYYY-MM-DD HH:mm:ss') : name;
+        $filter('date')(name, 'yyyy-MM-dd HH:MM:ss') : name;
     }
 
     var self = {
@@ -173,11 +187,11 @@ angular.module('dashing.charts.echarts', [])
             return [p[0], 22]; // fix the tooltip position
           }
         };
-        if (args.color) {
+        if (args.guideLineColor) {
           result.axisPointer = {
             type: 'line',
             lineStyle: {
-              color: args.color,
+              color: args.guideLineColor,
               width: 3,
               type: 'dotted'
             }
@@ -190,9 +204,13 @@ angular.module('dashing.charts.echarts', [])
        */
       tooltipFirstSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
-          var value = (valueFormatter ? valueFormatter(params[0].value) : params[0].value);
-          return name + '<br/>' + value;
+          var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+          return name +
+            buildTooltipSeriesTable([{
+              color: params[0].series.colors.line,
+              name: params[0].series.name,
+              value: valueFormatter ? valueFormatter(params[0].value) : params[0].value
+            }]);
         };
       },
       /**
@@ -201,17 +219,35 @@ angular.module('dashing.charts.echarts', [])
        */
       tooltipAllSeriesFormatter: function(valueFormatter, nameFormatter) {
         return function(params) {
-          var name = (nameFormatter ? nameFormatter : defaultNameFormatter)(params[0].name);
-          return name + '<table>' +
-            params.map(function(param) {
-              var color = param.series.colors.line;
-              var value = (valueFormatter ? valueFormatter(param.value) : param.value);
-              return '<tr>' +
-                '<td>' + tooltipSeriesColorIndicatorHtml(color) + '</td>' +
-                '<td style="padding: 0 12px 0 4px">' + param.seriesName + '</td>' +
-                '<td>' + value + '</td>' +
-                '</tr>';
-            }).join('') + '</table>';
+          var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+          return name +
+            buildTooltipSeriesTable(params.map(function(param) {
+              return {
+                color: param.series.colors.line,
+                name: param.seriesName,
+                value: valueFormatter ? valueFormatter(param.value) : param.value
+              };
+            }));
+        };
+      },
+      /**
+       * Tooltip for timeline chart with some limitation.
+       * trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
+       */
+      timelineTooltip: function(args) {
+        args = args || {};
+        return {
+          // todo: https://github.com/ecomfe/echarts/issues/1954
+          trigger: 'item',
+          formatter: function(params) {
+            var name = $filter('date')(params.value[0], 'yyyy-MM-dd HH:MM:ss');
+            return name +
+              buildTooltipSeriesTable([{
+                color: params.series.colors.line,
+                name: params.series.name,
+                value: args.valueFormatter ? args.valueFormatter(params.value[1]) : params.value[1]
+              }]);
+          }
         };
       },
       /**
@@ -285,6 +321,38 @@ angular.module('dashing.charts.echarts', [])
           older: data.slice(0, visibleDataPoints),
           newer: data.slice(visibleDataPoints)
         };
+      },
+      /**
+       * Reset axises in option and fill with initial data.
+       */
+      fillAxisData: function(options, data) {
+        angular.forEach(options.series, function(series) {
+          series.data = [];
+        });
+
+        if (options.xAxis[0].type === 'time') {
+          // todo: https://github.com/ecomfe/echarts/issues/1954
+          // otherwise no data will be shown.
+          delete options.xAxis[0].boundaryGap;
+
+          delete options.xAxis[0].data;
+          angular.forEach(data, function(datum) {
+            angular.forEach(options.series, function(series, seriesIndex) {
+              series.data.push([
+                datum.x,
+                Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y]);
+            });
+          });
+        } else {
+          options.xAxis[0].data = [];
+          angular.forEach(data, function(datum) {
+            options.xAxis[0].data.push(datum.x);
+            angular.forEach(options.series, function(series, seriesIndex) {
+              series.data.push(
+                Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y);
+            });
+          });
+        }
       },
       /**
        * Return an array of color objects regarding the num of data series.

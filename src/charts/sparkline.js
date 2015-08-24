@@ -20,6 +20,7 @@ angular.module('dashing.charts.sparkline', [
  *   width: string // the css width of the chart
  *   maxDataNum: number // the maximal number of data points in the chart (default: unlimited)
  *   tooltipFormatter: function // optional to override the tooltip formatter
+ *   xAxisType: ''|'time // empty sting or 'category' is string, 'time' need to feed x-axis data as date objects
  *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
@@ -40,7 +41,9 @@ angular.module('dashing.charts.sparkline', [
 
         // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
-          echartScope.addDataPoints(data);
+          if (data) {
+            echartScope.addDataPoints(data);
+          }
         });
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
@@ -48,13 +51,17 @@ angular.module('dashing.charts.sparkline', [
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         var colors = $echarts.colorPalette(1)[0];
 
-        $scope.echartOptions = {
+        // todo: https://github.com/ecomfe/echarts/issues/1954
+        // for timeline x-axis, without showing all symbols no symbol will be shown.
+        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
+        use.stacked = use.stacked && (use.xAxisType !== 'time');
+
+        var options = {
           height: use.height,
           width: use.width,
           tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter ?
-              use.tooltipFormatter :
-              $echarts.tooltipFirstSeriesFormatter(use.valueFormatter)
+            formatter: use.tooltipFormatter || $echarts
+              .tooltipFirstSeriesFormatter(use.valueFormatter)
           }),
           dataZoom: {show: false},
           // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
@@ -63,12 +70,10 @@ angular.module('dashing.charts.sparkline', [
             y2: 1 /* set 5px will have a thick ugly grey border */
           }, use.grid),
           xAxis: [{
+            type: use.xAxisType,
             boundaryGap: false,
             axisLabel: false,
-            splitLine: false,
-            data: data.older.map(function(item) {
-              return item.x;
-            })
+            splitLine: false
           }],
           yAxis: [{
             boundaryGap: [0, 0.15],
@@ -77,15 +82,22 @@ angular.module('dashing.charts.sparkline', [
           }],
           series: [$echarts.makeDataSeries({
             colors: colors,
-            stack: true /* stack=true means fill area */,
-            data: data.older.map(function(item) {
-              return Array.isArray(item.y) ? item.y[0] : item.y;
-            })
+            stack: true /* stack=true means fill area */
           })],
           // own properties
           xAxisDataNum: use.maxDataNum,
           dataPointsQueue: data.newer
         };
+
+        $echarts.fillAxisData(options, data.older);
+        if (use.xAxisType === 'time') {
+          // todo: https://github.com/ecomfe/echarts/issues/1954
+          options.tooltip = $echarts.timelineTooltip();
+          options.series[0].showAllSymbol = true;
+          options.series[0].stack = false;
+        }
+
+        $scope.echartOptions = options;
       }]
     };
   })

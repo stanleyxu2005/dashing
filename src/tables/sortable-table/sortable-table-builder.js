@@ -138,7 +138,7 @@ angular.module('dashing.tables.sortable-table.builder', [
             var keys = Array.isArray(col.key) ? col.key : [col.key];
             angular.forEach(keys, function(key) {
               if (!model.hasOwnProperty(key)) {
-                console.warn('Model does not have a property matches column key `' + col + '`');
+                console.warn('Model does not have a property matches column key `' + col + '`.');
               }
             });
           });

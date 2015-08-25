@@ -77,7 +77,7 @@ angular.module('dashing.charts.echarts', [])
       scope: {
         options: '='
       },
-      controller: ['$scope', '$element', function($scope, $element) {
+      controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
         var options = $scope.options;
         var elem0 = $element[0];
         angular.forEach(['width', 'height'], function(prop) {
@@ -98,15 +98,34 @@ angular.module('dashing.charts.echarts', [])
 
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, /*overwrite=*/true);
+        var initialized = angular.isDefined(chart.getOption().xAxis);
+
+        function initializeDoneCheck() {
+          if (initialized) {
+            options = null;
+          }
+        }
 
         /** Method to add data points to chart */
         $scope.addDataPoints = function(data, newYAxisMaxValue) {
-          if (!data || !data.length) {
+          if (!data || (Array.isArray(data) && !data.length)) {
             return;
           }
           try {
+            // try to re-initialize when data is available
+            if (!initialized) {
+              $echarts.fillAxisData(options, Array.isArray(data) ? data : [data]);
+              chart.setOption(options, /*overwrite=*/true);
+              initialized = angular.isDefined(chart.getOption().xAxis);
+              if (initialized) {
+                chart.hideLoading();
+              }
+              initializeDoneCheck();
+              return;
+            }
+
             var currentOption = chart.getOption();
-            var actualVisibleDataPoints = currentOption.series[0].data.length;
+            var actualVisibleDataPoints = initialized ? currentOption.series[0].data.length : 0;
             var visibleDataPointsNum = Math.min(
               80 /* maximal visible data points per series */,
               Math.max(0, currentOption.xAxisDataNum - actualVisibleDataPoints));
@@ -130,12 +149,19 @@ angular.module('dashing.charts.echarts', [])
         // If data points are more than the maximal visible data points, we put them into a queue and then
         // add them to the chart after the option is applied, otherwise all data points will be shown on
         // the chart.
-        if (options.dataPointsQueue) {
+        if (options.dataPointsQueue && options.dataPointsQueue.length) {
+          if (!initialized) {
+            console.warn({
+              message: 'Failed to initialize the chart. All data points in queue will be dropped.',
+              data: options.dataPointsQueue
+            });
+            return;
+          }
           $scope.addDataPoints(options.dataPointsQueue);
+          delete options.dataPointsQueue;
         }
 
-        // The object `options` is no longer used. We destroy it to free up memory.
-        options = null;
+        initializeDoneCheck();
       }]
     };
   })
@@ -310,8 +336,7 @@ angular.module('dashing.charts.echarts', [])
        * is created. The part `newer` will be added afterwards by `addDataPoints()`.
        */
       splitInitialData: function(data, visibleDataPoints) {
-        if (!data || !Array.isArray(data)) {
-          console.warn('Chart need at least 1 data point to initialize the axises.');
+        if (!Array.isArray(data)) {
           data = [];
         }
         if (data.length <= visibleDataPoints) {

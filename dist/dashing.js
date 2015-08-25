@@ -1,6 +1,6 @@
 /*
  * dashing (assembled widgets)
- * @version v0.1.7
+ * @version v0.1.8
  * @link https://github.com/stanleyxu2005/dashing
  * @license Apache License 2.0, see accompanying LICENSE file
  */
@@ -187,7 +187,7 @@ angular.module('dashing.charts.echarts', [])
       scope: {
         options: '='
       },
-      controller: ['$scope', '$element', function($scope, $element) {
+      controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
         var options = $scope.options;
         var elem0 = $element[0];
         angular.forEach(['width', 'height'], function(prop) {
@@ -206,14 +206,29 @@ angular.module('dashing.charts.echarts', [])
         }
         chart.setTheme(makeDashingTheme());
         chart.setOption(options, true);
-        console.log(options.series[0].data.length);
+        var initialized = angular.isDefined(chart.getOption().xAxis);
+        function initializeDoneCheck() {
+          if (initialized) {
+            options = null;
+          }
+        }
                 $scope.addDataPoints = function(data, newYAxisMaxValue) {
-          if (!data || !data.length) {
+          if (!data || (Array.isArray(data) && !data.length)) {
             return;
           }
           try {
+            if (!initialized) {
+              $echarts.fillAxisData(options, Array.isArray(data) ? data : [data]);
+              chart.setOption(options, true);
+              initialized = angular.isDefined(chart.getOption().xAxis);
+              if (initialized) {
+                chart.hideLoading();
+              }
+              initializeDoneCheck();
+              return;
+            }
             var currentOption = chart.getOption();
-            var actualVisibleDataPoints = currentOption.series[0].data.length;
+            var actualVisibleDataPoints = initialized ? currentOption.series[0].data.length : 0;
             var visibleDataPointsNum = Math.min(
               80 ,
               Math.max(0, currentOption.xAxisDataNum - actualVisibleDataPoints));
@@ -232,10 +247,18 @@ angular.module('dashing.charts.echarts', [])
         $scope.setOptions = function(options) {
           chart.setOption(options);
         };
-        if (options.dataPointsQueue) {
+        if (options.dataPointsQueue && options.dataPointsQueue.length) {
+          if (!initialized) {
+            console.warn({
+              message: 'Failed to initialize the chart. All data points in queue will be dropped.',
+              data: options.dataPointsQueue
+            });
+            return;
+          }
           $scope.addDataPoints(options.dataPointsQueue);
+          delete options.dataPointsQueue;
         }
-        options = null;
+        initializeDoneCheck();
       }]
     };
   })
@@ -373,8 +396,7 @@ angular.module('dashing.charts.echarts', [])
         return angular.merge(args, options);
       },
             splitInitialData: function(data, visibleDataPoints) {
-        if (!data || !Array.isArray(data)) {
-          console.warn('Chart need at least 1 data point to initialize the axises.');
+        if (!Array.isArray(data)) {
           data = [];
         }
         if (data.length <= visibleDataPoints) {
@@ -474,7 +496,7 @@ angular.module('dashing.charts.line', [
         }, $scope.options);
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         if (!use.seriesNames) {
-          console.warn('seriesName not defined');
+          console.warn('Series names are NOT defined.');
           use.seriesNames = data.older[0].y.map(function(_, i) {
             return 'Series ' + (i + 1);
           });
@@ -624,7 +646,7 @@ angular.module('dashing.charts.ring', [
         }, $scope.options);
         var data = use.data || $scope.data;
         if (!data) {
-          console.warn('Need data to render the ring pie chart');
+          console.warn('Need data to render the ring pie chart.');
         }
         var colors = $echarts.buildColorStates(use.color);
         var padding = 8;
@@ -942,7 +964,7 @@ angular.module('dashing.property', [
             }
             if (angular.isObject(value)) {
               if (value.hasOwnProperty('value')) {
-                console.warn({message: 'Property should not have value.value', object: value});
+                console.warn({message: 'Ignore `value.value`, because it is a reversed field.', object: value});
                 delete value.value;
               }
               angular.merge($scope, value);
@@ -1247,7 +1269,7 @@ angular.module('dashing.tables.sortable-table.builder', [
             var keys = Array.isArray(col.key) ? col.key : [col.key];
             angular.forEach(keys, function(key) {
               if (!model.hasOwnProperty(key)) {
-                console.warn('Model does not have a property matches column key `' + col + '`');
+                console.warn('Model does not have a property matches column key `' + col + '`.');
               }
             });
           });
@@ -1298,7 +1320,7 @@ angular.module('dashing.tables.sortable-table', [
             }
             if (Array.isArray(column.renderer)) {
               if (column.renderer.length !== column.key.length) {
-                console.error('Every column key should have a renderer, or share one renderer.');
+                console.warn('Every column key should have a renderer, or share one renderer.');
               }
               return column.renderer;
             }

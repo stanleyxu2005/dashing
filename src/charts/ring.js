@@ -57,7 +57,7 @@ angular.module('dashing.charts.ring', [
 
         var data = use.data || $scope.data;
         if (!data) {
-          console.warn('Need data to render the ring pie chart');
+          console.warn('Need data to render the ring pie chart.');
         }
         var colors = $echarts.buildColorStates(use.color);
         var padding = 8;

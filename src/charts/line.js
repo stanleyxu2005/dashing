@@ -65,7 +65,7 @@ angular.module('dashing.charts.line', [
 
         var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
         if (!use.seriesNames) {
-          console.warn('seriesName not defined');
+          console.warn('Series names are NOT defined.');
           use.seriesNames = data.older[0].y.map(function(_, i) {
             return 'Series ' + (i + 1);
           });

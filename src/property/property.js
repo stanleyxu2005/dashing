@@ -52,7 +52,7 @@ angular.module('dashing.property', [
             if (angular.isObject(value)) {
               if (value.hasOwnProperty('value')) {
                 // `value.value` will assign `$scope.value`, which will trigger watch notification again.
-                console.warn({message: 'Property should not have value.value', object: value});
+                console.warn({message: 'Ignore `value.value`, because it is a reversed field.', object: value});
                 delete value.value;
               }
               // bind all value fields to scope.

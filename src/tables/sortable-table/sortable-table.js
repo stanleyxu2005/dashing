@@ -78,7 +78,7 @@ angular.module('dashing.tables.sortable-table', [
             }
             if (Array.isArray(column.renderer)) {
               if (column.renderer.length !== column.key.length) {
-                console.error('Every column key should have a renderer, or share one renderer.');
+                console.warn('Every column key should have a renderer, or share one renderer.');
               }
               return column.renderer;
             }

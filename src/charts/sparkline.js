@@ -92,7 +92,7 @@ angular.module('dashing.charts.sparkline', [
         $echarts.fillAxisData(options, data.older);
         if (use.xAxisType === 'time') {
           // todo: https://github.com/ecomfe/echarts/issues/1954
-          options.tooltip = $echarts.timelineTooltip();
+          options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
           options.series[0].showAllSymbol = true;
           options.series[0].stack = false;
         }

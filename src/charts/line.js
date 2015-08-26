@@ -135,7 +135,7 @@ angular.module('dashing.charts.line', [
         $echarts.fillAxisData(options, data.older);
         if (use.xAxisType === 'time') {
           // todo: https://github.com/ecomfe/echarts/issues/1954
-          options.tooltip = $echarts.timelineTooltip();
+          options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
         }
 
         if (options.series.length === 1) {

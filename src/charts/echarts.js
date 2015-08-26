@@ -194,7 +194,7 @@ angular.module('dashing.charts.echarts', [])
 
     function defaultNameFormatter(name) {
       return angular.isDate(name) ?
-        $filter('date')(name, 'yyyy-MM-dd HH:MM:ss') : name;
+        $filter('date')(name, 'yyyy-MM-dd HH:mm:ss') : name;
     }
 
     var self = {
@@ -260,18 +260,17 @@ angular.module('dashing.charts.echarts', [])
        * Tooltip for timeline chart with some limitation.
        * trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
        */
-      timelineTooltip: function(args) {
-        args = args || {};
+      timelineTooltip: function(valueFormatter) {
         return {
           // todo: https://github.com/ecomfe/echarts/issues/1954
           trigger: 'item',
           formatter: function(params) {
-            var name = $filter('date')(params.value[0], 'yyyy-MM-dd HH:MM:ss');
+            var name = defaultNameFormatter(params.value[0]);
             return name +
               buildTooltipSeriesTable([{
                 color: params.series.colors.line,
                 name: params.series.name,
-                value: args.valueFormatter ? args.valueFormatter(params.value[1]) : params.value[1]
+                value: valueFormatter ? valueFormatter(params.value[1]) : params.value[1]
               }]);
           }
         };

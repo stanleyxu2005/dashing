@@ -35,7 +35,7 @@ angular.module('dashing').run(['$templateCache', function($templateCache) {$temp
 $templateCache.put('forms/searchbox.html','<div class="form-group has-feedback"> <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"> <span class="glyphicon glyphicon-search form-control-feedback"></span> </div>');
 $templateCache.put('metrics/metrics.html','<div class="metrics"> <div> <span class="metrics-caption" ng-bind="caption"></span> <remark ng-if="help" type="question" tooltip="{{help}}"></remark> </div> <h3 class="metrics-value"> <span ng-bind="value"></span> <small ng-bind="unit"></small> </h3> <small ng-if="subText" class="metrics-sub-text" ng-bind="subText"></small> </div>');
 $templateCache.put('progressbar/progressbar.html','<div style="width: 100%">  <span class="small pull-left" ng-bind="current+\'/\'+max"></span> <span class="small pull-right" ng-bind="usage + \'%\'"></span> </div> <div style="width: 100%" class="progress progress-tiny"> <div ng-style="{\'width\': usage+\'%\'}" class="progress-bar {{usageClass}}"></div> </div>');
-$templateCache.put('property/bytes.html','<span ng-bind="raw|number:0"></span> <span ng-if="unit" ng-bind="unit"></span>');
+$templateCache.put('property/bytes.html','<span ng-bind="value|number:0"></span> <span ng-if="unit" ng-bind="unit"></span>');
 $templateCache.put('property/property.html','<ng-switch on="renderer">  <a ng-switch-when="Link" ng-href="{{href}}" ng-bind="text"></a>  <button ng-switch-when="Button" ng-if="!hide" type="button" class="btn btn-default {{class}}" ng-bind="text" ng-click="click()" ng-disabled="disabled" ng-attr-bs-tooltip="tooltip"></button>  <tag ng-switch-when="Tag" text="{{text}}" ng-attr-href="{{href}}" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></tag>  <indicator ng-switch-when="Indicator" ng-attr-shape="{{shape}}" ng-attr-condition="{{condition}}" ng-attr-tooltip="{{tooltip}}"></indicator>  <progressbar ng-switch-when="ProgressBar" current="{{current}}" max="{{max}}"></progressbar>  <bytes ng-switch-when="Bytes" raw="{{raw}}" ng-attr-unit="{{unit}}" ng-attr-readable="{{readable}}"></bytes>  <span ng-switch-when="Duration" ng-bind="value|duration"></span>  <span ng-switch-when="DateTime" ng-bind="value|date:\'yyyy-MM-dd HH:mm:ss\'"></span>  <span ng-switch-when="Number" ng-bind="value|number:0"></span>  <span ng-switch-default ng-bind="value"></span> </ng-switch>');
 $templateCache.put('remark/remark.html','<span class="{{fontClass}} remark-icon" bs-tooltip="tooltip"></span>');
 $templateCache.put('state/indicator.html','<ng-switch on="shape"> <div ng-switch-when="stripe" ng-style="{\'background-color\': colorStyle, \'cursor\': cursorStyle}" style="display: inline-block; height: 100%; width: 8px" bs-tooltip="tooltip" placement="right auto"></div> <span ng-switch-default ng-style="{\'color\': colorStyle, \'cursor\': cursorStyle}" class="glyphicon glyphicon-stop" bs-tooltip="tooltip"></span> </ng-switch>');
@@ -915,16 +915,25 @@ angular.module('dashing.property.bytes', [])
       },
       link: function(scope, elem, attrs) {
         attrs.$observe('raw', function(raw) {
-          if (['true', '1'].indexOf(attrs.readable) !== -1) {
-            var bytes = Number(raw);
-            var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(bytes) / Math.log(1024));
-            scope.raw = Math.floor(bytes / Math.pow(1024, e));
-            scope.unit = s[e] + attrs.unit;
+          if (['true', '1'].indexOf(attrs['readable']) !== -1) {
+            var hr = toHumanReadable(Number(raw));
+            scope.value = hr.value;
+            scope.unit = hr.modifier + attrs.unit;
           } else {
             scope.unit = attrs.unit;
           }
         });
+        function toHumanReadable(value) {
+          var modifier = '';
+          if (value !== 0) {
+            var positiveValue = Math.abs(value);
+            var s = ['', 'K', 'M', 'G', 'T', 'P'];
+            var e = Math.floor(Math.log(positiveValue) / Math.log(1024));
+            value = Math.floor(positiveValue / Math.pow(1024, e)) * (positiveValue === value ? 1 : -1);
+            modifier = s[e];
+          }
+          return {value: value, modifier: modifier};
+        }
       }
     };
   })

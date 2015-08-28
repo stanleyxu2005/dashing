@@ -187,7 +187,7 @@ angular.module('dashing.charts.echarts', [])
           return '<tr>' +
             '<td>' + tooltipSeriesColorIndicatorHtml(obj.color) + '</td>' +
             '<td style="padding: 0 12px 0 4px">' + obj.name + '</td>' +
-            '<td>' + obj.value + '</td>' +
+            '<td style="text-align: right">' + obj.value + '</td>' +
             '</tr>';
         }).join('') + '</table>';
     }
@@ -195,6 +195,10 @@ angular.module('dashing.charts.echarts', [])
     function defaultNameFormatter(name) {
       return angular.isDate(name) ?
         $filter('date')(name, 'yyyy-MM-dd HH:mm:ss') : name;
+    }
+
+    function defaultValueFormatter(value) {
+      return $filter('number')(value);
     }
 
     var self = {
@@ -285,8 +289,7 @@ angular.module('dashing.charts.echarts', [])
             var s = ['', 'K', 'M', 'G', 'T', 'P'];
             var e = Math.floor(Math.log(value) / Math.log(base));
             value = value / Math.pow(base, e);
-            // Label below can be 1000 and this label is 1500, which is expected to be "1.5 K" not "1 K".
-            value = $filter('number')(value, Number(Math.floor(value) === 1));
+            value = defaultValueFormatter(value);
             value += ' ' + s[e] + (unit || '');
           }
           return value;

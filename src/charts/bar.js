@@ -11,6 +11,8 @@ angular.module('dashing.charts.bar', [
  * The width of the chart will be calculated by the number bars. If its too narrow to show all bars,
  * the chart will have a data zoom control to scroll the value bars.
  *
+ * todo: support multiple series (stacked and not stacked)
+ *
  * @example
  *   <bar-chart
  *     options-bind="::chartOptions"

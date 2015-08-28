@@ -369,7 +369,7 @@ angular.module('dashing.charts.echarts', [])
         var lineWidth = args.stack ? 4 : 3;
         var options = {
           symbol: 'circle',
-          smooth: args.smooth || true,
+          smooth: args.smooth,
           itemStyle: {
             normal: {
               color: args.colors.line,
@@ -490,7 +490,8 @@ angular.module('dashing.charts.line', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
-          stacked: true,
+          seriesStacked: true,
+          seriesLineSmooth: false,
           showLegend: true,
           yAxisSplitNum: 3,
           yAxisShowSplitLine: true,
@@ -551,7 +552,8 @@ angular.module('dashing.charts.line', [
             $echarts.makeDataSeries({
               name: name,
               colors: colors[i % colors.length],
-              stack: use.stacked,
+              stack: use.seriesStacked,
+              smooth: use.seriesLineSmooth,
               showAllSymbol: use.showAllSymbol
             })
           );

@@ -303,7 +303,7 @@ angular.module('dashing.charts.echarts', [])
         var lineWidth = args.stack ? 4 : 3;
         var options = {
           symbol: 'circle',
-          smooth: args.smooth || true,
+          smooth: args.smooth,
           itemStyle: {
             normal: {
               color: args.colors.line,

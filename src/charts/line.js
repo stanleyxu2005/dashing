@@ -26,7 +26,8 @@ angular.module('dashing.charts.line', [
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
  *   xAxisType: ''|'time // empty sting or 'category' is string, 'time' need to feed x-axis data as date objects
- *   stacked: boolean // should stack all data series (default: true)
+ *   seriesStacked: boolean // should stack all data series (default: true)
+ *   seriesLineSmooth: boolean // draw line of series smooth (default: false)
  *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)\
  *   scale: boolean // scale values on y-axis (default: false)
  *   data: // an array of initial data points (will fallback to $scope.data)
@@ -56,7 +57,8 @@ angular.module('dashing.charts.line', [
       },
       controller: ['$scope', '$echarts', function($scope, $echarts) {
         var use = angular.merge({
-          stacked: true,
+          seriesStacked: true,
+          seriesLineSmooth: false,
           showLegend: true,
           yAxisSplitNum: 3,
           yAxisShowSplitLine: true,
@@ -126,7 +128,8 @@ angular.module('dashing.charts.line', [
             $echarts.makeDataSeries({
               name: name,
               colors: colors[i % colors.length],
-              stack: use.stacked,
+              stack: use.seriesStacked,
+              smooth: use.seriesLineSmooth,
               showAllSymbol: use.showAllSymbol
             })
           );

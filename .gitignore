@@ -1,6 +1,7 @@
 .gitignore
 .idea
 *.iml
+dist
 node_modules
 examples/fonts
 examples/vendors

@@ -1,47 +1,60 @@
 # [Dashing](https://github.com/stanleyxu2005/dashing)
 
-[![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) [![Dependency Status](https://david-dm.org/stanleyxu2005/dashing.svg)](https://david-dm.org/stanleyxu2005/dashing#info=dependencies) [![DevDependency Status](https://david-dm.org/stanleyxu2005/dashing/dev-status.svg)](https://david-dm.org/stanleyxu2005/dashing#info=devDependencies)
+[![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) 
 
 **Want to be dashing? Use Dashing!** Dashing is a set of assembled widgets based on Bootstrap and AngularJS.
 
 
 ## Quick Start
 
-+ Install Dashing with [npm](https://nodejs.org/).
++ Install Dashing and dependencies with [npm](https://nodejs.org/).
 
->
-```bash
-$ npm install
-$ gulp
+``` bash
+$ npm install dashing
+$ npm install dashing-deps \
+              bootstrap \
+              angular \
+              angular-animate angular-motion angular-strap
 ```
 
-+ Include the required libraries in your `index.html`:
++ Include the following lines in your `index.html`. *Note that the paths of the vendor libraries should be fixed manually for your own environment.*
 
->
 ``` html
 <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css"/>
 <link rel="stylesheet" href="vendors/angular-motion/angular-motion.min.css"/>
-<link rel="stylesheet" href="dashing/dashing.min.css"/>
+<link rel="stylesheet" href="vendors/dashing/dashing.min.css"/>
 <script src="vendors/angular/angular.min.js"></script>
+<script src="vendors/angular-animate/angular-animate.min.js"></script>
 <script src="vendors/angular-strap/angular-strap.min.js"></script>
 <script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
-<script src="vendors/smart-table/smart-table.min.js"></script>
+<script src="vendors/angular-smart-table/smart-table.min.js"></script>
 <script src="vendors/dashing-deps/echarts/echart-all.min.js"></script>
-<script src="dashing/dashing.min.js"></script>
+<script src="vendors/dashing/dashing.min.js"></script>
 ```
 
-+ Inject the `dashing` module into your app:
++ Inject the `dashing` and its dependencies into your app:
 
->
 ``` js
-angular.module('myApp', ['dashing']);
+angular.module('myApp', [
+  'ngAnimate', // required by 'mgcrea.ngStrap'
+  'mgcrea.ngStrap',
+  'dashing'
+]);
 ```
-
 
 ## Examples 
 
-*Coming soon*
+Coming soon! For the time being, [GearPump dashboard](https://github.com/gearpump/gearpump/tree/master/services/dashboard) is built with `dashing`.
 
+## How to contribute
+
+The project is open source. We host the code at [GitHub](https://github.com/stanleyxu2005/dashing). You can raise issues or submit PRs. Any constructive discussion is highly appreciated.
+
+``` bash
+$ git clone https://github.com/stanleyxu2005/dashing.git
+$ npm install
+$ gulp
+```
 
 ## Author
 
@@ -50,10 +63,12 @@ angular.module('myApp', ['dashing']);
 
 ## License
 
-The project itself is under Apache License version 2.0. All its dependencies are under diverse open source licences. Please checkout their homepage for more details.
+The project itself is under Apache License version 2.0. You can use the library for non-commercial and commercial projects. 
+
+All its dependencies have open source licenses as well. Please checkout their homepage for more details.
 
 + [AngularJS](http://angularjs.org)
-+ [Boostrap 3](http://getbootstrap.com)
 + [Angular-Strap](http://mgcrea.github.io/angular-strap)
++ [Bootstrap](http://getbootstrap.com)
++ [Echarts](http://echarts.baidu.com/)
 + [Smart-Table](http://lorenzofox3.github.io/smart-table-website/)
-+ [Baidu Echarts](http://echarts.baidu.com/)

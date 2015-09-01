@@ -60,7 +60,7 @@ angular.module('dashing.util', [])
       /**
        * Return the human readable notation of a numeric value.
        */
-      toHumanReadable: function(value, base) {
+      toHumanReadable: function(value, base, precision) {
         var modifier = '';
         if (value !== 0) {
           if (base !== 1024) {
@@ -70,7 +70,10 @@ angular.module('dashing.util', [])
           var positiveValue = Math.abs(value);
           var s = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
           var e = Math.floor(Math.log(positiveValue) / Math.log(base));
-          value = Math.floor(positiveValue / Math.pow(base, e));
+          value = positiveValue / Math.pow(base, e);
+          if (angular.isNumber(precision) && value !== Math.floor(value)) {
+            value = value.toFixed(precision);
+          }
           if (!positive) {
             value *= -1;
           }

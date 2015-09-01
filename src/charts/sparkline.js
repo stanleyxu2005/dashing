@@ -18,15 +18,16 @@ angular.module('dashing.charts.sparkline', [
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
- *   maxDataNum: number // the maximal number of data points in the chart (default: unlimited)
- *   tooltipFormatter: function // optional to override the tooltip formatter
- *   xAxisType: ''|'time // empty sting or 'category' is string, 'time' need to feed x-axis data as date objects
- *   data: // an array of initial data points (will fallback to $scope.data)
+ *   data: // an array of initial data points
+ *
+ *   visibleDataPointsNum: number // the maximal number of data points in the chart (default: unlimited)
+ *   valueFormatter: function // function to override the representation of y-axis value
+ *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
  * }
  * @param datasource-bind - array of data objects
- *   every data object is {x: time|string, y: number}
+ *   every data object is {x: time|string, y: number|array}
  */
-  .directive('sparklineChart', function() {
+  .directive('sparklineChart', ['$echarts', function($echarts) {
     'use strict';
 
     return {
@@ -38,59 +39,51 @@ angular.module('dashing.charts.sparkline', [
       },
       link: function(scope) {
         var echartScope = scope.$$childHead;
-
-        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
           if (data) {
-            echartScope.addDataPoints(data);
+            echartScope.addDataPoints(
+              $echarts.firstSeriesData(data));
           }
         });
       },
-      controller: ['$scope', '$echarts', function($scope, $echarts) {
+      controller: ['$scope', function($scope) {
         var use = $scope.options;
-        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
+        if (use.xAxisTypeIsTime) {
+          // https://github.com/ecomfe/echarts/issues/1954
+          console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
+          use.xAxisTypeIsTime = false;
+        }
+
         var colors = $echarts.colorPalette(1)[0];
-
-        // todo: https://github.com/ecomfe/echarts/issues/1954
-        // for timeline x-axis, without showing all symbols no symbol will be shown.
-        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
-        use.stacked = use.stacked && (use.xAxisType !== 'time');
-
         var options = {
           height: use.height,
           width: use.width,
-          tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter || $echarts
-              .tooltipFirstSeriesFormatter(use.valueFormatter)
-          }),
+          tooltip: $echarts.categoryTooltip(use.valueFormatter),
           dataZoom: {show: false},
           // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
-          grid: angular.merge({
+          grid: {
             borderWidth: 1, x: 5, y: 5, x2: 5,
             y2: 1 /* set 5px will have a thick ugly grey border */
-          }, use.grid),
+          },
           xAxis: [{
-            type: use.xAxisType,
+            type: use.xAxisTypeIsTime ? 'time' : undefined,
             boundaryGap: false,
             axisLabel: false,
             splitLine: false
           }],
           yAxis: [{
-            boundaryGap: [0, 0.15],
-            show: false,
-            scale: use.scale
+            boundaryGap: [0, 0.1],
+            show: false
           }],
           series: [$echarts.makeDataSeries({
             colors: colors,
             stack: true /* stack=true means fill area */
-          })],
-          // own properties
-          xAxisDataNum: use.maxDataNum,
-          dataPointsQueue: data.newer
+          })]
         };
 
-        $echarts.fillAxisData(options, data.older);
-        if (use.xAxisType === 'time') {
+        $echarts.fillAxisData(options, use.data, use.visibleDataPointsNum);
+
+        if (use.xAxisTypeIsTime) {
           // todo: https://github.com/ecomfe/echarts/issues/1954
           options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
           options.series[0].showAllSymbol = true;
@@ -100,5 +93,5 @@ angular.module('dashing.charts.sparkline', [
         $scope.echartOptions = options;
       }]
     };
-  })
+  }])
 ;

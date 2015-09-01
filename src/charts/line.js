@@ -18,19 +18,19 @@ angular.module('dashing.charts.line', [
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
- *   maxDataNum: number // the maximal number of data points (of a series) in the chart (default: unlimited)
- *   tooltipFormatter: function // optional to override the tooltip formatter
+ *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)
+ *   data: // an array of initial data points
+ *
+ *   visibleDataPointsNum: number // the maximal number of data points in the chart (default: unlimited)
  *   showLegend: boolean // show legend even when multiple data series on chart (default: true)
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
  *   yAxisShowSplitLine: boolean // show split lines on y-axis (default: true)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
- *   xAxisType: ''|'time // empty sting or 'category' is string, 'time' need to feed x-axis data as date objects
+ *   valueFormatter: function // function to override the representation of y-axis value
+ *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
  *   seriesStacked: boolean // should stack all data series (default: true)
  *   seriesLineSmooth: boolean // draw line of series smooth (default: false)
- *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)\
- *   scale: boolean // scale values on y-axis (default: false)
- *   data: // an array of initial data points (will fallback to $scope.data)
  * }
  * @param datasource-bind - array of data objects
  *   every data object is {x: time|string, y: [number]}
@@ -47,8 +47,6 @@ angular.module('dashing.charts.line', [
       },
       link: function(scope) {
         var echartScope = scope.$$childHead;
-
-        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
           if (data) {
             echartScope.addDataPoints(data);
@@ -64,11 +62,16 @@ angular.module('dashing.charts.line', [
           yAxisShowSplitLine: true,
           yAxisLabelWidth: 60
         }, $scope.options);
+        if (use.xAxisTypeIsTime) {
+          // https://github.com/ecomfe/echarts/issues/1954
+          console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
+          use.xAxisTypeIsTime = false;
+        }
 
-        var data = $echarts.splitInitialData(use.data || $scope.data, use.maxDataNum);
+        var data = use.data;
         if (!use.seriesNames) {
           console.warn('Series names are NOT defined.');
-          use.seriesNames = data.older[0].y.map(function(_, i) {
+          use.seriesNames = data[0].y.map(function(_, i) {
             return 'Series ' + (i + 1);
           });
         }
@@ -79,27 +82,21 @@ angular.module('dashing.charts.line', [
             color: '#ddd'
           }
         };
-
-        // todo: https://github.com/ecomfe/echarts/issues/1954
-        // for timeline x-axis, without showing all symbols no symbol will be shown.
-        use.showAllSymbol = use.showAllSymbol || (use.xAxisType === 'time');
-        use.stacked = use.stacked && (use.xAxisType !== 'time');
-
         var options = {
           height: use.height,
           width: use.width,
-          tooltip: $echarts.tooltip({
-            guideLineColor: 'rgb(235,235,235)',
-            formatter: use.tooltipFormatter || $echarts
-              .tooltipAllSeriesFormatter(use.valueFormatter)
-          }),
+          tooltip: $echarts.categoryTooltip(use.valueFormatter, 'rgb(235,235,235)'),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
-          grid: angular.merge({
-            borderWidth: 0, x: use.yAxisLabelWidth, y: 20, x2: 5, y2: 23
-          }, use.grid),
+          grid: {
+            borderWidth: 0,
+            x: use.yAxisLabelWidth,
+            y: 20,
+            x2: 5,
+            y2: 23
+          },
           xAxis: [{
-            type: use.xAxisType,
+            type: use.xAxisTypeIsTime ? 'time' : undefined,
             boundaryGap: false,
             axisLine: borderLineStyle,
             axisTick: borderLineStyle,
@@ -110,17 +107,13 @@ angular.module('dashing.charts.line', [
             splitNumber: use.yAxisSplitNum,
             splitLine: {show: use.yAxisShowSplitLine},
             axisLine: false,
-            axisLabel: {formatter: use.yAxisLabelFormatter},
-            scale: use.scale
+            axisLabel: {formatter: use.yAxisLabelFormatter}
           }],
           series: [],
           // override the default color colorPalette, otherwise the colors look messy.
           color: use.seriesNames.map(function(_, i) {
             return colors[i % colors.length].line;
-          }),
-          // own properties
-          xAxisDataNum: use.maxDataNum,
-          dataPointsQueue: data.newer
+          })
         };
 
         angular.forEach(use.seriesNames, function(name, i) {
@@ -135,14 +128,19 @@ angular.module('dashing.charts.line', [
           );
         });
 
-        $echarts.fillAxisData(options, data.older);
-        if (use.xAxisType === 'time') {
+        $echarts.fillAxisData(options, data, use.visibleDataPointsNum);
+
+        if (use.xAxisTypeIsTime) {
           // todo: https://github.com/ecomfe/echarts/issues/1954
           options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
+          angular.forEach(options.series, function(series) {
+            series.showAllSymbol = true;
+            series.stack = false;
+          });
         }
 
         if (options.series.length === 1) {
-          options.yAxis.boundaryGap = [0, 0.15];
+          options.yAxis.boundaryGap = [0, 0.1];
         }
 
         // todo: external font size and style should fit global style automatically (e.g. use sass)

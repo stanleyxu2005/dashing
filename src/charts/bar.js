@@ -23,19 +23,20 @@ angular.module('dashing.charts.bar', [
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
- *   tooltipFormatter: function // optional to override the tooltip formatter
+ *   data: // an array of initial data points
+ *
+ *   color: string // optional to override bar color
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
- *   barMinWidth: number // when bar width is narrower than the value, data zoom control will be shown (default: 14)
- *   barMinSpacing: number // when bar spacing is narrower than the value, data zoom control will be shown (default: 4)
- *   color: string // optional to override bar color
- *   data: // an array of initial data points (will fallback to $scope.data).
+ *   valueFormatter: function // optional to override the value formatter
+ *   barWidth: number // when bar width is narrower than the value, data zoom control will be shown (default: 14)
+ *   barSpacing: number // when bar spacing is narrower than the value, data zoom control will be shown (default: 4)
  * }
  * @param datasource-bind - array of data objects
- *   every data object is {x: string, y: [number]}
+ *   every data object is {x: string, y: number}
  */
-  .directive('barChart', function() {
+  .directive('barChart', ['$echarts', function($echarts) {
     'use strict';
 
     return {
@@ -47,89 +48,89 @@ angular.module('dashing.charts.bar', [
       },
       link: function(scope) {
         var echartScope = scope.$$childHead;
-
-        // todo: watch can be expensive. we should find a simple way to expose the addDataPoint() method.
         scope.$watch('data', function(data) {
           if (data) {
-            echartScope.addDataPoints(data);
+            echartScope.addDataPoints(
+              // todo: if multiple data series is supported, this must be changed.
+              $echarts.firstSeriesData(data));
           }
         });
       },
-      controller: ['$scope', '$element', '$echarts', function($scope, $element, $echarts) {
+      controller: ['$scope', '$element', function($scope, $element) {
         var use = angular.merge({
-          barMinWidth: 14,
-          barMinSpacing: 4,
-          color: $echarts.colorPalette(0)[0].line,
+          barWidth: 14,
+          barSpacing: 4,
+          color: '#ff7f50',
           yAxisSplitNum: 3,
           yAxisLabelWidth: 60
         }, $scope.options);
 
-        var data = use.data;
         var colors = $echarts.buildColorStates(use.color);
         var options = {
           height: use.height,
           width: use.width,
-          ignoreContainerResizeEvent: true,
-          tooltip: $echarts.tooltip({
-            formatter: use.tooltipFormatter || $echarts
-              .tooltipFirstSeriesFormatter(use.valueFormatter)
-          }),
-          grid: angular.merge({
-            borderWidth: 0, x: use.yAxisLabelWidth, y: 15, x2: 5, y2: 28
-          }, use.grid),
+          tooltip: $echarts.categoryTooltip(use.valueFormatter),
+          grid: {
+            borderWidth: 0,
+            x: use.yAxisLabelWidth,
+            y: 15,
+            x2: 5,
+            y2: 28
+          },
           xAxis: [{
             // dashing bar-chart does not support time as x-axis values
             axisLabel: {show: true},
             axisLine: {show: false},
             axisTick: {show: false},
-            splitLine: {show: false},
-            data: data.map(function(item) {
-              return item.x;
-            })
+            splitLine: {show: false}
           }],
           yAxis: [{
+            // todo: optional to hide y-axis
             splitNumber: use.yAxisSplitNum,
             splitLine: {show: false},
             axisLine: {show: false},
-            axisLabel: {formatter: use.yAxisLabelFormatter},
-            scale: use.scale
+            axisLabel: {formatter: use.yAxisLabelFormatter}
           }],
           series: [$echarts.makeDataSeries({
             colors: colors,
             type: 'bar',
-            data: data.map(function(item) {
-              return Array.isArray(item.y) ? item.y[0] : item.y;
-            })
-          })],
-          // own properties
-          xAxisDataNum: use.maxDataNum
+            barWidth: use.barWidth,
+            barMaxWidth: use.barWidth,
+            barGap: use.barSpacing
+          })]
         };
 
-        var gridWidth = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-        var allBarVisibleWidth = data.length * (use.barMinWidth + use.barMinSpacing) - use.barMinSpacing;
-        var chartMaxWidth = $element[0].offsetParent.offsetWidth;
+        var data = use.data;
+        if (!Array.isArray(data)) {
+          console.warn({message: 'Initial data is expected to be an array', data: data});
+          data = data ? [data] : [];
+        }
+        $echarts.fillAxisData(options, data);
+
+        // todo: the chart will not response on resizing
+        var gridWidth = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2 + 4;
+        var allBarVisibleWidth = data.length * (use.barWidth + use.barSpacing) - use.barSpacing;
+        var chartMaxWidth = angular.element($element[0]).children()[0].offsetWidth;
 
         if (allBarVisibleWidth > 0 && allBarVisibleWidth + gridWidth > chartMaxWidth) {
           var scrollbarHeight = 20;
           var scrollbarPadding = 5;
           options.dataZoom = {
             show: true,
-            barWidth: use.barMinWidth,
-            barGap: use.barMinSpacing,
-            barCategoryGap: use.barMinSpacing,
             end: Math.floor((chartMaxWidth - gridWidth) * 100 / allBarVisibleWidth),
             zoomLock: true,
             height: scrollbarHeight,
             y: parseInt(use.height) - scrollbarHeight - scrollbarPadding,
             handleColor: colors.line,
-            dataBackgroundColor: colors.area,
-            fillerColor: zrender.tool.color.alpha(colors.line, 0.2)
+            fillerColor: zrender.tool.color.alpha(colors.line, 0.08)
           };
           options.grid.y2 += scrollbarHeight + scrollbarPadding * 2;
+        } else if (data.length) {
+          options.grid.x2 += chartMaxWidth - allBarVisibleWidth - gridWidth;
         }
 
         $scope.echartOptions = options;
       }]
     };
-  })
+  }])
 ;

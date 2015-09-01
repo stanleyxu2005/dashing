@@ -26,7 +26,7 @@ var files = {
     js: 'src/*/**/*.js',
     templates: 'src/**/*.html'
   },
-  template_js_temp: 'tpls.js'
+  template_js_temp: 'dashing-tpls.js'
 };
 
 var gulp = require('gulp');
@@ -47,8 +47,17 @@ var plugin = {
   sort: require('gulp-sort')
 };
 
-gulp.task('default', ['min-css', 'min-js', 'doc'], function() {
-  plugin.fs.unlink(files.template_js_temp);
+gulp.task('default', ['min-css', 'min-js', 'doc']);
+
+// complete all css tasks and minify css file
+gulp.task('min-css', ['concat-css'], function() {
+  return gulp.src(output_dir + '/' + files.output.css)
+    .pipe(plugin.source_maps.init())
+    /**/.pipe(plugin.minify_css())
+    /**/.pipe(plugin.header_footer.header(header))
+    /**/.pipe(plugin.rename(files.output.css_min))
+    .pipe(plugin.source_maps.write('.'))
+    .pipe(gulp.dest(output_dir));
 });
 
 // concat all css files as one
@@ -62,15 +71,37 @@ gulp.task('concat-css', function() {
     .pipe(gulp.dest(output_dir));
 });
 
-// minify css file
-gulp.task('min-css', ['concat-css'], function() {
-  return gulp.src(output_dir + '/' + files.output.css)
+// complete all js tasks and minify js file
+gulp.task('min-js', ['concat-js'], function() {
+  return gulp.src(output_dir + '/' + files.output.js)
     .pipe(plugin.source_maps.init())
-    /**/.pipe(plugin.minify_css())
+    /**/.pipe(plugin.minify_js())
     /**/.pipe(plugin.header_footer.header(header))
-    /**/.pipe(plugin.rename(files.output.css_min))
+    /**/.pipe(plugin.rename(files.output.js_min))
     .pipe(plugin.source_maps.write('.'))
     .pipe(gulp.dest(output_dir));
+});
+
+// concat all js files as one
+gulp.task('concat-js', ['pack-angular-templates'], function() {
+  var result = gulp.src(files.source.js)
+    .pipe(plugin.sort()) // `gulp.src()` does not guarantee file orders
+    .pipe(plugin.concat(files.output.js))
+    .pipe(plugin.header_footer.header([
+      plugin.fs.readFileSync('src/module.js'), '',
+      plugin.fs.readFileSync(files.template_js_temp), ''].join('\n')))
+    .pipe(plugin.strip_comments())
+    .pipe(plugin.strip_empty_lines())
+    .pipe(plugin.replace(/\s*\'use strict\';/g, ''))
+    .pipe(plugin.header_footer.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+    .pipe(plugin.header_footer.footer('\n})(window, document);'))
+    .pipe(plugin.header_footer.header(header))
+    .pipe(gulp.dest(output_dir));
+
+  if (plugin.fs.existsSync(files.template_js_temp)) {
+    plugin.fs.unlinkSync(files.template_js_temp);
+  }
+  return result;
 });
 
 // create angular template cache
@@ -89,34 +120,6 @@ gulp.task('pack-angular-templates', function() {
     }))
     .pipe(plugin.replace('\\\"', '"'))
     .pipe(gulp.dest('.'));
-});
-
-// concat all js files as one
-gulp.task('concat-js', ['pack-angular-templates'], function() {
-  return gulp.src(files.source.js)
-    .pipe(plugin.sort()) // `gulp.src()` does not guarantee file orders
-    .pipe(plugin.concat(files.output.js))
-    .pipe(plugin.header_footer.header([
-      plugin.fs.readFileSync('src/module.js'), '',
-      plugin.fs.readFileSync(files.template_js_temp), ''].join('\n')))
-    .pipe(plugin.strip_comments())
-    .pipe(plugin.strip_empty_lines())
-    .pipe(plugin.replace(/\s*\'use strict\';/g, ''))
-    .pipe(plugin.header_footer.header('(function(window, document, undefined) {\n\'use strict\';\n'))
-    .pipe(plugin.header_footer.footer('\n})(window, document);'))
-    .pipe(plugin.header_footer.header(header))
-    .pipe(gulp.dest(output_dir));
-});
-
-// minify js file
-gulp.task('min-js', ['concat-js'], function() {
-  return gulp.src(output_dir + '/' + files.output.js)
-    .pipe(plugin.source_maps.init())
-    /**/.pipe(plugin.minify_js())
-    /**/.pipe(plugin.header_footer.header(header))
-    /**/.pipe(plugin.rename(files.output.js_min))
-    .pipe(plugin.source_maps.write('.'))
-    .pipe(gulp.dest(output_dir));
 });
 
 // copy license and readme

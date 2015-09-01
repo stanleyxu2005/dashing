@@ -2,7 +2,9 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.charts.echarts', [])
+angular.module('dashing.charts.echarts', [
+  'dashing.util'
+])
 /**
  * Make DIV becoming an echart control.
  *
@@ -168,7 +170,7 @@ angular.module('dashing.charts.echarts', [])
 /**
  * Customize chart's look and feel.
  */
-  .factory('$echarts', ['$filter', function($filter) {
+  .factory('$echarts', ['$filter', '$util', function($filter, $util) {
     'use strict';
 
     function buildTooltipSeriesTable(array) {
@@ -285,12 +287,8 @@ angular.module('dashing.charts.echarts', [])
       axisLabelFormatter: function(unit) {
         return function(value) {
           if (value !== 0) {
-            var base = 1000;
-            var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(value) / Math.log(base));
-            value = value / Math.pow(base, e);
-            value = defaultValueFormatter(value);
-            value += ' ' + s[e] + (unit || '');
+            var hr = $util.toHumanReadable(value, 1000);
+            value = hr.value + ' ' + hr.modifier + (unit || '');
           }
           return value;
         };
@@ -385,28 +383,7 @@ angular.module('dashing.charts.echarts', [])
        * Return an array of color objects regarding the num of data series.
        */
       colorPalette: function(size) {
-        // todo: standalone color provider for all widgets
-        function _suggestColorPalette(size) {
-          var colors = {
-            blue: 'rgb(0,119,215)',
-            purple: 'rgb(110,119,215)',
-            green: 'rgb(41,189,181)',
-            darkRed: 'rgb(212,102,138)',
-            orange: 'rgb(255,127,80)'
-          };
-          switch (size) {
-            case 1:
-              return [colors.blue];
-            case 2:
-              return [colors.blue, colors.green];
-            default:
-              return Object.keys(colors).map(function(key) {
-                return colors[key];
-              });
-          }
-        }
-
-        return _suggestColorPalette(size).map(function(base) {
+        return $util.colorPalette(size).map(function(base) {
           return self.buildColorStates(base);
         });
       },

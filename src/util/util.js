@@ -33,6 +33,50 @@ angular.module('dashing.util', [])
           default:
             return '#aaa';
         }
+      },
+      /**
+       * Return an array of color objects regarding the num of data series.
+       */
+      colorPalette: function(num) {
+        var COLORS = {
+          blue: 'rgb(0,119,215)',
+          purple: 'rgb(110,119,215)',
+          green: 'rgb(41,189,181)',
+          darkRed: 'rgb(212,102,138)',
+          orange: 'rgb(255,127,80)'
+        };
+
+        switch (num) {
+          case 1:
+            return [COLORS.blue];
+          case 2:
+            return [COLORS.blue, COLORS.green];
+          default:
+            return Object.keys(COLORS).map(function(key) {
+              return COLORS[key];
+            });
+        }
+      },
+      /**
+       * Return the human readable notation of a numeric value.
+       */
+      toHumanReadable: function(value, base) {
+        var modifier = '';
+        if (value !== 0) {
+          if (base !== 1024) {
+            base = 1000;
+          }
+          var positive = value > 0;
+          var positiveValue = Math.abs(value);
+          var s = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+          var e = Math.floor(Math.log(positiveValue) / Math.log(base));
+          value = Math.floor(positiveValue / Math.pow(base, e));
+          if (!positive) {
+            value *= -1;
+          }
+          modifier = s[e];
+        }
+        return {value: value, modifier: modifier};
       }
     };
   })

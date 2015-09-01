@@ -135,7 +135,9 @@ angular.module('dashing.charts.bar', [
     };
   })
 ;
-angular.module('dashing.charts.echarts', [])
+angular.module('dashing.charts.echarts', [
+  'dashing.util'
+])
   .directive('echart', function() {
         function makeDataArray(visibleDataPointsNum, data) {
       function ensureArray(obj) {
@@ -262,7 +264,7 @@ angular.module('dashing.charts.echarts', [])
       }]
     };
   })
-  .factory('$echarts', ['$filter', function($filter) {
+  .factory('$echarts', ['$filter', '$util', function($filter, $util) {
     function buildTooltipSeriesTable(array) {
       function tooltipSeriesColorIndicatorHtml(color) {
         var border = zrender.tool.color.lift(color, -0.2);
@@ -354,12 +356,8 @@ angular.module('dashing.charts.echarts', [])
             axisLabelFormatter: function(unit) {
         return function(value) {
           if (value !== 0) {
-            var base = 1000;
-            var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(value) / Math.log(base));
-            value = value / Math.pow(base, e);
-            value = defaultValueFormatter(value);
-            value += ' ' + s[e] + (unit || '');
+            var hr = $util.toHumanReadable(value, 1000);
+            value = hr.value + ' ' + hr.modifier + (unit || '');
           }
           return value;
         };
@@ -435,26 +433,7 @@ angular.module('dashing.charts.echarts', [])
         }
       },
             colorPalette: function(size) {
-        function _suggestColorPalette(size) {
-          var colors = {
-            blue: 'rgb(0,119,215)',
-            purple: 'rgb(110,119,215)',
-            green: 'rgb(41,189,181)',
-            darkRed: 'rgb(212,102,138)',
-            orange: 'rgb(255,127,80)'
-          };
-          switch (size) {
-            case 1:
-              return [colors.blue];
-            case 2:
-              return [colors.blue, colors.green];
-            default:
-              return Object.keys(colors).map(function(key) {
-                return colors[key];
-              });
-          }
-        }
-        return _suggestColorPalette(size).map(function(base) {
+        return $util.colorPalette(size).map(function(base) {
           return self.buildColorStates(base);
         });
       },
@@ -907,8 +886,10 @@ angular.module('dashing.progressbar', [])
     };
   })
 ;
-angular.module('dashing.property.bytes', [])
-  .directive('bytes', function() {
+angular.module('dashing.property.bytes', [
+  'dashing.util'
+])
+  .directive('bytes', ['$util', function($util) {
     return {
       restrict: 'E',
       templateUrl: 'property/bytes.html',
@@ -918,27 +899,16 @@ angular.module('dashing.property.bytes', [])
       link: function(scope, elem, attrs) {
         attrs.$observe('raw', function(raw) {
           if (['true', '1'].indexOf(attrs['readable']) !== -1) {
-            var hr = toHumanReadable(Number(raw));
+            var hr = $util.toHumanReadable(Number(raw), 1024);
             scope.value = hr.value;
             scope.unit = hr.modifier + attrs.unit;
           } else {
             scope.unit = attrs.unit;
           }
         });
-        function toHumanReadable(value) {
-          var modifier = '';
-          if (value !== 0) {
-            var positiveValue = Math.abs(value);
-            var s = ['', 'K', 'M', 'G', 'T', 'P'];
-            var e = Math.floor(Math.log(positiveValue) / Math.log(1024));
-            value = Math.floor(positiveValue / Math.pow(1024, e)) * (positiveValue === value ? 1 : -1);
-            modifier = s[e];
-          }
-          return {value: value, modifier: modifier};
-        }
       }
     };
-  })
+  }])
 ;
 angular.module('dashing.property', [
   'mgcrea.ngStrap.tooltip'
@@ -1461,6 +1431,43 @@ angular.module('dashing.util', [])
           default:
             return '#aaa';
         }
+      },
+            colorPalette: function(num) {
+        var COLORS = {
+          blue: 'rgb(0,119,215)',
+          purple: 'rgb(110,119,215)',
+          green: 'rgb(41,189,181)',
+          darkRed: 'rgb(212,102,138)',
+          orange: 'rgb(255,127,80)'
+        };
+        switch (num) {
+          case 1:
+            return [COLORS.blue];
+          case 2:
+            return [COLORS.blue, COLORS.green];
+          default:
+            return Object.keys(COLORS).map(function(key) {
+              return COLORS[key];
+            });
+        }
+      },
+            toHumanReadable: function(value, base) {
+        var modifier = '';
+        if (value !== 0) {
+          if (base !== 1024) {
+            base = 1000;
+          }
+          var positive = value > 0;
+          var positiveValue = Math.abs(value);
+          var s = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+          var e = Math.floor(Math.log(positiveValue) / Math.log(base));
+          value = Math.floor(positiveValue / Math.pow(base, e));
+          if (!positive) {
+            value *= -1;
+          }
+          modifier = s[e];
+        }
+        return {value: value, modifier: modifier};
       }
     };
   })

@@ -76,22 +76,24 @@ angular.module('dashing.charts.echarts', [
 
           // If no data is provided, the chart is not initialized. And you can see a caution on the canvas.
           var initialized = angular.isDefined(chart.getOption().xAxis);
+
           function initializeDoneCheck() {
             if (initialized) {
               // If data points are more than the maximal visible data points, we put them into a queue and then
               // add them to the chart after the option is applied, otherwise all data points will be shown on
               // the chart.
               if (options.dataPointsQueue && options.dataPointsQueue.length) {
-                $scope.addDataPoints(options.dataPointsQueue);
+                addDataPoints(options.dataPointsQueue);
                 delete options.dataPointsQueue;
               }
               delete options.data;
             }
           }
+
           initializeDoneCheck();
 
           /** Method to add data points to chart */
-          $scope.addDataPoints = function(data, newYAxisMaxValue) {
+          function addDataPoints(data, newYAxisMaxValue) {
             if (!data || (Array.isArray(data) && !data.length)) {
               return;
             }
@@ -112,7 +114,9 @@ angular.module('dashing.charts.echarts', [
               var actualVisibleDataPoints = currentOption.series[0].data.length;
               var dataPointsGrowNum = Math.max(0,
                 (currentOption.visibleDataPointsNum || defaults.visibleDataPointsNum) - actualVisibleDataPoints);
-              var xAxisTypeIsTime = currentOption.xAxis.type === 'time';
+              var xAxisTypeIsTime = (currentOption.xAxis[0].type === 'time') ||
+                  // rotated bar chart
+                (currentOption.xAxis[0].type === 'value' && currentOption.yAxis[0].type === 'time');
               var dataArray = makeDataArray(data, dataPointsGrowNum, xAxisTypeIsTime);
               if (dataArray.length > 0) {
                 if (newYAxisMaxValue !== undefined) {
@@ -124,6 +128,12 @@ angular.module('dashing.charts.echarts', [
               }
             } catch (ex) {
             }
+          }
+
+          /** Export these functions. */
+          $scope.addDataPoints = addDataPoints;
+          $scope.getChartControl = function() {
+            return chart;
           };
         }]
     };
@@ -197,10 +207,12 @@ angular.module('dashing.charts.echarts', [
     }
 
     function defaultNameFormatter(name) {
-      var date = new Date(name);
-      if (angular.isDate(date)) {
+      if (angular.isDate(name)) {
+        var now = new Date();
         return $filter('date')(name,
-          (new Date()).getDate() === date.getDate() ?
+          (now.getYear() === name.getYear() &&
+          now.getMonth() === name.getMonth() &&
+          now.getDay() === name.getDay()) ?
             'HH:mm:ss' : 'yyyy-MM-dd HH:mm:ss');
       }
       return name;
@@ -214,25 +226,11 @@ angular.module('dashing.charts.echarts', [
      * Build the option object for tooltip
      */
     function tooltip(args) {
-      var result = {
+      return {
         trigger: args.trigger || 'axis',
         axisPointer: {type: 'none'},
-        formatter: args.formatter,
-        position: args.position || function(p) {
-          return [p[0], 22]; // fix the tooltip position
-        }
+        formatter: args.formatter
       };
-      if (args.guidelineColor) {
-        result.axisPointer = {
-          type: 'line',
-          lineStyle: {
-            color: args.guidelineColor,
-            width: 3,
-            type: 'dotted'
-          }
-        };
-      }
-      return result;
     }
 
     /**
@@ -272,14 +270,13 @@ angular.module('dashing.charts.echarts', [
       };
     }
 
-    var self = {
+    return {
       /**
        * Tooltip for category.
        */
-      categoryTooltip: function(valueFormatter, guidelineColor) {
+      categoryTooltip: function(valueFormatter) {
         return tooltip({
-          formatter: tooltipAllSeriesFormatter(valueFormatter),
-          guidelineColor: guidelineColor
+          formatter: tooltipAllSeriesFormatter(valueFormatter)
         });
       },
       /**
@@ -403,12 +400,44 @@ angular.module('dashing.charts.echarts', [
         });
       },
       /**
-       * Return an array of color objects regarding the num of data series.
+       * Return a recommended color palette for line chart.
        */
-      colorPalette: function(size) {
-        return $util.colorPalette(size).map(function(base) {
-          return self.buildColorStates(base);
-        });
+      lineChartColorRecommendation: function(seriesNum) {
+        var colors = $util.colors;
+        switch (seriesNum) {
+          case 1:
+            return [colors.blue];
+          case 2:
+            return [colors.blue, colors.green];
+          default:
+            return [
+              colors.blue,
+              colors.purple,
+              colors.green,
+              colors.darkRed,
+              colors.orange
+            ];
+        }
+      },
+      /**
+       * Return a recommended color palette for bar chart.
+       */
+      barChartColorRecommendation: function(seriesNum) {
+        var colors = $util.colors;
+        switch (seriesNum) {
+          case 1:
+            return [colors.orange];
+          case 2:
+            return [colors.blue, colors.darkBlue];
+          default:
+            return [
+              colors.lightGreen,
+              colors.darkGray,
+              colors.lightBlue,
+              colors.blue,
+              colors.darkBlue
+            ];
+        }
       },
       /**
        * Build colors for state set.
@@ -417,11 +446,10 @@ angular.module('dashing.charts.echarts', [
         return {
           line: base,
           area: zrender.tool.color.lift(base, -0.92),
-          hover: zrender.tool.color.lift(base, 0.1)
+          hover: zrender.tool.color.lift(base, 0.1),
+          axis: zrender.tool.color.lift(base, -0.75)
         };
       }
     };
-
-    return self;
   }])
 ;

@@ -21,6 +21,7 @@ angular.module('dashing.charts.line', [
  *   seriesNames: [string] // name of data series in an array (the text will be shown in legend and tooltip as well)
  *   data: // an array of initial data points
  *
+ *   colors: array|string // optional to override line colors
  *   visibleDataPointsNum: number // the maximal number of data points in the chart (default: unlimited)
  *   showLegend: boolean // show legend even when multiple data series on chart (default: true)
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
@@ -60,8 +61,10 @@ angular.module('dashing.charts.line', [
           showLegend: true,
           yAxisSplitNum: 3,
           yAxisShowSplitLine: true,
-          yAxisLabelWidth: 60
+          yAxisLabelWidth: 60,
+          yAxisLabelFormatter: $echarts.axisLabelFormatter('')
         }, $scope.options);
+
         if (use.xAxisTypeIsTime) {
           // https://github.com/ecomfe/echarts/issues/1954
           console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
@@ -70,13 +73,25 @@ angular.module('dashing.charts.line', [
 
         var data = use.data;
         if (!use.seriesNames) {
-          console.warn('Series names are NOT defined.');
-          use.seriesNames = data[0].y.map(function(_, i) {
+          var first = Array.isArray(data[0].y) ? data[0].y : [data[0].y];
+          if (first.length > 1) {
+            console.warn('Fallback to default series names. ' +
+              'You should set `lineChartOptions.seriesNames`.');
+          }
+          use.seriesNames = first.map(function(_, i) {
             return 'Series ' + (i + 1);
           });
         }
-        var colors = $echarts.colorPalette(use.seriesNames.length);
+
+        if (!Array.isArray(use.colors) || !use.colors.length) {
+          use.colors = $echarts.lineChartColorRecommendation(
+            use.seriesNames.length || 1);
+        }
+        var colors = use.colors.map(function(base) {
+          return $echarts.buildColorStates(base);
+        });
         var borderLineStyle = {
+          length: 4,
           lineStyle: {
             width: 1,
             color: '#ddd'
@@ -85,7 +100,17 @@ angular.module('dashing.charts.line', [
         var options = {
           height: use.height,
           width: use.width,
-          tooltip: $echarts.categoryTooltip(use.valueFormatter, 'rgb(235,235,235)'),
+          tooltip: angular.merge(
+            $echarts.categoryTooltip(use.valueFormatter), {
+              axisPointer: {
+                type: 'line',
+                lineStyle: {
+                  color: 'rgb(235,235,235)',
+                  width: 3,
+                  type: 'dotted'
+                }
+              }
+            }),
           dataZoom: {show: false},
           // 5px border on left and right to fix data point
           grid: {
@@ -105,28 +130,28 @@ angular.module('dashing.charts.line', [
           }],
           yAxis: [{
             splitNumber: use.yAxisSplitNum,
-            splitLine: {show: use.yAxisShowSplitLine},
+            splitLine: {
+              show: use.yAxisShowSplitLine,
+              lineStyle: {
+                color: '#ddd',
+                type: 'dotted'
+              }
+            },
             axisLine: false,
             axisLabel: {formatter: use.yAxisLabelFormatter}
           }],
-          series: [],
-          // override the default color colorPalette, otherwise the colors look messy.
-          color: use.seriesNames.map(function(_, i) {
-            return colors[i % colors.length].line;
-          })
-        };
-
-        angular.forEach(use.seriesNames, function(name, i) {
-          options.series.push(
-            $echarts.makeDataSeries({
+          series: use.seriesNames.map(function(name, i) {
+            return $echarts.makeDataSeries({
               name: name,
               colors: colors[i % colors.length],
               stack: use.seriesStacked,
               smooth: use.seriesLineSmooth,
               showAllSymbol: use.showAllSymbol
-            })
-          );
-        });
+            });
+          }),
+          // override the default color colorPalette, otherwise the colors look messy.
+          color: use.colors
+        };
 
         $echarts.fillAxisData(options, data, use.visibleDataPointsNum);
 

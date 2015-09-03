@@ -39,7 +39,8 @@ angular.module('dashing.charts.ring', [
       link: function(scope) {
         var echartScope = scope.$$childHead;
         scope.$watch('data', function(data) {
-          echartScope.setOptions({
+          var chartControl = echartScope.getChartControl();
+          chartControl.setOption({
             series: [{
               data: [
                 {value: data.available.value},

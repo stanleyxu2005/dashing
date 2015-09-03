@@ -35,27 +35,19 @@ angular.module('dashing.util', [])
         }
       },
       /**
-       * Return an array of color objects regarding the num of data series.
+       * Return pre-defined colors.
        */
-      colorPalette: function(num) {
-        var COLORS = {
-          blue: 'rgb(0,119,215)',
-          purple: 'rgb(110,119,215)',
-          green: 'rgb(41,189,181)',
-          darkRed: 'rgb(212,102,138)',
-          orange: 'rgb(255,127,80)'
-        };
-
-        switch (num) {
-          case 1:
-            return [COLORS.blue];
-          case 2:
-            return [COLORS.blue, COLORS.green];
-          default:
-            return Object.keys(COLORS).map(function(key) {
-              return COLORS[key];
-            });
-        }
+      colors: {
+        blue: 'rgb(0,119,215)',
+        green: 'rgb(41,189,181)',
+        orange: 'rgb(255,127,80)',
+        purple: 'rgb(110,119,215)',
+        darkBlue: 'rgb(102,168,212)',
+        darkGray: 'rgb(92,92,97)',
+        darkPink: 'rgb(212,102,138)',
+        darkRed: 'rgb(212,102,138)',
+        lightBlue: 'rgb(149,206,255)',
+        lightGreen: 'rgb(169,255,150)'
       },
       /**
        * Return the human readable notation of a numeric value.

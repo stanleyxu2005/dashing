@@ -20,6 +20,7 @@ angular.module('dashing.charts.sparkline', [
  *   width: string // the css width of the chart
  *   data: // an array of initial data points
  *
+ *   color: string // optional to override line color
  *   visibleDataPointsNum: number // the maximal number of data points in the chart (default: unlimited)
  *   valueFormatter: function // function to override the representation of y-axis value
  *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
@@ -47,14 +48,20 @@ angular.module('dashing.charts.sparkline', [
         });
       },
       controller: ['$scope', function($scope) {
-        var use = $scope.options;
+        var use = angular.merge({
+          color: 'rgb(0,119,215)',
+          yAxisSplitNum: 3,
+          yAxisLabelWidth: 60,
+          valueLabelPosition: null,
+          rotate: false
+        }, $scope.options);
         if (use.xAxisTypeIsTime) {
           // https://github.com/ecomfe/echarts/issues/1954
           console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
           use.xAxisTypeIsTime = false;
         }
 
-        var colors = $echarts.colorPalette(1)[0];
+        var colors = $echarts.buildColorStates(use.color);
         var options = {
           height: use.height,
           width: use.width,

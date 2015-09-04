@@ -150,11 +150,7 @@ angular.module('dashing.charts.bar', [
               name: name,
               stack: true,
               colors: colors[i % colors.length]
-              // No need to restrict the concrete width, the chart control will calculate it automatically.
-              //barWidth: use.barWidth,
-              //barMaxWidth: use.barWidth,
-              //barGap: use.barSpacing,
-              //barCategoryGap: use.barSpacing
+              // No need to set widths and gaps, the chart control will calculate it automatically.
             });
           }),
           // override the default color colorPalette, otherwise the colors look messy.
@@ -194,6 +190,11 @@ angular.module('dashing.charts.bar', [
                   show: true,
                   position: position
                 };
+                if (use.valueFormatter) {
+                  series.itemStyle.normal.label.formatter = function(param) {
+                    return use.valueFormatter(param.value);
+                  };
+                }
               }
             });
           }

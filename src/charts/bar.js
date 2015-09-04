@@ -92,7 +92,6 @@ angular.module('dashing.charts.bar', [
         var options = {
           height: use.height,
           width: use.width,
-          visibleDataPointsNum: -1, // Tell chart control only update existing data points' value.
           tooltip: angular.merge(
             $echarts.categoryTooltip(use.valueFormatter), {
               axisPointer: {
@@ -149,7 +148,8 @@ angular.module('dashing.charts.bar', [
           color: use.colors
         };
 
-        $echarts.fillAxisData(options, data);
+        $echarts.fillAxisData(options, data, /*visibleDataPointsNum=*/undefined);
+        options.visibleDataPointsNum = -1; // Tell chart control only update existing data points' value.
 
         if (use.rotate) {
           var axisSwap = options.xAxis;
@@ -198,9 +198,14 @@ angular.module('dashing.charts.bar', [
             options.dataZoom.fillerColor =
               zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);
             options.grid.y2 += scrollbarHeight + scrollbarGridMargin * 2;
-          } else if (data.length && visibleWidthForBars > drawAllBarMaxWidth) {
-            // Too few bars to fill up the whole area, so increase the right/bottom margin
-            options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
+          } else if (data.length) {
+            if (visibleWidthForBars > drawAllBarMaxWidth) {
+              // Too few bars to fill up the whole area, so increase the right/bottom margin
+              options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
+            } else {
+              options.grid.x2 += visibleWidthForBars -
+                Math.floor(visibleWidthForBars / data.length) * data.length;
+            }
           }
         }
 

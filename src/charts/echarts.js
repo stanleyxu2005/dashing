@@ -110,8 +110,7 @@ angular.module('dashing.charts.echarts', [
               var actualVisibleDataPoints = currentOption.series[0].data.length;
               var dataPointsGrowNum = Math.max(0,
                 (currentOption.visibleDataPointsNum || defaults.visibleDataPointsNum) - actualVisibleDataPoints);
-              var xAxisTypeIsTime = (currentOption.xAxis[0].type === 'time') ||
-                  // rotated bar chart
+              var xAxisTypeIsTime = (currentOption.xAxis[0].type === 'time') || // or rotated bar chart
                 (currentOption.xAxis[0].type === 'value' && currentOption.yAxis[0].type === 'time');
               var seriesNum = currentOption.series.length;
               var dataArray = makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime);
@@ -319,6 +318,9 @@ angular.module('dashing.charts.echarts', [
           }
         });
 
+        angular.forEach(options.xAxis, function(axis) {
+          delete axis.boundaryGap;
+        });
         angular.forEach(options.series, function(series) {
           series.showAllSymbol = true;
           series.stack = false;
@@ -358,24 +360,21 @@ angular.module('dashing.charts.echarts', [
        */
       makeDataSeries: function(args) {
         args.type = args.type || 'line';
-        var lineWidth = args.stack ? 4 : 3;
+        var lineStyle = {
+          color: args.colors.line,
+          width: args.stack ? 4 : 3
+        };
         var options = {
           symbol: 'circle',
           smooth: args.smooth,
           itemStyle: {
             normal: {
               color: args.colors.line,
-              lineStyle: {
-                color: args.colors.line,
-                width: lineWidth
-              }
+              lineStyle: lineStyle
             },
             emphasis: {
               color: args.colors.hover,
-              lineStyle: {
-                color: args.colors.line,
-                width: lineWidth
-              }
+              lineStyle: lineStyle
             }
           }
         };
@@ -405,28 +404,26 @@ angular.module('dashing.charts.echarts', [
           options.dataPointsQueue = dataSplit.newer;
         }
 
+        delete options.xAxis[0].data;
         angular.forEach(options.series, function(series) {
           series.data = [];
         });
 
         if (options.xAxis[0].type === 'time') {
-          // bugfix: https://github.com/ecomfe/echarts/issues/1954
-          delete options.xAxis[0].boundaryGap;
-
-          delete options.xAxis[0].data;
           angular.forEach(dataSplit.older, function(datum) {
             angular.forEach(options.series, function(series, seriesIndex) {
               series.data.push([datum.x, Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y]);
             });
           });
         } else {
-          options.xAxis[0].data = [];
+          var xLabels = [];
           angular.forEach(dataSplit.older, function(datum) {
-            options.xAxis[0].data.push(datum.x);
+            xLabels.push(datum.x);
             angular.forEach(options.series, function(series, seriesIndex) {
               series.data.push(Array.isArray(datum.y) ? datum.y[seriesIndex] : datum.y);
             });
           });
+          options.xAxis[0].data = xLabels;
         }
       },
       /**

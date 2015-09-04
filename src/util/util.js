@@ -39,7 +39,7 @@ angular.module('dashing.util', [])
        */
       colors: {
         blue: 'rgb(0,119,215)',
-        green: 'rgb(41,189,181)',
+        blueishGreen: 'rgb(41,189,181)',
         orange: 'rgb(255,127,80)',
         purple: 'rgb(110,119,215)',
         darkBlue: 'rgb(102,168,212)',

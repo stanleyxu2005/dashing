@@ -442,12 +442,12 @@ angular.module('dashing.charts.echarts', [
           case 1:
             return [colors.blue];
           case 2:
-            return [colors.blue, colors.green];
+            return [colors.blue, colors.blueishGreen];
           default:
             return [
               colors.blue,
               colors.purple,
-              colors.green,
+              colors.blueishGreen,
               colors.darkRed,
               colors.orange
             ];

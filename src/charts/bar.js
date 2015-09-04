@@ -33,8 +33,10 @@ angular.module('dashing.charts.bar', [
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
  *   valueFormatter: function // optional to override the value formatter
- *   barWidth: number // when bar width is narrower than the value, data zoom control will be shown (default: 16)
- *   barSpacing: number // when bar spacing is narrower than the value, data zoom control will be shown (default: 4)
+ *   barMaxWidth: number // reduce chart width, if bar actual width will exceed the value (default: 16)
+ *   barMaxSpacing: number // reduce chart width, if bar actual spacing will exceed the value (default: 4)
+ *   barMinWidth: number // show data zoom control, if bar width is narrower than the value (default: 7)
+ *   barMinSpacing: number // show data zoom control, if bar spacing is narrower than the value (default: 1)
  * }
  * @param datasource-bind - array of data objects
  *   every data object is {x: string, y: number}
@@ -71,8 +73,10 @@ angular.module('dashing.charts.bar', [
         }, $scope.options);
 
         use = angular.merge({
-          barWidth: use.rotate ? 20 : 16,
-          barSpacing: 4
+          barMaxWidth: use.rotate ? 20 : 16,
+          barMinWidth: use.rotate ? (use.showEveryValueLabel ? 14 : 7) : 7,
+          barMaxSpacing: 4,
+          barMinSpacing: 1
         }, use);
 
         var data = use.data;
@@ -116,7 +120,8 @@ angular.module('dashing.charts.bar', [
               show: true,
               lineStyle: {
                 width: 1,
-                color: axisColor
+                color: axisColor,
+                type: 'dotted'
               }
             },
             axisTick: {show: false},
@@ -192,37 +197,46 @@ angular.module('dashing.charts.bar', [
         }
 
         // todo: currently the calculation can only happen at initialization stage, the chart will not response on a resizing event.
-        var barVisibleWidth = use.barWidth + use.barSpacing;
-        var allBarVisibleWidth = data.length * barVisibleWidth;
-        if (use.rotate) {
-          // todo: Rotated bar chart will not add a scrollbar, because I still cannot do the correct calculation.
-          options.height = (options.grid.y + options.grid.y2 + allBarVisibleWidth) + 'px';
-        } else {
-          // Add a scrollbar to show too many bars
-          var gridMargin = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-          var chartMaxWidth = angular.element($element[0]).children()[0].offsetWidth;
-          var currentWidthForBars = chartMaxWidth - gridMargin;
+        var drawBarMinWidth = use.barMinWidth + use.barMinSpacing;
+        var drawBarMaxWidth = use.barMaxWidth + use.barMaxSpacing;
+        var drawAllBarMinWidth = data.length * drawBarMinWidth;
+        var drawAllBarMaxWidth = data.length * drawBarMaxWidth;
+        var chartHeight = parseInt(use.height);
 
-          if (allBarVisibleWidth > 0 && allBarVisibleWidth > currentWidthForBars) {
-            var maxVisibleBarWidth = Math.floor(currentWidthForBars / barVisibleWidth) * barVisibleWidth;
-            options.grid.x2 += currentWidthForBars - maxVisibleBarWidth;
+        if (use.rotate) {
+          var gridMarginY = options.grid.borderWidth * 2 + options.grid.y + options.grid.y2;
+          if (chartHeight < gridMarginY + drawAllBarMinWidth) {
+            console.warn('Enlarge the chart height, because rotated bar chart does not support data zoom yet.');
+            options.height = (gridMarginY + drawAllBarMinWidth) + 'px';
+          } else if (chartHeight > gridMarginY + drawAllBarMaxWidth) {
+            options.height = (gridMarginY + drawAllBarMaxWidth) + 'px';
+          }
+        } else {
+          var gridMarginX = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
+          var chartControlWidth = angular.element($element[0]).children()[0].offsetWidth;
+          var visibleWidthForBars = chartControlWidth - gridMarginX;
+
+          if (drawAllBarMinWidth > 0 && drawAllBarMinWidth > visibleWidthForBars) {
+            // Add a scrollbar if bar widths exceeds the minimal width
+            var roundedVisibleWidthForBars = Math.floor(visibleWidthForBars / drawBarMinWidth) * drawBarMinWidth;
+            options.grid.x2 += visibleWidthForBars - roundedVisibleWidthForBars;
 
             var scrollbarHeight = 20;
             var scrollbarGridMargin = 5;
             options.dataZoom = {
               show: true,
-              end: maxVisibleBarWidth * 100 / allBarVisibleWidth,
+              end: roundedVisibleWidthForBars * 100 / drawAllBarMinWidth,
               realtime: true,
               height: scrollbarHeight,
-              y: parseInt(use.height) - scrollbarHeight - scrollbarGridMargin,
+              y: chartHeight - scrollbarHeight - scrollbarGridMargin,
               handleColor: axisColor
             };
             options.dataZoom.fillerColor =
               zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);
             options.grid.y2 += scrollbarHeight + scrollbarGridMargin * 2;
-          } else if (data.length) {
+          } else if (data.length && visibleWidthForBars > drawAllBarMaxWidth) {
             // Too few bars to fill up the whole area, so increase the right/bottom margin
-            options.grid.x2 += chartMaxWidth - allBarVisibleWidth - gridMargin;
+            options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
           }
         }
 

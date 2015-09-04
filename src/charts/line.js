@@ -99,11 +99,12 @@ angular.module('dashing.charts.line', [
               }
             }),
           dataZoom: {show: false},
-          grid: {
+          grid: angular.merge({
             borderWidth: 0,
-            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* add 5px margin to avoid overlap a data point */
-            y: 20, y2: 23
-          },
+            x: Math.max(5, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
+            x2: 15, /* increase the right margin, otherwise last label might be cropped */
+            y: 20, y2: 25
+          }, use.grid),
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,
             boundaryGap: false,

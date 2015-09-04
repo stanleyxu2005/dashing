@@ -102,11 +102,12 @@ angular.module('dashing.charts.bar', [
                 }
               }
             }),
-          grid: {
+          grid: angular.merge({
             borderWidth: 0,
-            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* add 5px margin to avoid overlap a data point */
+            x: Math.max(5, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
+            x2: 15, /* increase the right margin, otherwise last label might be cropped */
             y: 15, y2: 28
-          },
+          }, use.grid),
           xAxis: [{
             // dashing bar-chart does not support time as x-axis values
             axisLabel: {show: true},

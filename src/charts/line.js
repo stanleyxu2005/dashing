@@ -101,7 +101,7 @@ angular.module('dashing.charts.line', [
           dataZoom: {show: false},
           grid: {
             borderWidth: 0,
-            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* data point's radius is 5px, so set 5px margin to avoid overlap */
+            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* add 5px margin to avoid overlap a data point */
             y: 20, y2: 23
           },
           xAxis: [{
@@ -127,7 +127,7 @@ angular.module('dashing.charts.line', [
           series: use.seriesNames.map(function(name, i) {
             return $echarts.makeDataSeries({
               name: name,
-              colors: colors[i % colors.length],
+              colors: colors[i],
               stack: use.seriesStacked,
               smooth: use.seriesLineSmooth,
               showAllSymbol: use.showAllSymbol

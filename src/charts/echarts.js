@@ -11,18 +11,14 @@ angular.module('dashing.charts.echarts', [
  * Recommend use `<echart options="::YourOptions"></echart>`, because the options will not accept new changes
  * anyway after the directive is stabilized.
  */
-  .directive('echart', function() {
+  .directive('echart', ['$util', function($util) {
     'use strict';
 
-    function makeDataArray(data, dataPointsGrowNum, xAxisTypeIsTime) {
-      function ensureArray(obj) {
-        return Array.isArray(obj) ? obj : [obj];
-      }
-
+    function makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime) {
       var array = [];
-      angular.forEach(ensureArray(data), function(datum) {
+      angular.forEach($util.ensureArray(data), function(datum) {
         var dataGrow = dataPointsGrowNum-- > 0;
-        var yValues = ensureArray(datum.y);
+        var yValues = $util.ensureArray(datum.y).slice(0, seriesNum);
         if (xAxisTypeIsTime) {
           angular.forEach(yValues, function(yValue, seriesIndex) {
             var params = [seriesIndex, [datum.x, yValue], /*isHead=*/false, dataGrow];
@@ -100,7 +96,7 @@ angular.module('dashing.charts.echarts', [
             try {
               // try to re-initialize when data is available
               if (!initialized) {
-                $echarts.fillAxisData(options, Array.isArray(data) ? data : [data]);
+                $echarts.fillAxisData(options, $util.ensureArray(data));
                 chart.setOption(options, /*overwrite=*/true);
                 initialized = angular.isDefined(chart.getOption().xAxis);
                 initializeDoneCheck();
@@ -117,7 +113,8 @@ angular.module('dashing.charts.echarts', [
               var xAxisTypeIsTime = (currentOption.xAxis[0].type === 'time') ||
                   // rotated bar chart
                 (currentOption.xAxis[0].type === 'value' && currentOption.yAxis[0].type === 'time');
-              var dataArray = makeDataArray(data, dataPointsGrowNum, xAxisTypeIsTime);
+              var seriesNum = currentOption.series.length;
+              var dataArray = makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime);
               if (dataArray.length > 0) {
                 if (newYAxisMaxValue !== undefined) {
                   chart.setOption({
@@ -137,7 +134,7 @@ angular.module('dashing.charts.echarts', [
           };
         }]
     };
-  })
+  }])
 /**
  * Constants of chart
  */
@@ -185,23 +182,50 @@ angular.module('dashing.charts.echarts', [
   .factory('$echarts', ['$filter', '$util', function($filter, $util) {
     'use strict';
 
-    function buildTooltipSeriesTable(array) {
+    function buildTooltipSeriesTable(array, valueFormatter) {
 
       function tooltipSeriesColorIndicatorHtml(color) {
         var border = zrender.tool.color.lift(color, -0.2);
         return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
       }
 
+      function mergeValuesAndSortDescent(array) {
+        var grouped = {};
+        angular.forEach(array, function(point) {
+          grouped[point.name] = grouped[point.name] || [];
+          grouped[point.name].push(point);
+        });
+
+        var result = [];
+        angular.forEach(grouped, function(group) {
+          var selected = group.reduce(function(p, c) {
+            return Math.abs(p.value) > Math.abs(c.value) ? p : c;
+          });
+          selected.value = group.reduce(function(p, c) {
+            return {value: p.value + c.value};
+          }).value;
+          result.push(selected);
+        });
+
+        return $filter('orderBy')(result, 'value', /*reversed=*/true);
+      }
+
       return '<table>' +
-        array.map(function(obj) {
-          if (!obj.name) {
-            obj.name = obj.value;
-            obj.value = '';
+        mergeValuesAndSortDescent(array).map(function(point) {
+          if (point.value === '-') {
+            return '';
+          } else {
+            point.value = valueFormatter(point.value);
           }
+          if (!point.name) {
+            point.name = point.value;
+            point.value = '';
+          }
+
           return '<tr>' +
-            '<td>' + tooltipSeriesColorIndicatorHtml(obj.color) + '</td>' +
-            '<td style="padding: 0 12px 0 4px">' + obj.name + '</td>' +
-            '<td style="text-align: right">' + obj.value + '</td>' +
+            '<td>' + tooltipSeriesColorIndicatorHtml(point.color) + '</td>' +
+            '<td style="padding: 0 12px 0 4px">' + point.name + '</td>' +
+            '<td style="text-align: right">' + point.value + '</td>' +
             '</tr>';
         }).join('') + '</table>';
     }
@@ -255,34 +279,19 @@ angular.module('dashing.charts.echarts', [
       /**
        * Tooltip for category x-axis chart.
        */
-      categoryTooltip: function(valueFormatter, nameFormatter, mergeSeries) {
+      categoryTooltip: function(valueFormatter, nameFormatter) {
         return tooltip({
           formatter: function(params) {
             var name = (nameFormatter || defaultNameFormatter)(params[0].name);
-            var array;
-            if (mergeSeries) {
-              var use = params.reduce(function(p, c) {
-                return Math.abs(p.value) > Math.abs(c.value) ? p : c;
-              });
-              var sum = params.reduce(function(p, c) {
-                return {value: p.value + c.value};
-              });
-              array = [{
-                color: use.series.colors.line,
-                name: use.seriesName,
-                value: (valueFormatter || defaultValueFormatter)(sum.value)
-              }];
-            } else {
-              var paramsDescentSorted = $filter('orderBy')(params, 'value', /*reversed=*/true);
-              array = paramsDescentSorted.map(function(param) {
-                return {
-                  color: param.series.colors.line,
-                  name: param.seriesName,
-                  value: (valueFormatter || defaultValueFormatter)(param.value)
-                };
-              });
-            }
-            return name + buildTooltipSeriesTable(array);
+            var array = params.map(function(param) {
+              return {
+                color: param.series.colors.line,
+                name: param.seriesName,
+                value: param.value
+              };
+            });
+            valueFormatter = valueFormatter || defaultValueFormatter;
+            return name + buildTooltipSeriesTable(array, valueFormatter);
           }
         });
       },
@@ -303,9 +312,10 @@ angular.module('dashing.charts.echarts', [
             var array = [{
               color: params.series.colors.line,
               name: params.series.name,
-              value: (use.valueFormatter || defaultValueFormatter)(params.value[1])
+              value: params.value[1]
             }];
-            return name + buildTooltipSeriesTable(array);
+            var valueFormatter = use.valueFormatter || defaultValueFormatter;
+            return name + buildTooltipSeriesTable(array, valueFormatter);
           }
         });
 
@@ -319,7 +329,7 @@ angular.module('dashing.charts.echarts', [
        */
       validateSeriesNames: function(use, data) {
         if (!use.seriesNames) {
-          var first = Array.isArray(data[0].y) ? data[0].y : [data[0].y];
+          var first = $util.ensureArray(data[0].y);
           if (first.length > 1) {
             console.warn({
               message: 'You should define `options.seriesNames`',
@@ -444,13 +454,13 @@ angular.module('dashing.charts.echarts', [
           case 2:
             return [colors.blue, colors.blueishGreen];
           default:
-            return [
+            return $util.repeatArray([
               colors.blue,
               colors.purple,
               colors.blueishGreen,
               colors.darkRed,
               colors.orange
-            ];
+            ], seriesNum);
         }
       },
       /**
@@ -464,13 +474,13 @@ angular.module('dashing.charts.echarts', [
           case 2:
             return [colors.blue, colors.darkBlue];
           default:
-            return [
+            return $util.repeatArray([
               colors.lightGreen,
               colors.darkGray,
               colors.lightBlue,
               colors.blue,
               colors.darkBlue
-            ];
+            ], seriesNum);
         }
       },
       /**

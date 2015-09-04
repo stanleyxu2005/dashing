@@ -3,13 +3,14 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.tables.sortable-table.builder', [
-  'dashing.property'
+  'dashing.property',
+  'dashing.util'
 ])
 /**
  * A helper class to build column as a chained object
  */
-  .factory('$sortableTableBuilder', ['PROPERTY_RENDERER',
-    function(PROPERTY_RENDERER) {
+  .factory('$sortableTableBuilder', ['$util', 'PROPERTY_RENDERER',
+    function($util, PROPERTY_RENDERER) {
       'use strict';
 
       var CB = function(renderer, title) {
@@ -135,7 +136,7 @@ angular.module('dashing.tables.sortable-table.builder', [
         /** Debug util */
         $check: function(cols, model) {
           angular.forEach(cols, function(col) {
-            var keys = Array.isArray(col.key) ? col.key : [col.key];
+            var keys = $util.ensureArray(col.key);
             angular.forEach(keys, function(key) {
               if (!model.hasOwnProperty(key)) {
                 console.warn('Model does not have a property matches column key `' + col + '`.');

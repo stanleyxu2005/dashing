@@ -70,8 +70,8 @@ angular.module('dashing.charts.sparkline', [
           dataZoom: {show: false},
           grid: {
             borderWidth: 1,
-            x: 5, y: 5, x2: 5, /* data point's radius is 5px, so set 5px margin to avoid overlap */
-            y2: 1 /* set 5px will have a thick ugly grey border */
+            x: 5, y: 5, x2: 5, /* add 5px margin to avoid overlap a data point */
+            y2: 1 /* reduce to 1px, because 5px will have a thick ugly grey border */
           },
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,

@@ -234,25 +234,6 @@ angular.module('dashing.charts.echarts', [
     }
 
     /**
-     * Tooltip content formatter for a multiple data series chart. Every
-     * data series will have a colored legend in tooltip.
-     */
-    function tooltipAllSeriesFormatter(valueFormatter, nameFormatter) {
-      return function(params) {
-        var name = (nameFormatter || defaultNameFormatter)(params[0].name);
-        var paramsSorted = $filter('orderBy')(params, 'value', /*reversed=*/true);
-        return name +
-          buildTooltipSeriesTable(paramsSorted.map(function(param) {
-            return {
-              color: param.series.colors.line,
-              name: param.seriesName,
-              value: (valueFormatter || defaultValueFormatter)(param.value)
-            };
-          }));
-      };
-    }
-
-    /**
      * As we define the maximal visible data points, so we should split the data array
      * into two. The part `older` are old data points, that will be shown when the chart
      * is created. The part `newer` will be added afterwards by `addDataPoints()`.
@@ -272,28 +253,56 @@ angular.module('dashing.charts.echarts', [
 
     return {
       /**
-       * Tooltip for category.
+       * Tooltip for category x-axis chart.
        */
-      categoryTooltip: function(valueFormatter) {
+      categoryTooltip: function(valueFormatter, nameFormatter, mergeSeries) {
         return tooltip({
-          formatter: tooltipAllSeriesFormatter(valueFormatter)
+          formatter: function(params) {
+            var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+            var array;
+            if (mergeSeries) {
+              var use = params.reduce(function(p, c) {
+                return Math.abs(p.value) > Math.abs(c.value) ? p : c;
+              });
+              var sum = params.reduce(function(p, c) {
+                return {value: p.value + c.value};
+              });
+              array = [{
+                color: use.series.colors.line,
+                name: use.seriesName,
+                value: (valueFormatter || defaultValueFormatter)(sum.value)
+              }];
+            } else {
+              var paramsDescentSorted = $filter('orderBy')(params, 'value', /*reversed=*/true);
+              array = paramsDescentSorted.map(function(param) {
+                return {
+                  color: param.series.colors.line,
+                  name: param.seriesName,
+                  value: (valueFormatter || defaultValueFormatter)(param.value)
+                };
+              });
+            }
+            return name + buildTooltipSeriesTable(array);
+          }
         });
       },
       /**
-       * Tooltip for timeline chart with some limitation.
-       * trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
+       * Tooltip for timeline x-axis chart.
+       * Due to current limiation:
+       *  1. trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
+       *  2. only the active data series will be shown in tooltip.
        */
-      timelineTooltip: function(valueFormatter) {
+      timelineTooltip: function(valueFormatter, nameFormatter) {
         return tooltip({
           trigger: 'item', // todo: https://github.com/ecomfe/echarts/issues/1954
           formatter: function(params) {
-            var name = defaultNameFormatter(params.value[0]);
-            return name +
-              buildTooltipSeriesTable([{
-                color: params.series.colors.line,
-                name: params.series.name,
-                value: valueFormatter ? valueFormatter(params.value[1]) : params.value[1]
-              }]);
+            var name = (nameFormatter || defaultNameFormatter)(params.value[0]);
+            var array = [{
+              color: params.series.colors.line,
+              name: params.series.name,
+              value: (valueFormatter || defaultValueFormatter)(params.value[1])
+            }];
+            return name + buildTooltipSeriesTable(array);
           }
         });
       },

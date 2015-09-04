@@ -26,6 +26,7 @@ angular.module('dashing.charts.bar', [
  *   data: // an array of initial data points
  *
  *   colors: array|string // optional to override bar colors
+ *   mergeSeriesInTooltip: boolean // sum values in tooltip and show as one value (default: false)
  *   showEveryValueLabel: boolean // show value label of every bar (rotated bar chart only)
  *   rotate: boolean // rotate the bar control (default: false)
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
@@ -63,6 +64,7 @@ angular.module('dashing.charts.bar', [
           yAxisSplitNum: 3,
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
+          mergeSeriesInTooltip: false,
           yBoundaryGap: [0.2, 0.2],
           showEveryValueLabel: true,
           rotate: false
@@ -101,7 +103,7 @@ angular.module('dashing.charts.bar', [
           width: use.width,
           visibleDataPointsNum: -1, // Tell chart control only update existing data points' value.
           tooltip: angular.merge(
-            $echarts.categoryTooltip(use.valueFormatter), {
+            $echarts.categoryTooltip(use.valueFormatter, undefined, use.mergeSeriesInTooltip), {
               axisPointer: {
                 type: 'shadow',
                 shadowStyle: {

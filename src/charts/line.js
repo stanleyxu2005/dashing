@@ -65,23 +65,8 @@ angular.module('dashing.charts.line', [
           yAxisLabelFormatter: $echarts.axisLabelFormatter('')
         }, $scope.options);
 
-        if (use.xAxisTypeIsTime) {
-          // https://github.com/ecomfe/echarts/issues/1954
-          console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
-          use.xAxisTypeIsTime = false;
-        }
-
         var data = use.data;
-        if (!use.seriesNames) {
-          var first = Array.isArray(data[0].y) ? data[0].y : [data[0].y];
-          if (first.length > 1) {
-            console.warn('Fallback to default series names. ' +
-              'You should set `lineChartOptions.seriesNames`.');
-          }
-          use.seriesNames = first.map(function(_, i) {
-            return 'Series ' + (i + 1);
-          });
-        }
+        $echarts.validateSeriesNames(use, data);
 
         if (!Array.isArray(use.colors) || !use.colors.length) {
           use.colors = $echarts.lineChartColorRecommendation(
@@ -90,13 +75,15 @@ angular.module('dashing.charts.line', [
         var colors = use.colors.map(function(base) {
           return $echarts.buildColorStates(base);
         });
+        var axisColor = '#999';
         var borderLineStyle = {
           length: 4,
           lineStyle: {
             width: 1,
-            color: '#ddd'
+            color: axisColor
           }
         };
+
         var options = {
           height: use.height,
           width: use.width,
@@ -105,20 +92,17 @@ angular.module('dashing.charts.line', [
               axisPointer: {
                 type: 'line',
                 lineStyle: {
-                  color: 'rgb(235,235,235)',
                   width: 3,
+                  color: 'rgb(235,235,235)',
                   type: 'dotted'
                 }
               }
             }),
           dataZoom: {show: false},
-          // 5px border on left and right to fix data point
           grid: {
             borderWidth: 0,
-            x: use.yAxisLabelWidth,
-            y: 20,
-            x2: 5,
-            y2: 23
+            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* data point's radius is 5px, so set 5px margin to avoid overlap */
+            y: 20, y2: 23
           },
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,
@@ -133,7 +117,7 @@ angular.module('dashing.charts.line', [
             splitLine: {
               show: use.yAxisShowSplitLine,
               lineStyle: {
-                color: '#ddd',
+                color: axisColor,
                 type: 'dotted'
               }
             },
@@ -157,11 +141,7 @@ angular.module('dashing.charts.line', [
 
         if (use.xAxisTypeIsTime) {
           // todo: https://github.com/ecomfe/echarts/issues/1954
-          options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
-          angular.forEach(options.series, function(series) {
-            series.showAllSymbol = true;
-            series.stack = false;
-          });
+          $echarts.timelineChartFix(options, use);
         }
 
         if (options.series.length === 1) {

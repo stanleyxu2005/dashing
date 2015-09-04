@@ -55,8 +55,9 @@ angular.module('dashing.charts.sparkline', [
           valueLabelPosition: null,
           rotate: false
         }, $scope.options);
+
         if (use.xAxisTypeIsTime) {
-          // https://github.com/ecomfe/echarts/issues/1954
+          // todo: https://github.com/ecomfe/echarts/issues/1954
           console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
           use.xAxisTypeIsTime = false;
         }
@@ -67,9 +68,9 @@ angular.module('dashing.charts.sparkline', [
           width: use.width,
           tooltip: $echarts.categoryTooltip(use.valueFormatter),
           dataZoom: {show: false},
-          // data point's radius is 5px, so we leave 5px border on left/right/top to avoid overlap.
           grid: {
-            borderWidth: 1, x: 5, y: 5, x2: 5,
+            borderWidth: 1,
+            x: 5, y: 5, x2: 5, /* data point's radius is 5px, so set 5px margin to avoid overlap */
             y2: 1 /* set 5px will have a thick ugly grey border */
           },
           xAxis: [{
@@ -92,9 +93,7 @@ angular.module('dashing.charts.sparkline', [
 
         if (use.xAxisTypeIsTime) {
           // todo: https://github.com/ecomfe/echarts/issues/1954
-          options.tooltip = $echarts.timelineTooltip(use.valueFormatter);
-          options.series[0].showAllSymbol = true;
-          options.series[0].stack = false;
+          $echarts.timelineChartFix(options, use);
         }
 
         $scope.echartOptions = options;

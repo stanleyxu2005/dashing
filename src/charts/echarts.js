@@ -287,24 +287,49 @@ angular.module('dashing.charts.echarts', [
         });
       },
       /**
-       * Tooltip for timeline x-axis chart.
-       * Due to current limiation:
-       *  1. trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
-       *  2. only the active data series will be shown in tooltip.
+       * https://github.com/ecomfe/echarts/issues/1954
        */
-      timelineTooltip: function(valueFormatter, nameFormatter) {
-        return tooltip({
-          trigger: 'item', // todo: https://github.com/ecomfe/echarts/issues/1954
+      timelineChartFix: function(options, use) {
+        console.warn('Echarts does not have a good experience for time series. ' +
+          'We suggest to use category as x-axis type.');
+
+        // Tooltip for timeline x-axis chart. Due to current limitation:
+        // 1. trigger can only be 'item'. Use 'axis' would draw line in wrong direction!
+        // 2. only the active data series will be shown in tooltip.
+        options.tooltip = tooltip({
+          trigger: 'item',
           formatter: function(params) {
-            var name = (nameFormatter || defaultNameFormatter)(params.value[0]);
+            var name = (use.nameFormatter || defaultNameFormatter)(params.value[0]);
             var array = [{
               color: params.series.colors.line,
               name: params.series.name,
-              value: (valueFormatter || defaultValueFormatter)(params.value[1])
+              value: (use.valueFormatter || defaultValueFormatter)(params.value[1])
             }];
             return name + buildTooltipSeriesTable(array);
           }
         });
+
+        angular.forEach(options.series, function(series) {
+          series.showAllSymbol = true;
+          series.stack = false;
+        });
+      },
+      /**
+       * Validate data series names. In case of problem, set default series names and warn user.
+       */
+      validateSeriesNames: function(use, data) {
+        if (!use.seriesNames) {
+          var first = Array.isArray(data[0].y) ? data[0].y : [data[0].y];
+          if (first.length > 1) {
+            console.warn({
+              message: 'You should define `options.seriesNames`',
+              options: use
+            });
+          }
+          use.seriesNames = first.map(function(_, i) {
+            return 'Series ' + (i + 1);
+          });
+        }
       },
       /**
        * Formatter to change axis label to human readable values.
@@ -455,8 +480,7 @@ angular.module('dashing.charts.echarts', [
         return {
           line: base,
           area: zrender.tool.color.lift(base, -0.92),
-          hover: zrender.tool.color.lift(base, 0.1),
-          axis: zrender.tool.color.lift(base, -0.75)
+          hover: zrender.tool.color.lift(base, 0.1)
         };
       }
     };

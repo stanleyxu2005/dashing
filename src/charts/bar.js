@@ -80,16 +80,7 @@ angular.module('dashing.charts.bar', [
           console.warn({message: 'Initial data is expected to be an array', data: data});
           data = data ? [data] : [];
         }
-        if (!use.seriesNames) {
-          var first = Array.isArray(data[0].y) ? data[0].y : [data[0].y];
-          if (first.length > 1) {
-            console.warn('Fallback to default series names. ' +
-              'You should set `barChartOptions.seriesNames`.');
-          }
-          use.seriesNames = first.map(function(_, i) {
-            return 'Series ' + (i + 1);
-          });
-        }
+        $echarts.validateSeriesNames(use, data);
 
         if (!Array.isArray(use.colors) || !use.colors.length) {
           use.colors = $echarts.barChartColorRecommendation(
@@ -98,6 +89,8 @@ angular.module('dashing.charts.bar', [
         var colors = use.colors.map(function(base) {
           return $echarts.buildColorStates(base);
         });
+        var axisColor = colors.length > 1 ? '#999' : colors[0].line;
+
         var options = {
           height: use.height,
           width: use.width,
@@ -113,10 +106,8 @@ angular.module('dashing.charts.bar', [
             }),
           grid: {
             borderWidth: 0,
-            x: use.yAxisLabelWidth,
-            y: 15,
-            x2: 5,
-            y2: 28
+            x: Math.max(5, use.yAxisLabelWidth), x2: 5, /* data point's radius is 5px, so set 5px margin to avoid overlap */
+            y: 15, y2: 28
           },
           xAxis: [{
             // dashing bar-chart does not support time as x-axis values
@@ -125,8 +116,7 @@ angular.module('dashing.charts.bar', [
               show: true,
               lineStyle: {
                 width: 1,
-                color: '#666',
-                type: 'dotted'
+                color: axisColor
               }
             },
             axisTick: {show: false},
@@ -139,7 +129,7 @@ angular.module('dashing.charts.bar', [
             splitLine: {
               show: true,
               lineStyle: {
-                color: colors[0].axis,
+                color: axisColor,
                 type: 'dotted'
               }
             },
@@ -184,7 +174,6 @@ angular.module('dashing.charts.bar', [
               default:
                 positions = [null];
             }
-
             angular.forEach(options.series, function(series, i) {
               var position = positions[i % positions.length];
               if (position) {
@@ -226,7 +215,7 @@ angular.module('dashing.charts.bar', [
               realtime: true,
               height: scrollbarHeight,
               y: parseInt(use.height) - scrollbarHeight - scrollbarGridMargin,
-              handleColor: colors[0].line
+              handleColor: axisColor
             };
             options.dataZoom.fillerColor =
               zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);

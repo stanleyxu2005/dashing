@@ -487,7 +487,7 @@ angular.module('dashing.charts.echarts', [
         return {
           line: base,
           area: zrender.tool.color.lift(base, -0.92),
-          hover: zrender.tool.color.lift(base, 0.1)
+          hover: zrender.tool.color.lift(base, 0.15)
         };
       }
     };

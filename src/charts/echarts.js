@@ -265,7 +265,7 @@ angular.module('dashing.charts.echarts', [
       if (!Array.isArray(data)) {
         data = [];
       }
-      if (data.length <= visibleDataPoints) {
+      if (!visibleDataPoints || data.length <= visibleDataPoints) {
         return {older: data, newer: []};
       }
       return {
@@ -395,8 +395,6 @@ angular.module('dashing.charts.echarts', [
       fillAxisData: function(options, data, visibleDataPointsNum) {
         if (visibleDataPointsNum > 0) {
           options.visibleDataPointsNum = visibleDataPointsNum;
-        } else if (!options.visibleDataPointsNum) {
-          options.visibleDataPointsNum = Number.MAX_VALUE;
         }
 
         var dataSplit = splitInitialData(data, options.visibleDataPointsNum);

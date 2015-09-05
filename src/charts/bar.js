@@ -26,6 +26,7 @@ angular.module('dashing.charts.bar', [
  *   data: // an array of initial data points
  *
  *   colors: array|string // optional to override bar colors
+ *   static: boolean // update existing data points instead of adding new data points (default: true)
  *   rotate: boolean // rotate the bar control (default: false)
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
@@ -63,6 +64,7 @@ angular.module('dashing.charts.bar', [
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           yBoundaryGap: [0.2, 0.2],
+          static: true,
           rotate: false
         }, $scope.options);
 
@@ -148,8 +150,11 @@ angular.module('dashing.charts.bar', [
           color: use.colors
         };
 
-        $echarts.fillAxisData(options, data, /*visibleDataPointsNum=*/undefined);
-        options.visibleDataPointsNum = -1; // Tell chart control only update existing data points' value.
+        $echarts.fillAxisData(options, data, use.static ? undefined : use.visibleDataPointsNum);
+        if (use.static) {
+          // Tell chart control only update existing data points' value.
+          options.visibleDataPointsNum = -1;
+        }
 
         if (use.rotate) {
           var axisSwap = options.xAxis;
@@ -159,52 +164,54 @@ angular.module('dashing.charts.bar', [
           options.yAxis[0].type = options.yAxis[0].type || 'category';
         }
 
-        // todo: currently the calculation can only happen at initialization stage, the chart will not response on a resizing event.
-        var drawBarMinWidth = use.barMinWidth + use.barMinSpacing;
-        var drawBarMaxWidth = use.barMaxWidth + use.barMaxSpacing;
-        var drawAllBarMinWidth = data.length * drawBarMinWidth;
-        var drawAllBarMaxWidth = data.length * drawBarMaxWidth;
-        var chartHeight = parseInt(use.height);
+        if (use.static) {
+          // todo: currently the calculation can only happen at initialization stage, the chart will not response on a resizing event.
+          var drawBarMinWidth = use.barMinWidth + use.barMinSpacing;
+          var drawBarMaxWidth = use.barMaxWidth + use.barMaxSpacing;
+          var drawAllBarMinWidth = data.length * drawBarMinWidth;
+          var drawAllBarMaxWidth = data.length * drawBarMaxWidth;
+          var chartHeight = parseInt(use.height);
 
-        if (use.rotate) {
-          var gridMarginY = options.grid.borderWidth * 2 + options.grid.y + options.grid.y2;
-          if (chartHeight < gridMarginY + drawAllBarMinWidth) {
-            console.info('Increased the height to ' + (gridMarginY + drawAllBarMinWidth) + 'px, ' +
-              'because rotated bar chart does not support data zoom yet.');
-            options.height = (gridMarginY + drawAllBarMinWidth) + 'px';
-          } else if (chartHeight > gridMarginY + drawAllBarMaxWidth) {
-            options.height = (gridMarginY + drawAllBarMaxWidth) + 'px';
-          }
-        } else {
-          var gridMarginX = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-          var chartControlWidth = angular.element($element[0]).children()[0].offsetWidth;
-          var visibleWidthForBars = chartControlWidth - gridMarginX;
+          if (use.rotate) {
+            var gridMarginY = options.grid.borderWidth * 2 + options.grid.y + options.grid.y2;
+            if (chartHeight < gridMarginY + drawAllBarMinWidth) {
+              console.info('Increased the height to ' + (gridMarginY + drawAllBarMinWidth) + 'px, ' +
+                'because rotated bar chart does not support data zoom yet.');
+              options.height = (gridMarginY + drawAllBarMinWidth) + 'px';
+            } else if (chartHeight > gridMarginY + drawAllBarMaxWidth) {
+              options.height = (gridMarginY + drawAllBarMaxWidth) + 'px';
+            }
+          } else {
+            var gridMarginX = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
+            var chartControlWidth = angular.element($element[0]).children()[0].offsetWidth;
+            var visibleWidthForBars = chartControlWidth - gridMarginX;
 
-          if (drawAllBarMinWidth > 0 && drawAllBarMinWidth > visibleWidthForBars) {
-            // Add a scrollbar if bar widths exceeds the minimal width
-            var roundedVisibleWidthForBars = Math.floor(visibleWidthForBars / drawBarMinWidth) * drawBarMinWidth;
-            options.grid.x2 += visibleWidthForBars - roundedVisibleWidthForBars;
+            if (drawAllBarMinWidth > 0 && drawAllBarMinWidth > visibleWidthForBars) {
+              // Add a scrollbar if bar widths exceeds the minimal width
+              var roundedVisibleWidthForBars = Math.floor(visibleWidthForBars / drawBarMinWidth) * drawBarMinWidth;
+              options.grid.x2 += visibleWidthForBars - roundedVisibleWidthForBars;
 
-            var scrollbarHeight = 20;
-            var scrollbarGridMargin = 5;
-            options.dataZoom = {
-              show: true,
-              end: roundedVisibleWidthForBars * 100 / drawAllBarMinWidth,
-              realtime: true,
-              height: scrollbarHeight,
-              y: chartHeight - scrollbarHeight - scrollbarGridMargin,
-              handleColor: axisColor
-            };
-            options.dataZoom.fillerColor =
-              zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);
-            options.grid.y2 += scrollbarHeight + scrollbarGridMargin * 2;
-          } else if (data.length) {
-            if (visibleWidthForBars > drawAllBarMaxWidth) {
-              // Too few bars to fill up the whole area, so increase the right/bottom margin
-              options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
-            } else {
-              options.grid.x2 += visibleWidthForBars -
-                Math.floor(visibleWidthForBars / data.length) * data.length;
+              var scrollbarHeight = 20;
+              var scrollbarGridMargin = 5;
+              options.dataZoom = {
+                show: true,
+                end: roundedVisibleWidthForBars * 100 / drawAllBarMinWidth,
+                realtime: true,
+                height: scrollbarHeight,
+                y: chartHeight - scrollbarHeight - scrollbarGridMargin,
+                handleColor: axisColor
+              };
+              options.dataZoom.fillerColor =
+                zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);
+              options.grid.y2 += scrollbarHeight + scrollbarGridMargin * 2;
+            } else if (data.length) {
+              if (visibleWidthForBars > drawAllBarMaxWidth) {
+                // Too few bars to fill up the whole area, so increase the right/bottom margin
+                options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
+              } else {
+                options.grid.x2 += visibleWidthForBars -
+                  Math.floor(visibleWidthForBars / data.length) * data.length;
+              }
             }
           }
         }

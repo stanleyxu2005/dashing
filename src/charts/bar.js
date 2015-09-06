@@ -29,6 +29,7 @@ angular.module('dashing.charts.bar', [
  *   static: boolean // update existing data points instead of adding new data points (default: true)
  *   rotate: boolean // rotate the bar control (default: false)
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
+ *   yAxisShowMinorAxisLine: boolean // show minor axis line (default: false)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
  *   yAxisLabelFormatter: function // optional to override the label formatter
  *   valueFormatter: function // optional to override the value formatter
@@ -36,6 +37,7 @@ angular.module('dashing.charts.bar', [
  *   barMaxSpacing: number // reduce chart width, if bar actual spacing will exceed the value (default: 4)
  *   barMinWidth: number // show data zoom control, if bar width is narrower than the value (default: 7)
  *   barMinSpacing: number // show data zoom control, if bar spacing is narrower than the value (default: 1)
+ *   xAxisShowLabels: boolean // show x-axis labels (default: true)
  * }
  * @param datasource-bind - array of data objects
  *   every data object is {x: string, y: number}
@@ -61,11 +63,13 @@ angular.module('dashing.charts.bar', [
       controller: ['$scope', '$element', function($scope, $element) {
         var use = angular.merge({
           yAxisSplitNum: 3,
+          yAxisShowMinorAxisLine: false,
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           yBoundaryGap: [0.2, 0.2],
           static: true,
-          rotate: false
+          rotate: false,
+          xAxisShowLabels: true
         }, $scope.options);
 
         use = angular.merge({
@@ -128,7 +132,7 @@ angular.module('dashing.charts.bar', [
             // todo: optional to hide y-axis
             splitNumber: use.yAxisSplitNum,
             splitLine: {
-              show: true,
+              show: use.yAxisShowMinorAxisLine,
               lineStyle: {
                 color: axisColor,
                 type: 'dotted'
@@ -162,6 +166,11 @@ angular.module('dashing.charts.bar', [
           options.xAxis[0].type = options.xAxis[0].type || 'value';
           options.yAxis = axisSwap;
           options.yAxis[0].type = options.yAxis[0].type || 'category';
+        }
+
+        if (!use.xAxisShowLabels) {
+          options.xAxis[0].axisLabel = {show: false};
+          options.grid.y2 = options.grid.y;
         }
 
         if (use.static) {

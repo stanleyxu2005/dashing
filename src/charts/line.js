@@ -32,6 +32,7 @@ angular.module('dashing.charts.line', [
  *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
  *   seriesStacked: boolean // should stack all data series (default: true)
  *   seriesLineSmooth: boolean // draw line of series smooth (default: false)
+ *   xAxisShowLabels: boolean // show x-axis labels (default: true)
  * }
  * @param datasource-bind - array of data objects
  *   every data object is {x: time|string, y: [number]}
@@ -62,7 +63,8 @@ angular.module('dashing.charts.line', [
           yAxisSplitNum: 3,
           yAxisShowSplitLine: true,
           yAxisLabelWidth: 60,
-          yAxisLabelFormatter: $echarts.axisLabelFormatter('')
+          yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
+          xAxisShowLabels: true
         }, $scope.options);
 
         var data = use.data;
@@ -139,6 +141,11 @@ angular.module('dashing.charts.line', [
         };
 
         $echarts.fillAxisData(options, data, use.visibleDataPointsNum);
+
+        if (!use.xAxisShowLabels) {
+          options.xAxis[0].axisLabel = {show: false};
+          options.grid.y2 = options.grid.y;
+        }
 
         if (use.xAxisTypeIsTime) {
           // todo: https://github.com/ecomfe/echarts/issues/1954

@@ -378,7 +378,7 @@ angular.module('dashing.charts.echarts', [
             },
             emphasis: {
               color: args.colors.hover,
-              borderColor: zrender.tool.color.alpha(args.colors.line, 0.35)
+              borderColor: zrender.tool.color.alpha(args.colors.line, 0.3)
             }
           }
         };
@@ -427,20 +427,6 @@ angular.module('dashing.charts.echarts', [
           });
           options.xAxis[0].data = xLabels;
         }
-      },
-      /**
-       * Return a copy of data with only the first series data.
-       */
-      firstSeriesData: function(data) {
-        if (!Array.isArray(data)) {
-          data = [data];
-        }
-        return data.map(function(datum) {
-          return {
-            x: datum.x,
-            y: Array.isArray(datum.y) ? datum.y[0] : datum.y
-          };
-        });
       },
       /**
        * Return a recommended color palette for line chart.

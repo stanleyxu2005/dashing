@@ -124,8 +124,8 @@ angular.module('dashing.charts.bar', [
                 type: 'dotted'
               }
             },
-            axisTick: {show: false},
-            splitLine: {show: false}
+            axisTick: false,
+            splitLine: false
           }],
           yAxis: [{
             type: 'value',
@@ -138,7 +138,7 @@ angular.module('dashing.charts.bar', [
                 type: 'dotted'
               }
             },
-            axisLine: {show: false},
+            axisLine: false,
             axisLabel: {formatter: use.yAxisLabelFormatter}
           }],
           series: use.seriesNames.map(function(name, i) {
@@ -169,7 +169,7 @@ angular.module('dashing.charts.bar', [
         }
 
         if (!use.xAxisShowLabels) {
-          options.xAxis[0].axisLabel = {show: false};
+          options.xAxis[0].axisLabel = false;
           options.grid.y2 = options.grid.y;
         }
 

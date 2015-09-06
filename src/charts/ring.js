@@ -67,7 +67,7 @@ angular.module('dashing.charts.ring', [
           normal: {
             color: 'rgb(232,239,240)',
             label: {show: use.textPosition === 'inner', position: 'center'},
-            labelLine: {show: false}
+            labelLine: false
           }
         };
 

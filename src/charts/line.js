@@ -100,7 +100,6 @@ angular.module('dashing.charts.line', [
                 }
               }
             }),
-          dataZoom: {show: false},
           grid: angular.merge({
             borderWidth: 0,
             x: Math.max(5, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
@@ -143,7 +142,7 @@ angular.module('dashing.charts.line', [
         $echarts.fillAxisData(options, data, use.visibleDataPointsNum);
 
         if (!use.xAxisShowLabels) {
-          options.xAxis[0].axisLabel = {show: false};
+          options.xAxis[0].axisLabel = false;
           options.grid.y2 = options.grid.y;
         }
 

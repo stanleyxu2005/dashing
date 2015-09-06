@@ -43,8 +43,7 @@ angular.module('dashing.charts.sparkline', [
         var echartScope = scope.$$childHead;
         scope.$watch('data', function(data) {
           if (data) {
-            echartScope.addDataPoints(
-              $echarts.firstSeriesData(data));
+            echartScope.addDataPoints(data);
           }
         });
       },
@@ -64,7 +63,6 @@ angular.module('dashing.charts.sparkline', [
           height: use.height,
           width: use.width,
           tooltip: $echarts.categoryTooltip(use.valueFormatter),
-          dataZoom: {show: false},
           grid: angular.merge({
             borderWidth: 1,
             x: 5, y: 5, x2: 5, /* add 5px margin to avoid overlap a data point */
@@ -94,11 +92,6 @@ angular.module('dashing.charts.sparkline', [
         }
 
         $echarts.fillAxisData(options, use.data, use.visibleDataPointsNum);
-
-        if (use.xAxisTypeIsTime) {
-          // todo: https://github.com/ecomfe/echarts/issues/1954
-          $echarts.timelineChartFix(options, use);
-        }
 
         $scope.echartOptions = options;
       }]

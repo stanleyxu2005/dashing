@@ -10,7 +10,7 @@
   "noempty": true,
   "nonew": true,
   "undef": true,
-  "strict": false,
+  "strict": true,
   "trailing": true,
   "laxcomma": true,
   "maxerr": 100,

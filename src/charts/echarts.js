@@ -362,22 +362,23 @@ angular.module('dashing.charts.echarts', [
        * Build the option object for data series.
        */
       makeDataSeries: function(args) {
-        args.type = args.type || 'line';
-        var lineStyle = {
-          color: args.colors.line,
-          width: args.stack ? 4 : 3
-        };
         var options = {
+          type: args.type || 'line',
           symbol: 'circle',
+          symbolSize: 4,
           smooth: args.smooth,
           itemStyle: {
             normal: {
               color: args.colors.line,
-              lineStyle: lineStyle
+              lineStyle: {
+                width: args.stack ? 4 : 3
+              },
+              borderColor: 'transparent',
+              borderWidth: 6
             },
             emphasis: {
               color: args.colors.hover,
-              lineStyle: lineStyle
+              borderColor: zrender.tool.color.alpha(args.colors.line, 0.35)
             }
           }
         };

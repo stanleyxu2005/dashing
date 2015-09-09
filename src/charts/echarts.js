@@ -70,6 +70,12 @@ angular.module('dashing.charts.echarts', [
           chart.setTheme(defaults.lookAndFeel);
           chart.setOption(options, /*overwrite=*/true);
 
+          // Automatically group charts with same group id
+          if (angular.isFunction(chart.group) && options.groupId) {
+            chart.groupId = options.groupId;
+            chart.group(options.groupId);
+          }
+
           // If no data is provided, the chart is not initialized. And you can see a caution on the canvas.
           var initialized = angular.isDefined(chart.getOption().xAxis);
 
@@ -168,7 +174,7 @@ angular.module('dashing.charts.echarts', [
         fontSize: 12
       },
       loadingText: 'Data Loading...',
-      noDataText: 'No Graphic Data Found',
+      noDataText: 'No Graphic Data Available',
       addDataAnimation: false
     },
     // The number of visible data points can be shown on chart

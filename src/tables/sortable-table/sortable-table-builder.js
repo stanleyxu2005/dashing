@@ -94,6 +94,13 @@ angular.module('dashing.tables.sortable-table.builder', [
         return this;
       };
 
+      CB.prototype.vertical = function() {
+        if (Array.isArray(this.props.key)) {
+          this.props.vertical = true;
+        }
+        return this;
+      };
+
       CB.prototype.done = function() {
         return this.props;
       };

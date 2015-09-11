@@ -31,6 +31,7 @@ angular.module('dashing.property.bytes', [
             scope.value = hr.value;
             scope.unit = hr.modifier + attrs.unit;
           } else {
+            scope.value = raw;
             scope.unit = attrs.unit;
           }
         });

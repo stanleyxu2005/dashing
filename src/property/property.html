@@ -37,19 +37,19 @@
     ng-attr-unit="{{unit}}"
     ng-attr-readable="{{readable}}"></bytes>
   <!-- duration-->
-  <span
+  <div
     ng-switch-when="Duration"
-    ng-bind="value|duration"></span>
+    ng-bind="value|duration"></div>
   <!-- datetime-->
-  <span
+  <div
     ng-switch-when="DateTime"
-    ng-bind="value|date:'yyyy-MM-dd HH:mm:ss'"></span>
+    ng-bind="value|date:'yyyy-MM-dd HH:mm:ss'"></div>
   <!-- number-->
-  <span
+  <div
     ng-switch-when="Number"
-    ng-bind="value|number:0"></span>
+    ng-bind="value|number:0"></div>
   <!-- default -->
-  <span
+  <div
     ng-switch-default
-    ng-bind="value"></span>
+    ng-bind="value"></div>
 </ng-switch>

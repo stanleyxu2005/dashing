@@ -11,14 +11,14 @@ angular.module('dashing.charts.echarts', [
  * Recommend use `<echart options="::YourOptions"></echart>`, because the options will not accept new changes
  * anyway after the directive is stabilized.
  */
-  .directive('echart', ['$util', function($util) {
+  .directive('echart', ['dashing.util', function(util) {
     'use strict';
 
     function makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime) {
       var array = [];
-      angular.forEach($util.ensureArray(data), function(datum) {
+      angular.forEach(util.array.ensureArray(data), function(datum) {
         var dataGrow = dataPointsGrowNum-- > 0;
-        var yValues = $util.ensureArray(datum.y).slice(0, seriesNum);
+        var yValues = util.array.ensureArray(datum.y).slice(0, seriesNum);
         if (xAxisTypeIsTime) {
           angular.forEach(yValues, function(yValue, seriesIndex) {
             var params = [seriesIndex, [datum.x, yValue], /*isHead=*/false, dataGrow];
@@ -102,7 +102,7 @@ angular.module('dashing.charts.echarts', [
             try {
               // try to re-initialize when data is available
               if (!initialized) {
-                $echarts.fillAxisData(options, $util.ensureArray(data));
+                $echarts.fillAxisData(options, util.array.ensureArray(data));
                 chart.setOption(options, /*overwrite=*/true);
                 initialized = angular.isDefined(chart.getOption().xAxis);
                 initializeDoneCheck();
@@ -184,7 +184,7 @@ angular.module('dashing.charts.echarts', [
 /**
  * Customize chart's look and feel.
  */
-  .factory('$echarts', ['$filter', '$util', function($filter, $util) {
+  .factory('$echarts', ['$filter', 'dashing.util', function($filter, util) {
     'use strict';
 
     function buildTooltipSeriesTable(array, valueFormatter) {
@@ -337,7 +337,7 @@ angular.module('dashing.charts.echarts', [
        */
       validateSeriesNames: function(use, data) {
         if (!use.seriesNames) {
-          var first = $util.ensureArray(data[0].y);
+          var first = util.array.ensureArray(data[0].y);
           if (first.length > 1) {
             console.warn({
               message: 'You should define `options.seriesNames`',
@@ -357,7 +357,7 @@ angular.module('dashing.charts.echarts', [
           if (angular.isNumber(value)) {
             value = Number(value); // echarts return 0.1 as "0.1"
             if (value !== 0) {
-              var hr = $util.toHumanReadable(value, 1000, 1);
+              var hr = util.text.toHumanReadable(value, 1000, 1);
               value = hr.value + ' ' + hr.modifier + (unit || '');
             }
           }
@@ -438,14 +438,14 @@ angular.module('dashing.charts.echarts', [
        * Return a recommended color palette for line chart.
        */
       lineChartColorRecommendation: function(seriesNum) {
-        var colors = $util.colors;
+        var colors = util.color.palette;
         switch (seriesNum) {
           case 1:
             return [colors.blue];
           case 2:
             return [colors.blue, colors.blueishGreen];
           default:
-            return $util.repeatArray([
+            return util.array.repeatArray([
               colors.blue,
               colors.purple,
               colors.blueishGreen,
@@ -458,14 +458,14 @@ angular.module('dashing.charts.echarts', [
        * Return a recommended color palette for bar chart.
        */
       barChartColorRecommendation: function(seriesNum) {
-        var colors = $util.colors;
+        var colors = util.color.palette;
         switch (seriesNum) {
           case 1:
             return [colors.orange];
           case 2:
             return [colors.blue, colors.darkBlue];
           default:
-            return $util.repeatArray([
+            return util.array.repeatArray([
               colors.lightGreen,
               colors.darkGray,
               colors.lightBlue,

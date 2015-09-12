@@ -16,7 +16,7 @@ angular.module('dashing.property.bytes', [
  *  <bytes raw="102400" unit="byte"></bytes>
  *  <bytes raw="102400" unit="byte" readable="true"></bytes>
  */
-  .directive('bytes', ['$util', function($util) {
+  .directive('bytes', ['dashing.util', function(util) {
     'use strict';
     return {
       restrict: 'E',
@@ -27,7 +27,7 @@ angular.module('dashing.property.bytes', [
       link: function(scope, elem, attrs) {
         attrs.$observe('raw', function(raw) {
           if (['true', '1'].indexOf(attrs['readable']) !== -1) {
-            var hr = $util.toHumanReadable(Number(raw), 1024);
+            var hr = util.text.toHumanReadable(Number(raw), 1024);
             scope.value = hr.value;
             scope.unit = hr.modifier + attrs.unit;
           } else {

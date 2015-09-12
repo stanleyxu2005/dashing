@@ -18,7 +18,7 @@ angular.module('dashing.state.tag', [
  *  <tag condition="good" text="Build passed"></tag>
  *  <tag href="/path/to/page" condition="concern" text="error" tooltip="Build failed"></tag>
  */
-  .directive('tag', ['$util', function($util) {
+  .directive('tag', ['dashing.util', function(util) {
     'use strict';
 
     return {
@@ -36,7 +36,7 @@ angular.module('dashing.state.tag', [
 
         /** Condition will affect the color */
         attrs.$observe('condition', function(condition) {
-          scope.labelColorClass = $util.conditionToBootstrapLabelClass(condition);
+          scope.labelColorClass = util.bootstrap.conditionToBootstrapLabelClass(condition);
         });
         /** Tooltip text will affect the cursor type */
         attrs.$observe('tooltip', function(tooltip) {

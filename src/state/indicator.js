@@ -22,7 +22,7 @@ angular.module('dashing.state.indicator', [
  *  <indicator condition="good" tooltip="Build passed"></indicator>
  *  <indicator condition="good" shape="stripe"></indicator>
  */
-  .directive('indicator', ['$util', function($util) {
+  .directive('indicator', ['dashing.util', function(util) {
     'use strict';
     return {
       restrict: 'E',
@@ -38,7 +38,7 @@ angular.module('dashing.state.indicator', [
 
         /** Condition will affect the color */
         attrs.$observe('condition', function(condition) {
-          scope.colorStyle = $util.conditionToColor(condition);
+          scope.colorStyle = util.bootstrap.conditionToColor(condition);
         });
         /** Tooltip text will affect the cursor type */
         attrs.$observe('tooltip', function(tooltip) {

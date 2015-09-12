@@ -6,8 +6,8 @@ angular.module('dashing.tables.property-table.builder', [])
 /**
  * A helper class to build column as a chained object
  */
-  .factory('$propertyTableBuilder', ['PROPERTY_RENDERER',
-    function(PROPERTY_RENDERER) {
+  .factory('$propertyTableBuilder', ['dsPropertyRenderer',
+    function(renderer) {
       'use strict';
 
       var PB = function(renderer, title) {
@@ -47,39 +47,41 @@ angular.module('dashing.tables.property-table.builder', [])
 
       return {
         button: function(title) {
-          return new PB(PROPERTY_RENDERER.BUTTON, title);
+          return new PB(renderer.BUTTON, title);
         },
         bytes: function(title) {
-          return new PB(PROPERTY_RENDERER.BYTES, title);
+          return new PB(renderer.BYTES, title);
         },
         datetime: function(title) {
-          return new PB(PROPERTY_RENDERER.DATETIME, title);
+          return new PB(renderer.DATETIME, title);
         },
         duration: function(title) {
-          return new PB(PROPERTY_RENDERER.DURATION, title);
+          return new PB(renderer.DURATION, title);
         },
         indicator: function(title) {
-          return new PB(PROPERTY_RENDERER.INDICATOR, title);
+          return new PB(renderer.INDICATOR, title);
         },
         link: function(title) {
-          return new PB(PROPERTY_RENDERER.LINK, title);
+          return new PB(renderer.LINK, title);
         },
         number: function(title) {
-          return new PB(PROPERTY_RENDERER.NUMBER, title);
+          return new PB(renderer.NUMBER, title);
         },
         progressbar: function(title) {
-          return new PB(PROPERTY_RENDERER.PROGRESS_BAR, title);
+          return new PB(renderer.PROGRESS_BAR, title);
         },
         tag: function(title) {
-          return new PB(PROPERTY_RENDERER.TAG, title);
+          return new PB(renderer.TAG, title);
         },
         text: function(title) {
-          return new PB(PROPERTY_RENDERER.TEXT, title);
+          return new PB(renderer.TEXT, title);
         },
+
         /** Updates table values */
-        $update: function(table, values) {
-          angular.forEach(values, function(value, key) {
-            table[key][Array.isArray(value) ? 'values' : 'value'] = value;
+        $update: function(props, values) {
+          angular.forEach(values, function(value, index) {
+            var field = Array.isArray(value) ? 'values' : 'value';
+            props[index][field] = value;
           });
         }
       };

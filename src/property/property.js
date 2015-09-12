@@ -64,7 +64,7 @@ angular.module('dashing.property', [
     };
   })
   /** Renderer constants */
-  .constant('PROPERTY_RENDERER', {
+  .constant('dsPropertyRenderer', {
     BUTTON: 'Button',
     BYTES: 'Bytes',
     DATETIME: 'DateTime',

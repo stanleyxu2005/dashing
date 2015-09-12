@@ -9,8 +9,8 @@ angular.module('dashing.tables.sortable-table.builder', [
 /**
  * A helper class to build column as a chained object
  */
-  .factory('$sortableTableBuilder', ['dashing.util', 'PROPERTY_RENDERER',
-    function(util, PROPERTY_RENDERER) {
+  .factory('$sortableTableBuilder', ['dashing.util', 'dsPropertyRenderer',
+    function(util, renderer) {
       'use strict';
 
       var CB = function(renderer, title) {
@@ -39,20 +39,20 @@ angular.module('dashing.tables.sortable-table.builder', [
         this.props.sortKey = overrideSortKey || this.props.key;
         if (this.props.sortKey === this.props.key) {
           switch (this.props.renderer) {
-            case PROPERTY_RENDERER.LINK:
+            case renderer.LINK:
               this.props.sortKey += '.text';
               break;
-            case PROPERTY_RENDERER.INDICATOR:
-            case PROPERTY_RENDERER.TAG:
+            case renderer.INDICATOR:
+            case renderer.TAG:
               this.props.sortKey += '.condition';
               break;
-            case PROPERTY_RENDERER.PROGRESS_BAR:
+            case renderer.PROGRESS_BAR:
               this.props.sortKey += '.usage';
               break;
-            case PROPERTY_RENDERER.BYTES:
+            case renderer.BYTES:
               this.props.sortKey += '.raw';
               break;
-            case PROPERTY_RENDERER.BUTTON:
+            case renderer.BUTTON:
               console.warn('"%s" column is not sortable.');
               return;
             default:
@@ -107,37 +107,37 @@ angular.module('dashing.tables.sortable-table.builder', [
 
       return {
         button: function(title) {
-          return new CB(PROPERTY_RENDERER.BUTTON, title);
+          return new CB(renderer.BUTTON, title);
         },
         bytes: function(title) {
-          return new CB(PROPERTY_RENDERER.BYTES, title);
+          return new CB(renderer.BYTES, title);
         },
         datetime: function(title) {
-          return new CB(PROPERTY_RENDERER.DATETIME, title);
+          return new CB(renderer.DATETIME, title);
         },
         duration: function(title) {
-          return new CB(PROPERTY_RENDERER.DURATION, title);
+          return new CB(renderer.DURATION, title);
         },
         indicator: function(title) {
-          return new CB(PROPERTY_RENDERER.INDICATOR, title);
+          return new CB(renderer.INDICATOR, title);
         },
         link: function(title) {
-          return new CB(PROPERTY_RENDERER.LINK, title);
+          return new CB(renderer.LINK, title);
         },
         multiple: function(title, renderers) {
           return new CB(renderers, title);
         },
         number: function(title) {
-          return new CB(PROPERTY_RENDERER.NUMBER, title);
+          return new CB(renderer.NUMBER, title);
         },
         progressbar: function(title) {
-          return new CB(PROPERTY_RENDERER.PROGRESS_BAR, title);
+          return new CB(renderer.PROGRESS_BAR, title);
         },
         tag: function(title) {
-          return new CB(PROPERTY_RENDERER.TAG, title);
+          return new CB(renderer.TAG, title);
         },
         text: function(title) {
-          return new CB(PROPERTY_RENDERER.TEXT, title);
+          return new CB(renderer.TEXT, title);
         },
 
         /** Debug util */

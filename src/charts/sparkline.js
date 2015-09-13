@@ -91,7 +91,8 @@ angular.module('dashing.charts.sparkline', [
           options.series[0].type = 'bar';
         }
 
-        $echarts.fillAxisData(options, use.data, use.visibleDataPointsNum);
+        var data = use.data;
+        $echarts.fillAxisData(options, data, use);
 
         $scope.echartOptions = options;
       }]

@@ -139,7 +139,7 @@ angular.module('dashing.charts.line', [
           color: use.colors
         };
 
-        $echarts.fillAxisData(options, data, use.visibleDataPointsNum);
+        $echarts.fillAxisData(options, data, use);
 
         if (!use.xAxisShowLabels) {
           options.xAxis[0].axisLabel = false;

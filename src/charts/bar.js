@@ -154,7 +154,10 @@ angular.module('dashing.charts.bar', [
           color: use.colors
         };
 
-        $echarts.fillAxisData(options, data, use.static ? undefined : use.visibleDataPointsNum);
+        if (use.static) {
+          delete use.visibleDataPointsNum;
+        }
+        $echarts.fillAxisData(options, data, use);
         if (use.static) {
           // Tell chart control only update existing data points' value.
           options.visibleDataPointsNum = -1;

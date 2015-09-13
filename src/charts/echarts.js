@@ -71,9 +71,9 @@ angular.module('dashing.charts.echarts', [
           chart.setOption(options, /*overwrite=*/true);
 
           // Automatically group charts with same group id
-          if (angular.isFunction(chart.group) && options.groupId) {
+          if (angular.isFunction(chart.group) && options.hasOwnProperty('groupId')) {
             chart.groupId = options.groupId;
-            chart.group(options.groupId);
+            chart.group();
           }
 
           // If no data is provided, the chart is not initialized. And you can see a caution on the canvas.
@@ -400,11 +400,12 @@ angular.module('dashing.charts.echarts', [
         return angular.merge(args, options);
       },
       /**
-       * Reset axises in option and fill with initial data.
+       * Reset axises in option and fill with initial data (for line/bar/area charts)
        */
-      fillAxisData: function(options, data, visibleDataPointsNum) {
-        if (visibleDataPointsNum > 0) {
-          options.visibleDataPointsNum = visibleDataPointsNum;
+      fillAxisData: function(options, data, inputs) {
+        options.groupId = inputs.groupId;
+        if (angular.isObject(inputs) && inputs.visibleDataPointsNum > 0) {
+          options.visibleDataPointsNum = inputs.visibleDataPointsNum;
         }
 
         var dataSplit = splitInitialData(data, options.visibleDataPointsNum);

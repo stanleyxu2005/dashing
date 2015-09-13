@@ -90,9 +90,10 @@ gulp.task('concat-js', ['pack-angular-templates'], function() {
     .pipe(plugin.header_footer.header([
       plugin.fs.readFileSync('src/module.js'), '',
       plugin.fs.readFileSync(files.template_js_temp), ''].join('\n')))
-    .pipe(plugin.strip_comments())
+    // strip comments really mess up the code
+    //.pipe(plugin.strip_comments())
     .pipe(plugin.strip_empty_lines())
-    .pipe(plugin.replace(/\s*\'use strict\';/g, ''))
+    .pipe(plugin.replace(/\s*'use strict';/g, ''))
     .pipe(plugin.header_footer.header('(function(window, document, undefined) {\n\'use strict\';\n'))
     .pipe(plugin.header_footer.footer('\n})(window, document);'))
     .pipe(plugin.header_footer.header(header))
@@ -110,8 +111,7 @@ gulp.task('pack-angular-templates', function() {
     .pipe(plugin.sort()) // `gulp.src()` does not guarantee file orders
     .pipe(plugin.minify_html({
       removeComments: true,
-      collapseWhitespace: true,
-      conservativeCollapse: true
+      collapseWhitespace: true
     }))
     .pipe(plugin.cache_angular_templates(files.template_js_temp, {
       module: project.name,

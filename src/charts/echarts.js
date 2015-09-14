@@ -165,7 +165,7 @@ angular.module('dashing.charts.echarts', [
       },
       tooltip: {
         borderRadius: 2,
-        padding: 8,
+        padding: 0, // don't add padding here, otherwise empty tooltip will be a black square
         showDelay: 0,
         transitionDuration: 0.5
       },
@@ -177,8 +177,6 @@ angular.module('dashing.charts.echarts', [
       noDataText: 'No Graphic Data Available',
       addDataAnimation: false
     },
-    // Text when tooltip does not have contents
-    noDataTooltipText: 'No Data Available',
     // The number of visible data points can be shown on chart
     visibleDataPointsNum: 80
   }
@@ -186,10 +184,10 @@ angular.module('dashing.charts.echarts', [
 /**
  * Customize chart's look and feel.
  */
-  .factory('$echarts', ['$filter', 'dashing.util', 'dsEchartsDefaults', function($filter, util, defaults) {
+  .factory('$echarts', ['$filter', 'dashing.util', function($filter, util) {
     'use strict';
 
-    function buildTooltipSeriesTable(array, valueFormatter) {
+    function buildTooltipSeriesTable(name, array, use) {
 
       function tooltipSeriesColorIndicatorHtml(color) {
         var border = zrender.tool.color.lift(color, -0.2);
@@ -217,24 +215,29 @@ angular.module('dashing.charts.echarts', [
         return $filter('orderBy')(result, 'value', /*reversed=*/true);
       }
 
-      return '<table>' +
-        mergeValuesAndSortDescent(array).map(function(point) {
-          if (point.value === '-') {
-            return '';
-          } else {
-            point.value = valueFormatter(point.value);
-          }
-          if (!point.name) {
-            point.name = point.value;
-            point.value = '';
-          }
+      var valueFormatter = use.valueFormatter || defaultValueFormatter;
 
-          return '<tr>' +
-            '<td>' + tooltipSeriesColorIndicatorHtml(point.color) + '</td>' +
-            '<td style="padding: 0 12px 0 4px">' + point.name + '</td>' +
-            '<td style="text-align: right">' + point.value + '</td>' +
-            '</tr>';
-        }).join('') + '</table>';
+      return '<div style="padding: 8px">' + [
+          (use.nameFormatter || defaultNameFormatter)(name),
+          '<table>' +
+          mergeValuesAndSortDescent(array).map(function(point) {
+            if (point.value === '-') {
+              return '';
+            } else {
+              point.value = valueFormatter(point.value);
+            }
+            if (!point.name) {
+              point.name = point.value;
+              point.value = '';
+            }
+            return '<tr>' +
+              '<td>' + tooltipSeriesColorIndicatorHtml(point.color) + '</td>' +
+              '<td style="padding: 0 12px 0 4px">' + point.name + '</td>' +
+              '<td style="text-align: right">' + point.value + '</td>' +
+              '</tr>';
+          }).join('') +
+          '</table>'].join('') +
+        '</div>';
     }
 
     function defaultNameFormatter(name) {
@@ -288,9 +291,10 @@ angular.module('dashing.charts.echarts', [
        */
       categoryTooltip: function(valueFormatter, nameFormatter) {
         return tooltip({
+          trigger: 'axis',
           formatter: function(params) {
             params = util.array.ensureArray(params);
-            var name = (nameFormatter || defaultNameFormatter)(params[0].name);
+            var name = params[0].name;
             var array = params.map(function(param) {
               return {
                 color: param.series.colors.line,
@@ -303,11 +307,11 @@ angular.module('dashing.charts.echarts', [
             if (!name.length && !array.filter(function(point) {
                 return point.value !== '-';
               }).length) {
-              return defaults.noDataTooltipText;
+              return '';
             }
 
-            valueFormatter = valueFormatter || defaultValueFormatter;
-            return name + buildTooltipSeriesTable(array, valueFormatter);
+            var args = {nameFormatter: nameFormatter, valueFormatter: valueFormatter};
+            return buildTooltipSeriesTable(name, array, args);
           }
         });
       },
@@ -324,14 +328,12 @@ angular.module('dashing.charts.echarts', [
         options.tooltip = tooltip({
           trigger: 'item',
           formatter: function(params) {
-            var name = (use.nameFormatter || defaultNameFormatter)(params.value[0]);
             var array = [{
               color: params.series.colors.line,
               name: params.series.name,
               value: params.value[1]
             }];
-            var valueFormatter = use.valueFormatter || defaultValueFormatter;
-            return name + buildTooltipSeriesTable(array, valueFormatter);
+            return buildTooltipSeriesTable(params.value[0], array, use);
           }
         });
 
@@ -414,13 +416,22 @@ angular.module('dashing.charts.echarts', [
        * Reset axises in option and fill with initial data (for line/bar/area charts)
        */
       fillAxisData: function(options, data, inputs) {
-        // Set groupId when it is defined and valid
-        if (angular.isString(inputs.groupId) && inputs.groupId.length) {
-          options.groupId = inputs.groupId;
-        }
-
-        if (angular.isObject(inputs) && inputs.visibleDataPointsNum > 0) {
-          options.visibleDataPointsNum = inputs.visibleDataPointsNum;
+        if (angular.isObject(inputs)) {
+          // #1: Set groupId when it is defined and valid
+          if (angular.isString(inputs.groupId) && inputs.groupId.length) {
+            options.groupId = inputs.groupId;
+          }
+          // #2: Set maximal visible data points
+          if (inputs.visibleDataPointsNum > 0) {
+            options.visibleDataPointsNum = inputs.visibleDataPointsNum;
+            var placeholder = {
+              x: '',
+              y: Array(options.series.length).fill({value: '-', tooltip: {}})
+            };
+            while (data.length < inputs.visibleDataPointsNum) {
+              data.unshift(placeholder);
+            }
+          }
         }
 
         var dataSplit = splitInitialData(data, options.visibleDataPointsNum);

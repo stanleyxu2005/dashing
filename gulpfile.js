@@ -111,7 +111,8 @@ gulp.task('pack-angular-templates', function() {
     .pipe(plugin.sort()) // `gulp.src()` does not guarantee file orders
     .pipe(plugin.minify_html({
       removeComments: true,
-      collapseWhitespace: true
+      collapseWhitespace: true,
+      conservativeCollapse: true
     }))
     .pipe(plugin.cache_angular_templates(files.template_js_temp, {
       module: project.name,

@@ -5,6 +5,8 @@
 angular.module('dashing.util.bootstrap', [])
 
   .factory('dashing.util.bootstrap', function() {
+    'use strict';
+
     return {
       /** Convert a condition to a Bootstrap label style class */
       conditionToBootstrapLabelClass: function(condition) {

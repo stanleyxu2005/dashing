@@ -368,7 +368,7 @@ angular.module('dashing.charts.echarts', [
           if (angular.isNumber(value)) {
             value = Number(value); // echarts return 0.1 as "0.1"
             if (value !== 0) {
-              var hr = util.text.toHumanReadable(value, 1000, 1);
+              var hr = util.text.toHumanReadableNumber(value, 1000, 1);
               value = hr.value + ' ' + hr.modifier + (unit || '');
             }
           }

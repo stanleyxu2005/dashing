@@ -27,7 +27,7 @@ angular.module('dashing.property.bytes', [
       link: function(scope, elem, attrs) {
         attrs.$observe('raw', function(raw) {
           if (['true', '1'].indexOf(attrs['readable']) !== -1) {
-            var hr = util.text.toHumanReadable(Number(raw), 1024);
+            var hr = util.text.toHumanReadableNumber(Number(raw), 1024);
             scope.value = hr.value;
             scope.unit = hr.modifier + attrs.unit;
           } else {

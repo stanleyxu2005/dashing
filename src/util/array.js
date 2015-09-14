@@ -5,6 +5,8 @@
 angular.module('dashing.util.array', [])
 
   .factory('dashing.util.array', function() {
+    'use strict';
+
     return {
       /**
        * Return the array, if required length is less or equal to the array's, otherwise make a

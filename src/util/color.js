@@ -5,6 +5,8 @@
 angular.module('dashing.util.color', [])
 
   .factory('dashing.util.color', function() {
+    'use strict';
+
     return {
       /**
        * Return pre-defined color palette.

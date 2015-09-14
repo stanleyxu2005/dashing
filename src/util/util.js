@@ -15,6 +15,8 @@ angular.module('dashing.util', [
     'dashing.util.color',
     'dashing.util.text',
     function(array, bootstrap, color, text) {
+      'use strict';
+
       return {
         array: array,
         bootstrap: bootstrap,

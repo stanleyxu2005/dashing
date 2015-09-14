@@ -177,6 +177,8 @@ angular.module('dashing.charts.echarts', [
       noDataText: 'No Graphic Data Available',
       addDataAnimation: false
     },
+    // Text when tooltip does not have contents
+    noDataTooltipText: 'No Data Available',
     // The number of visible data points can be shown on chart
     visibleDataPointsNum: 80
   }
@@ -184,7 +186,7 @@ angular.module('dashing.charts.echarts', [
 /**
  * Customize chart's look and feel.
  */
-  .factory('$echarts', ['$filter', 'dashing.util', function($filter, util) {
+  .factory('$echarts', ['$filter', 'dashing.util', 'dsEchartsDefaults', function($filter, util, defaults) {
     'use strict';
 
     function buildTooltipSeriesTable(array, valueFormatter) {
@@ -287,6 +289,7 @@ angular.module('dashing.charts.echarts', [
       categoryTooltip: function(valueFormatter, nameFormatter) {
         return tooltip({
           formatter: function(params) {
+            params = util.array.ensureArray(params);
             var name = (nameFormatter || defaultNameFormatter)(params[0].name);
             var array = params.map(function(param) {
               return {
@@ -295,6 +298,14 @@ angular.module('dashing.charts.echarts', [
                 value: param.value
               };
             });
+
+            // If no data at this moment, we should hint user instead of an empty tooltip.
+            if (!name.length && !array.filter(function(point) {
+                return point.value !== '-';
+              }).length) {
+              return defaults.noDataTooltipText;
+            }
+
             valueFormatter = valueFormatter || defaultValueFormatter;
             return name + buildTooltipSeriesTable(array, valueFormatter);
           }
@@ -403,7 +414,11 @@ angular.module('dashing.charts.echarts', [
        * Reset axises in option and fill with initial data (for line/bar/area charts)
        */
       fillAxisData: function(options, data, inputs) {
-        options.groupId = inputs.groupId;
+        // Set groupId when it is defined and valid
+        if (angular.isString(inputs.groupId) && inputs.groupId.length) {
+          options.groupId = inputs.groupId;
+        }
+
         if (angular.isObject(inputs) && inputs.visibleDataPointsNum > 0) {
           options.visibleDataPointsNum = inputs.visibleDataPointsNum;
         }

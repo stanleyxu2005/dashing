@@ -175,11 +175,10 @@ angular.module('dashing.charts.line', [
           options.legend = {
             show: true,
             itemWidth: 8,
-            data: []
+            data: options.series.map(function(series) {
+              return series.name;
+            })
           };
-          angular.forEach(options.series, function(series) {
-            options.legend.data.push(series.name);
-          });
           options.legend.y = 6;
           if (use.title) {
             options.legend.y += titleHeight;

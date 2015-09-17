@@ -12,7 +12,7 @@ angular.module('dashing.remark', [
  * @param tooltip string (optional)
  *
  * @example
- *  <remark text="This is a tooltip"></remark>
+ *  <remark tooltip="This is a tooltip"></remark>
  */
   .directive('remark', function() {
     'use strict';

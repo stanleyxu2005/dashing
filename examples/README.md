@@ -1,0 +1,6 @@
+# Build
+
+```
+npm install
+gulp
+```

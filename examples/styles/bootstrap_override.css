@@ -1,0 +1,90 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+/* More distance to the branding logo at left */
+.navbar-nav > li:first-child {
+  margin-left: 30px;
+}
+
+/* A extra small breadcrumb (2 rules) */
+.breadcrumb-sm {
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
+.breadcrumb-sm > li {
+  padding-right: 6px;
+}
+
+/* Remove 1px border from stripped table (2 rules) */
+.table-striped tbody > tr:first-child td {
+  border-top: 0 none transparent;
+}
+
+.table-striped thead > tr > th {
+  border-bottom: 0 none transparent;
+}
+
+/* Table header column should not be wrapped */
+.table thead > tr > th {
+  white-space: nowrap;
+}
+
+/* Increase the distance of table footer and table body */
+.table tfoot > tr > td {
+  padding: 14px 0 0;
+  border-top: 0 solid transparent;
+}
+
+/* Smaller font for table meta */
+.table thead > tr > th {
+  font-size: .9em;
+  vertical-align: top;
+}
+
+/* Larger table caption */
+.table caption {
+  font-size: 1.15em;
+}
+
+/* glyphicon in a SPAN might be a bit too high than other SPAN text elements */
+.glyphicon {
+  top: 2px;
+}
+
+/* Tune bootstrap-tooltip look and feel (2 rules) */
+.tooltip-inner {
+  max-width: none;
+  padding: 5px 10px 5px;
+}
+
+*[bs-tooltip] {
+  cursor: pointer;
+}
+
+/* Active nav-tabs element's background color should not be hardcoded as white. */
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  background-color: transparent;
+}
+
+/* Smaller font size and spacing for dropdown menu (2 rules) */
+.dropdown-menu-sm {
+  font-size: 0.95em;
+}
+
+.dropdown-menu-sm > li > a {
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+/* Draw a shadow around panel */
+.panel-shadowed {
+  background: #fff;
+  box-shadow: 1px 2px 3px #ddd;
+  border-radius: 4px;
+  padding: 12px;
+}

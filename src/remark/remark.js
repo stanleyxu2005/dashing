@@ -8,8 +8,9 @@ angular.module('dashing.remark', [
 /**
  * A question mark icon with a tooltip.
  *
+ * @param tooltip string
  * @param type question|warning (default=question)
- * @param tooltip string (optional)
+ * @param placement top|left|right|bottom (default=top)
  *
  * @example
  *  <remark tooltip="This is a tooltip"></remark>
@@ -21,7 +22,8 @@ angular.module('dashing.remark', [
       restrict: 'E',
       templateUrl: 'remark/remark.html',
       scope: {
-        tooltip: '@'
+        tooltip: '@',
+        placement: '@'
       },
       link: function(scope, elem, attrs) {
         switch (attrs.type) {

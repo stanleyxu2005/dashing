@@ -4,13 +4,14 @@ The file only contains the major changes. For full changes, please check the com
 
 ## 0.2.5
 * Chart: Added ring chart
+* Remark: Added tooltip placement attribute
 
 ## 0.2.4
 * Chart: Prior to 0.2.2, found a solution to remove tooltip placeholder completely.
 
 ## 0.2.3 (Hotfix to 0.2.2)
 * Build: Too many blank spaces were removed unexpectedly by build script in 0.2.2. 
-* Exposed toHumanReadableDuration to util module.
+* Util: Exposed toHumanReadableDuration to util module.
 
 ## 0.2.2
 * Chart: If visibleDataPointsNum is specified, the chart will be initialized the empty point positions with placeholders. This change fixes animation flicker while adding data points.

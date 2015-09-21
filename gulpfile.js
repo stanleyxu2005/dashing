@@ -125,7 +125,7 @@ gulp.task('pack-angular-templates', function() {
 
 // copy license and readme
 gulp.task('doc', function() {
-  return gulp.src(['LICENSE', '*.md'])
+  return gulp.src(['LICENSE', 'README.md'])
     .pipe(gulp.dest(output_dir));
 });
 

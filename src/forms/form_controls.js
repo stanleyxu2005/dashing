@@ -44,7 +44,7 @@ angular.module('dashing.forms.form_control', [
 
     return {
       restrict: 'E',
-      templateUrl: 'widgets/form_controls.html',
+      templateUrl: 'forms/form_controls.html',
       replace: true,
       scope: {
         label: '@',

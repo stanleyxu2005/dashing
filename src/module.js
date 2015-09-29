@@ -8,7 +8,7 @@ angular.module('dashing', [
   // directives
   'dashing.charts.bar',
   'dashing.charts.line',
-  'dashing.charts.metrics-sparkline',
+  'dashing.charts.metrics_sparkline',
   'dashing.charts.ring',
   'dashing.charts.sparkline',
   'dashing.forms.form_control',
@@ -20,13 +20,13 @@ angular.module('dashing', [
   'dashing.remark',
   'dashing.state.indicator',
   'dashing.state.tag',
-  'dashing.tables.property-table',
-  'dashing.tables.sortable-table',
+  'dashing.tables.property_table',
+  'dashing.tables.sortable_table',
   'dashing.tabset',
   // helpers
   'dashing.contextmenu',
-  'dashing.tables.property-table.builder',
-  'dashing.tables.sortable-table.builder',
+  'dashing.tables.property_table.builder',
+  'dashing.tables.sortable_table.builder',
   // filters
   'dashing.filters.any',
   'dashing.filters.duration'

@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.tables.sortable-table', [
+angular.module('dashing.tables.sortable_table', [
   'smart-table' // smart-table
 ])
 /**
@@ -34,7 +34,7 @@ angular.module('dashing.tables.sortable-table', [
 
     return {
       restrict: 'E',
-      templateUrl: 'tables/sortable-table/sortable-table.html',
+      templateUrl: 'tables/sortable_table/sortable_table.html',
       scope: {
         caption: '@',
         pagination: '@',

@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.tables.property-table', [])
+angular.module('dashing.tables.property_table', [])
 /**
  * A two column table. The first column is the property name. The second column is
  * the value of the property rendered in a suitable way.
@@ -25,7 +25,7 @@ angular.module('dashing.tables.property-table', [])
 
     return {
       restrict: 'E',
-      templateUrl: 'tables/property-table/property-table.html',
+      templateUrl: 'tables/property_table/property_table.html',
       scope: {
         caption: '@',
         props: '=propsBind',

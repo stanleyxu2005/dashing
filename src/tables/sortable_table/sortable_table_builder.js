@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.tables.sortable-table.builder', [
+angular.module('dashing.tables.sortable_table.builder', [
   'dashing.property',
   'dashing.util'
 ])

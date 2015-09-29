@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.tables.property-table.builder', [])
+angular.module('dashing.tables.property_table.builder', [])
 /**
  * A helper class to build column as a chained object
  */

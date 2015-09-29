@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.charts.metrics-sparkline', [
+angular.module('dashing.charts.metrics_sparkline', [
   'dashing.charts.sparkline',
   'dashing.metrics'
 ])
@@ -21,7 +21,7 @@ angular.module('dashing.charts.metrics-sparkline', [
 
     return {
       restrict: 'E',
-      templateUrl: 'charts/metrics-sparkline-td.html',
+      templateUrl: 'charts/metrics_sparkline_td.html',
       scope: {
         caption: '@',
         help: '@',

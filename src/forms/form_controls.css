@@ -1,0 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.form-label-vertical {
+  line-height: 30px;
+  font-weight: 500; /* less bold than bold */
+}
+
+.form-label-vertical.right {
+  display: block;
+  text-align: right;
+}
+
+.form-group-header {
+  padding-top: 10px;
+  padding-bottom: 8px;
+  color: #999;
+  font-size: 0.9em;
+  text-transform: uppercase;
+}

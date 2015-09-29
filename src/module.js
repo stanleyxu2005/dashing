@@ -11,6 +11,7 @@ angular.module('dashing', [
   'dashing.charts.metrics-sparkline',
   'dashing.charts.ring',
   'dashing.charts.sparkline',
+  'dashing.forms.form_control',
   'dashing.forms.searchbox',
   'dashing.metrics',
   'dashing.progressbar',
@@ -27,5 +28,6 @@ angular.module('dashing', [
   'dashing.tables.property-table.builder',
   'dashing.tables.sortable-table.builder',
   // filters
+  'dashing.filters.any',
   'dashing.filters.duration'
 ]);

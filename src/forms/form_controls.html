@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-sm-3" style="padding-right: 0">
+    <label class="form-label-vertical right" ng-bind="label"></label>
+  </div>
+  <ng-switch on="renderAs">
+    <!-- text input -->
+    <div ng-switch-when="text">
+      <div class="col-sm-8">
+        <div class="form-group"
+             ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
+          <input class="form-control input-sm"
+                 type="text" ng-model="$parent.value"
+                 reset-search-input="false"/>
+          <!-- form-feedback does not have a dropdown state, so we use BUTTON+SPAN solution -->
+          <button ng-if="choicesMenu"
+                  type="button" class="btn btn-sm form-control-feedback"
+                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px"
+                  bs-dropdown="choicesMenu" html="true">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- select -->
+    <div ng-switch-when="choices">
+      <div class="col-sm-8 form-group">
+        <ui-select theme="select2" class="form-control"
+                   ng-model="$parent.$parent.value"
+                   search-enabled="allowSearchInChoices">
+          <ui-select-match>{{$select.selected.text}}</ui-select-match>
+          <ui-select-choices repeat="choice in choices|
+          any: {text: $select.search, subtext: $select.search}">
+            <div ng-class="{'bold': $select.selected === choice}"
+                 ng-bind-html="choice.text|highlight:$select.search"></div>
+            <small ng-if="choice.subtext"
+                   ng-class="{'bold': $select.selected === choice}"
+                   ng-bind-html="choice.subtext|highlight:$select.search"></small>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+    </div>
+    <!-- numeric input with arrow buttons -->
+    <div ng-switch-when="number">
+      <div class="col-sm-4 form-group" style="padding-right: 8px"
+           ng-class="{'has-error': !pristine && invalid}">
+        <input class="form-control input-sm"
+               type="number" ng-attr-min="{{min}}"
+               ng-model="$parent.value"/>
+      </div>
+    </div>
+    <!-- date time picker -->
+    <div ng-switch-when="datetime">
+      <div class="col-sm-4 form-group" style="padding-right: 8px"
+           ng-class="{'has-error': dateInputInvalid}">
+        <input class="form-control input-sm"
+               data-date-format="yyyy-MM-dd"
+               type="text" size="10" placeholder="Date"
+               ng-model="$parent.dateValue" date-type="string"
+               data-autoclose="1" bs-datepicker/>
+      </div>
+      <div class="col-sm-4 form-group" style="padding-left: 0"
+           ng-class="{'has-error': timeInputInvalid}">
+        <input class="form-control input-sm"
+               data-time-format="HH:mm:ss"
+               type="text" size="8" placeholder="Time" ng-click="fillDefaultTime()"
+               ng-model="$parent.timeValue" time-type="string"
+               hour-step="-1" minute-step="-1" second-step="-1"
+               arrow-behavior="picker" bs-timepicker/>
+      </div>
+    </div>
+  </ng-switch>
+</div>

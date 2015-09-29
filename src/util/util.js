@@ -6,7 +6,8 @@ angular.module('dashing.util', [
   'dashing.util.array',
   'dashing.util.bootstrap',
   'dashing.util.color',
-  'dashing.util.text'
+  'dashing.util.text',
+  'dashing.util.validation'
 ])
 
   .factory('dashing.util', [
@@ -14,14 +15,16 @@ angular.module('dashing.util', [
     'dashing.util.bootstrap',
     'dashing.util.color',
     'dashing.util.text',
-    function(array, bootstrap, color, text) {
+    'dashing.util.validation',
+    function(array, bootstrap, color, text, validation) {
       'use strict';
 
       return {
         array: array,
         bootstrap: bootstrap,
         color: color,
-        text: text
+        text: text,
+        validation: validation
       };
     }])
 ;

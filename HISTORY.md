@@ -1,10 +1,12 @@
-# CHANGELOG
+# HISTORY
+https://github.com/stanleyxu2005/dashing
 
-The file only contains the major changes. For full changes, please check the commit log.
+The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.2.5
 * Chart: Added ring chart
 * Remark: Added tooltip placement attribute
+* Form Control: Added form control for text/dropdown/numberic inputs with validation
 
 ## 0.2.4
 * Chart: Prior to 0.2.2, found a solution to remove tooltip placeholder completely.

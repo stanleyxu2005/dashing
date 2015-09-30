@@ -1,0 +1,37 @@
+# Installation
+
++ Install Dashing and dependencies with [npm](https://nodejs.org/).
+
+``` bash
+$ npm install dashing
+
+# dependencies
+$ npm install bootstrap angular angular-animate angular-motion angular-strap angular-smart-table
+$ npm install dashing-deps # alternative you can install echarts
+```
+
++ Include the following lines in your `index.html`. *Note that the paths of the vendor libraries should be fixed manually for your own environment.*
+
+``` html
+<!-- styles -->
+<link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css"/>
+<link rel="stylesheet" href="vendors/angular-motion/angular-motion.min.css"/>
+<link rel="stylesheet" href="vendors/dashing/dashing.min.css"/>
+<!-- libraries -->
+<script src="vendors/angular/angular.min.js"></script>
+<script src="vendors/angular-animate/angular-animate.min.js"></script>
+<script src="vendors/angular-strap/angular-strap.min.js"></script>
+<script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
+<script src="vendors/angular-smart-table/smart-table.min.js"></script>
+<script src="vendors/dashing-deps/echarts/echart-all.min.js"></script>
+<script src="vendors/dashing/dashing.min.js"></script>
+```
+
++ Inject the `dashing` into your app:
+
+``` js
+angular.module('myApp', [
+  'dashing'
+]);
+```
+

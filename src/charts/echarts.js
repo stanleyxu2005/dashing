@@ -426,7 +426,9 @@ angular.module('dashing.charts.echarts', [
             options.visibleDataPointsNum = inputs.visibleDataPointsNum;
             var placeholder = {
               x: '',
-              y: Array(options.series.length).fill({value: '-', tooltip: {}})
+              y: options.series.map(function() {
+                return {value: '-', tooltip: {}};
+              })
             };
             while (data.length < inputs.visibleDataPointsNum) {
               data.unshift(placeholder);

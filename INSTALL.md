@@ -6,16 +6,24 @@
 $ npm install dashing
 
 # dependencies
-$ npm install bootstrap angular angular-animate angular-motion angular-strap angular-smart-table
-$ npm install dashing-deps # alternative you can install echarts
+$ npm install bootstrap \
+    angular angular-animate \
+    angular-motion angular-strap \
+    angular-ui-select \
+    angular-smart-table \
+    echarts
+
+# alternatively we provide a minimal echarts build and roboto fonts
+$ npm install dashing-deps
 ```
 
 + Include the following lines in your `index.html`. *Note that the paths of the vendor libraries should be fixed manually for your own environment.*
 
 ``` html
-<!-- styles -->
+<!-- styles (keep files in this order) -->
 <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css"/>
 <link rel="stylesheet" href="vendors/angular-motion/angular-motion.min.css"/>
+<link rel="stylesheet" href="vendors/angular-ui-select/select.min.css"/>
 <link rel="stylesheet" href="vendors/dashing/dashing.min.css"/>
 <!-- libraries -->
 <script src="vendors/angular/angular.min.js"></script>
@@ -23,6 +31,7 @@ $ npm install dashing-deps # alternative you can install echarts
 <script src="vendors/angular-strap/angular-strap.min.js"></script>
 <script src="vendors/angular-strap/angular-strap.tpl.min.js"></script>
 <script src="vendors/angular-smart-table/smart-table.min.js"></script>
+<script src="vendors/angular-ui-select/select.min.js"></script>
 <script src="vendors/dashing-deps/echarts/echart-all.min.js"></script>
 <script src="vendors/dashing/dashing.min.js"></script>
 ```
@@ -30,8 +39,6 @@ $ npm install dashing-deps # alternative you can install echarts
 + Inject the `dashing` into your app:
 
 ``` js
-angular.module('myApp', [
-  'dashing'
-]);
+angular.module('myApp', ['dashing']);
 ```
 

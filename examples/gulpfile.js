@@ -22,6 +22,7 @@ gulp.task('deps-js-min', ['deps-js'], function() {
     'node_modules/angular-strap/dist/angular-strap.min.js',
     'node_modules/angular-strap/dist/angular-strap.tpl.min.js',
     'node_modules/angular-ui-router/release/angular-ui-router.min.js',
+    'node_modules/angular-ui-select/select.min.js',
     //'node_modules/highcharts-release/adapters/standalone-framework.js',
     //'node_modules/highcharts-release/highcharts.js',
     'node_modules/moment/min/moment.min.js',
@@ -41,8 +42,9 @@ gulp.task('deps-js', function() {
     'node_modules/angular-strap/dist/angular-strap.js',
     'node_modules/angular-strap/dist/angular-strap.tpl.js',
     'node_modules/angular-ui-router/release/angular-ui-router.js',
-    'node_modules/highcharts-release/adapters/standalone-framework.src.js',
-    'node_modules/highcharts-release/highcharts.src.js',
+    'node_modules/angular-ui-select/select.js',
+    //'node_modules/highcharts-release/adapters/standalone-framework.src.js',
+    //'node_modules/highcharts-release/highcharts.src.js',
     'node_modules/moment/moment.js',
     'node_modules/underscore/underscore.js',
     'node_modules/dashing-deps/echarts/**/echarts-all.js'])
@@ -54,6 +56,7 @@ gulp.task('deps-js', function() {
 gulp.task('deps-css-min', ['deps-css', 'deps-fonts-bootstrap', 'deps-fonts-roboto'], function() {
   return gulp.src([
     'node_modules/angular-motion/dist/angular-motion.min.css',
+    'node_modules/angular-ui-select/select.min.css',
     'node_modules/bootstrap/dist/css/bootstrap.min.css'])
     .pipe(plugin.concat('vendors.min.css'))
     .pipe(gulp.dest('vendors'));
@@ -63,6 +66,7 @@ gulp.task('deps-css-min', ['deps-css', 'deps-fonts-bootstrap', 'deps-fonts-robot
 gulp.task('deps-css', function() {
   return gulp.src([
     'node_modules/angular-motion/dist/angular-motion.css',
+    'node_modules/angular-ui-select/select.css',
     'node_modules/bootstrap/dist/css/bootstrap.css'])
     .pipe(plugin.concat('vendors.css'))
     .pipe(gulp.dest('vendors'));

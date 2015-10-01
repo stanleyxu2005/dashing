@@ -11,6 +11,7 @@
     "angular-smart-table": "latest",
     "dashing-deps": "latest",
     "angular-ui-router": "latest",
+    "angular-ui-select": "latest",
     "moment": "latest",
     "underscore": "latest"
   },

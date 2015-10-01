@@ -6,7 +6,8 @@ angular.module('dashing.forms.form_control', [
   'dashing.filters.any',
   'dashing.util.validation',
   'mgcrea.ngStrap.datepicker', // angular-strap
-  'mgcrea.ngStrap.timepicker' // angular-strap
+  'mgcrea.ngStrap.timepicker', // angular-strap
+  'ui.select'
 ])
 
 /** Ready to use form controls */

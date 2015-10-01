@@ -21,6 +21,7 @@
     "gulp-convert-newline": "latest",
     "gulp-headerfooter": "latest",
     "gulp-htmlmin": "latest",
+    "gulp-js-prettify": "latest",
     "gulp-minify-css": "latest",
     "gulp-remove-empty-lines": "latest",
     "gulp-rename": "latest",

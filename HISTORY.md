@@ -3,45 +3,48 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.2.6
+* Feature (#18): `<line-chart>` allows to have a secondary y-axis
+
 ## 0.2.5
-* Chart: Added ring chart
-* Remark: Added tooltip placement attribute
-* Form Control: Added form control for text/dropdown/numberic inputs with validation
+* Feature (#13): Support to render 2-value data as a `<ring-chart>`
+* Improvement: Specify tooltip position for `<remark>`
+* Feature: Added `<form-control>` to build a consistent inpurt form. Supports text/dropdown/numberic inputs with validation.
 
 ## 0.2.4
-* Chart: Prior to 0.2.2, found a solution to remove tooltip placeholder completely.
+* Improvement (#12): Prior to 0.2.2, found a solution to hide tooltip when chart's selection is empty.
 
 ## 0.2.3 (Hotfix to 0.2.2)
-* Build: Too many blank spaces were removed unexpectedly by build script in 0.2.2. 
-* Util: Exposed toHumanReadableDuration to util module.
+* Bugfix : gulp would strip too many blank spaces in 0.2.2. 
+* Improvement: Exposed method `toHumanReadableDuration` to util module.
 
 ## 0.2.2
-* Chart: If visibleDataPointsNum is specified, the chart will be initialized the empty point positions with placeholders. This change fixes animation flicker while adding data points.
-* Chart: Add grouping support. (Dashing-deps 0.0.7 is required)
-* Property Table: Builder is able to change layout direction for a multiple renderers cell.
-* Build: Build script will remove too many blank spaces in HTML. 
+* Improvement: If visibleDataPointsNum is specified, the chart will be initialized the empty point positions with placeholders. This change fixes animation flicker while adding data points.
+* Feature (#6): Allows to group `<line-chart>` components. (Dashing-deps 0.0.7 is required)
+* Improvement (#11): PropepertyTableBuilder is able to change layout direction for a multiple renderers cell.
 
 ## 0.2.0
-* Chart: Polished the look and feel of data points.
-* Chart: Bar chart will have more layouts (including rotated chart, bar with negative color).
+* Feature (#8): Polished data points of a `<line-chart>` by having a semi-transparent border.
+* Feature (#4, #5): `<bar-chart>` has more layouts (including rotated chart, bar with negative color).
 
 ## 0.1.9
-* Chart: Throusand separator support for chart labels and tooltips.
-* Build: npm will include release files and github will be responsible for source code only.
+* Improvement: Throusand separator support for chart labels and tooltips.
+* Improvement: npm will include release files and github will be responsible for source code only.
 
 ## 0.1.8
-* Chart: Add timeline support (Previously x-axis can only have string labels)
+* Feature: Add timeline support for `<line-chart>` (Previously x-axis can only have string labels)
 
 ## 0.1.7
-* Chart: If no initial data is provided, the chart is still able to be created. With a "No Graph Data Available" animation.
-* Sortable Table: Default sort was wrong.
+* Improvement: If no initial data is provided, the chart is still able to be created. With a "No Graph Data Available" animation.
+* Bugfix: The default sort ordering of `<sortable-table>` was wrong.
 
 ## 0.1.6
-* Chart: Auto format y-axis. By default it will be formatted in a human reabled notation.
-* Chart: Line chart will have minor split lines.
+* Feature: Auto format y-axis. By default it will be formatted in a human reabled notation.
+* Feature: `<line-chart>` will have minor split lines.
 
 ## 0.1.4
-* Property Table: Provided builder functions to build and update table.
-* Chart: Bar chart will calculate bar width regarding specified data values.
-* Build: Moved the custom Echarts build to dashing-deps project.
-* The older versions are not ducumented well. We start the change log from here.
+* Feature: Provided builder to build and update `<property-table>` and `<sortable-table>`.
+* Improvement: `<bar-chart>` will calculate bar width regarding specified data values.
+* Improvement: Moved the custom Echarts build to dashing-deps project.
+
+*The older versions are not ducumented well. We start the change log from here.*

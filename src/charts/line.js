@@ -27,11 +27,14 @@ angular.module('dashing.charts.line', [
  *   yAxisSplitNum: number // the number of split ticks to be shown on y-axis (default: 3)
  *   yAxisShowSplitLine: boolean // show split lines on y-axis (default: true)
  *   yAxisLabelWidth: number // the pixels for the y-axis labels (default: 3)
- *   yAxisLabelFormatter: function // optional to override the label formatter
+ *   yAxisLabelFormatter: function // optional to override the label formatter for y-axis
+ *   yAxis2LabelFormatter: function // optional to override the label formatter for secondary y-axis
+ *   yAxisScaled: boolean // show y-axis range as the [min, max] of data series instead of [0, max] (default: false)
  *   valueFormatter: function // function to override the representation of y-axis value
  *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
  *   seriesStacked: boolean // should stack all data series (default: true)
  *   seriesLineSmooth: boolean // draw line of series smooth (default: false)
+ *   seriesYAxisIndex: array // indicates the y-axis index for every data series, value can be 0 or 1 (default: undefined)
  *   xAxisShowLabels: boolean // show x-axis labels (default: true)
  * }
  * @param datasource-bind - array of data objects
@@ -64,6 +67,7 @@ angular.module('dashing.charts.line', [
           yAxisShowSplitLine: true,
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
+          yAxisScaled: false,
           xAxisShowLabels: true
         }, $scope.options);
 
@@ -124,7 +128,8 @@ angular.module('dashing.charts.line', [
               }
             },
             axisLine: false,
-            axisLabel: {formatter: use.yAxisLabelFormatter}
+            axisLabel: {formatter: use.yAxisLabelFormatter},
+            scale: use.yAxisScaled
           }],
           series: use.seriesNames.map(function(name, i) {
             return $echarts.makeDataSeries({
@@ -132,12 +137,21 @@ angular.module('dashing.charts.line', [
               colors: colors[i],
               stack: use.seriesStacked,
               smooth: use.seriesLineSmooth,
-              showAllSymbol: use.showAllSymbol
+              showAllSymbol: use.showAllSymbol,
+              yAxisIndex: Array.isArray(use.seriesYAxisIndex) ?
+                use.seriesYAxisIndex[i] : 0
             });
           }),
           // override the default color colorPalette, otherwise the colors look messy.
           color: use.colors
         };
+
+        if (_.contains(use.seriesYAxisIndex, 1)) {
+          options.yAxis.push(angular.merge({}, options.yAxis[0], {
+            axisLabel: {formatter: use.yAxis2LabelFormatter}
+          }));
+          options.grid.x2 = options.grid.x;
+        }
 
         $echarts.fillAxisData(options, data, use);
 

@@ -368,10 +368,10 @@ angular.module('dashing.charts.echarts', [
       axisLabelFormatter: function(unit) {
         return function(value) {
           if (angular.isNumber(value)) {
-            value = Number(value); // echarts return 0.1 as "0.1"
+            value = Number(value); // echarts gives `value` decimal as string
             if (value !== 0) {
               var hr = util.text.toHumanReadableNumber(value, 1000, 1);
-              value = hr.value + ' ' + hr.modifier + (unit || '');
+              value = hr.value + (unit ? ' ' + hr.modifier + unit : hr.modifier.toLowerCase());
             }
           }
           return value;
@@ -416,6 +416,7 @@ angular.module('dashing.charts.echarts', [
        * Reset axises in option and fill with initial data (for line/bar/area charts)
        */
       fillAxisData: function(options, data, inputs) {
+        data = data || [];
         if (angular.isObject(inputs)) {
           // #1: Set groupId when it is defined and valid
           if (angular.isString(inputs.groupId) && inputs.groupId.length) {

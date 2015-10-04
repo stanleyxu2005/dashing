@@ -39,6 +39,22 @@
         </ui-select>
       </div>
     </div>
+    <!-- radio group -->
+    <div ng-switch-when="radio">
+      <div class="col-sm-8 form-group">
+        <div class="btn-group btn-group-justified"
+             style="height: 22px; padding: 5px 0 5px 0">
+          <div ng-repeat="choice in choices track by $index"
+               class="btn-group">
+            <button
+              type="button" class="btn {{buttonStyleClass}} btn-default"
+              ng-class="{'btn-primary': choice.value == value}"
+              ng-bind="choice.text" value="{{choice.value}}"
+              ng-click="toggle(choice.value)"></button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- numeric input with arrow buttons -->
     <div ng-switch-when="number">
       <div class="col-sm-4 form-group" style="padding-right: 8px"

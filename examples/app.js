@@ -12,7 +12,7 @@ angular.module('examples', [
     function($urlRouterProvider) {
       'use strict';
       $urlRouterProvider
-        .when('/', '/charts/bar')
-        .otherwise('/charts/bar');
+        .when('', '/')
+        .when('/', '/charts/line');
     }])
 ;

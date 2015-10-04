@@ -4,11 +4,12 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.2.6
-* Feature (#18): `<line-chart>` allows to have a secondary y-axis
+* Feature (#19): `<form-control>` support radio group.
+* Feature (#18): `<line-chart>` allows to have a secondary y-axis.
 
 ## 0.2.5
-* Feature (#13): Support to render 2-value data as a `<ring-chart>`
-* Improvement: Specify tooltip position for `<remark>`
+* Feature (#13): Support to render 2-value data as a `<ring-chart>`.
+* Improvement: Specify tooltip position for `<remark>`.
 * Feature: Added `<form-control>` to build a consistent inpurt form. Supports text/dropdown/numberic inputs with validation.
 
 ## 0.2.4
@@ -32,14 +33,14 @@ The file only contains the major change history. For full change history, please
 * Improvement: npm will include release files and github will be responsible for source code only.
 
 ## 0.1.8
-* Feature: Add timeline support for `<line-chart>` (Previously x-axis can only have string labels)
+* Feature: Add timeline support for `<line-chart>`. Previously x-axis can only have string labels.
 
 ## 0.1.7
 * Improvement: If no initial data is provided, the chart is still able to be created. With a "No Graph Data Available" animation.
 * Bugfix: The default sort ordering of `<sortable-table>` was wrong.
 
 ## 0.1.6
-* Feature: Auto format y-axis. By default it will be formatted in a human reabled notation.
+* Feature: Auto format y-axis. By default it will be formatted in a human readable notation.
 * Feature: `<line-chart>` will have minor split lines.
 
 ## 0.1.4

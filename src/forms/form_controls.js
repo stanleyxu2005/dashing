@@ -29,6 +29,17 @@ angular.module('dashing.forms.form_control', [
       return result;
     }
 
+    function buildChoicesForButtonGroup(choices) {
+      var result = [];
+      angular.forEach(choices, function(choice, value) {
+        result.push({
+          value: value,
+          text: choice
+        });
+      });
+      return result;
+    }
+
     function buildChoicesForDropDownMenu(choices, onSelect) {
       return choices.map(function(choice) {
         if (angular.isString(choice)) {
@@ -67,6 +78,14 @@ angular.module('dashing.forms.form_control', [
           case 'choices':
             scope.choices = buildChoicesForSelect(eval('(' + attrs.choices + ')'));
             scope.allowSearchInChoices = Object.keys(scope.choices).length >= 5;
+            break;
+
+          case 'radio':
+            scope.choices = buildChoicesForButtonGroup(eval('(' + attrs.choices + ')'));
+            scope.buttonStyleClass = attrs.btnStyleClass || 'btn-xs';
+            scope.toggle = function(value) {
+              scope.value = value;
+            };
             break;
 
           case 'integer':

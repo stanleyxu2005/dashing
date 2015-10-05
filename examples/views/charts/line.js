@@ -22,27 +22,46 @@ angular.module('examples')
       'use strict';
 
       var maxChartDataPoints = 30;
+      var seriesCount = 5;
+      var i = 0;
+      $scope.value = 0;
+
+      function nextData() {
+        i++;
+        $scope.value = (Math.random() * 100000).toFixed(1);
+        return {
+          x: moment().minute(i * 5).format('HH:mm'),
+          y: _.times(seriesCount, function() {
+            return Math.random() * 100000;
+          })
+        };
+      }
 
       $scope.lineChartOption = {
-        height: '148px',
+        height: '168px',
         //xAxisType: 'time',
         yAxisLabelFormatter: $echarts.axisLabelFormatter('B'),
-        data: _.range(maxChartDataPoints).map(function(i) {
-          return {
-            x: moment().minute(-i * 20).format('HH:mm:ss') + ',' + i,
-            y: [Math.random() * 100000, Math.random() * 120000]
-          };
+        data: _.range(maxChartDataPoints).map(function() {
+          return nextData();
         }),
-        visibleDataPointsNum: maxChartDataPoints * 2,
-        seriesNames: ['Read', 'Write']
+        visibleDataPointsNum: maxChartDataPoints,
+        seriesNames: ['Disk Read', 'Disk Write']
       };
+      $scope.lineChartOption2 = angular.extend({}, $scope.lineChartOption, {
+        seriesStacked: false
+      });
+      $scope.lineChartOption3 = angular.extend({}, $scope.lineChartOption, {
+        seriesNames: _.times(seriesCount, function(i) {
+          return 'Series ' + (i+1);
+        })
+      });
+      $scope.lineChartOption4 = angular.extend({}, $scope.lineChartOption, {
+        height: '108px',
+      });
 
       var i = 0;
       $interval(function() {
-        $scope.lineChartData = {
-          x: moment().minute(i * 20).format('HH:mm:ss') + ',' + i,
-          y: [Math.random() * 100000, Math.random() * 120000]
-        };
+        $scope.lineChartData = nextData();
       }, 2000);
     }])
 ;

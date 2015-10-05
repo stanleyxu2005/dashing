@@ -37,23 +37,30 @@ angular.module('examples')
         }),
         seriesNames: ['s1', 's2']
       };
-      $scope.barChartOption2 = angular.copy($scope.barChartOption);
-      $scope.barChartOption2.rotate = true;
-      $scope.barChartOption2.data = $scope.barChartOption2.data.slice(0, 16);
-
-      $scope.barChartOption3 = angular.copy($scope.barChartOption);
-      $scope.barChartOption3.seriesNames = ['1', '2', '3', '4'];
-      $scope.barChartOption3.barMinWidth = 16;
+      $scope.barChartOption2 = angular.extend({}, $scope.barChartOption, {
+        rotate: true,
+        data: $scope.barChartOption.data.slice(0, 16)
+      });
+      $scope.barChartOption3 = angular.extend({}, $scope.barChartOption, {
+        seriesNames: ['1', '2', '3', '4'],
+        barMinWidth: 16
+      });
+      $scope.barChartOption4 = angular.extend({}, $scope.barChartOption, {
+        seriesNames: ['1']
+      });
+      $scope.barChartOption5 = angular.extend({}, $scope.barChartOption4, {
+        xAxisShowLabels: false
+      });
 
       $scope.barUseNegativeColorOption = {
         height: '140px',
-        colors: ['red', 'green'],
+        colors: ['rgb(255,127,39)', 'rgb(255,201,14)'],
         valueLabelPosition: 'right',
         yAxisLabelFormatter: $echarts.axisLabelFormatter(),
         data: _.range(maxChartDataPoints).map(function(i) {
           var y = Math.floor(Math.random() * 1000 - 500);
           return {
-            x: 'D' + i,
+            x: 'd' + i,
             y: y >= 0 ? [y, 0] : [0, y]
           };
         }),

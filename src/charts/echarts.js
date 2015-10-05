@@ -170,7 +170,7 @@ angular.module('dashing.charts.echarts', [
         transitionDuration: 0.5
       },
       textStyle: {
-        fontFamily: 'lato,roboto,"helvetica neue","segoe ui",arial',
+        fontFamily: 'Roboto,"Helvetica Neue","Segoe UI","Hiragino Sans GB","Microsoft YaHei",Arial,Helvetica,SimSun,sans-serif',
         fontSize: 12
       },
       loadingText: 'Data Loading...',

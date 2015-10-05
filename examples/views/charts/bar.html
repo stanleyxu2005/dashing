@@ -1,5 +1,22 @@
 <div class="row">
   <div class="col-md-6">
+    <h4>Simple Bar</h4>
+    <bar-chart
+      options-bind="::barChartOption4"
+      datasource-bind="barChartData">
+    </bar-chart>
+  </div>
+  <div class="col-md-6">
+    <h4>Sparkline</h4>
+    <bar-chart
+      options-bind="::barChartOption5"
+      datasource-bind="barChartData">
+    </bar-chart>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
     <h4>2 Bar Stacked</h4>
     <bar-chart
       options-bind="::barChartOption"

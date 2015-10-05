@@ -113,7 +113,9 @@ angular.module('dashing.charts.line', [
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,
             boundaryGap: false,
-            axisLine: borderLineStyle,
+            axisLine: angular.merge({
+              onZero: false
+            }, borderLineStyle),
             axisTick: borderLineStyle,
             axisLabel: {show: true},
             splitLine: false
@@ -147,9 +149,11 @@ angular.module('dashing.charts.line', [
         };
 
         if (_.contains(use.seriesYAxisIndex, 1)) {
-          options.yAxis.push(angular.merge({}, options.yAxis[0], {
-            axisLabel: {formatter: use.yAxis2LabelFormatter}
-          }));
+          var yAxis2 = angular.copy(options.yAxis[0]);
+          if (angular.isFunction(use.yAxis2LabelFormatter)) {
+            yAxis2.axisLabel.formatter = use.yAxis2LabelFormatter;
+          }
+          options.yAxis.push(yAxis2);
           options.grid.x2 = options.grid.x;
         }
 

@@ -109,8 +109,7 @@ angular.module('dashing.charts.bar', [
             }),
           grid: angular.merge({
             borderWidth: 0,
-            x: Math.max(5, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
-            x2: 15, /* increase the right margin, otherwise last label might be cropped */
+            x: Math.max(15, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
             y: 15, y2: 28
           }, use.grid),
           xAxis: [{
@@ -220,9 +219,6 @@ angular.module('dashing.charts.bar', [
               if (visibleWidthForBars > drawAllBarMaxWidth) {
                 // Too few bars to fill up the whole area, so increase the right/bottom margin
                 options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
-              } else {
-                options.grid.x2 += visibleWidthForBars -
-                  Math.floor(visibleWidthForBars / data.length) * data.length;
               }
             }
           }

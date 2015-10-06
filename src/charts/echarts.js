@@ -417,6 +417,8 @@ angular.module('dashing.charts.echarts', [
        */
       fillAxisData: function(options, data, inputs) {
         data = data || [];
+        options.grid.x2 = options.grid.x;
+
         if (angular.isObject(inputs)) {
           // #1: Set groupId when it is defined and valid
           if (angular.isString(inputs.groupId) && inputs.groupId.length) {

@@ -20,13 +20,11 @@ angular.module('examples')
   .controller('FormsCtrl', ['$scope', function($scope) {
     'use strict';
 
-    $scope.radio = 7;
-    $scope.radioChoices = {7: 'Past 7 days', 30: 'Past 30 days'};
-    $scope.radio2 = 'a';
-    $scope.radioChoices2 = {a: 'Class A', b: 'Class B', c: 'Class C'};
-
-    $scope.$watch('radio', function(val) {
-      console.log(val);
-    });
+    $scope.age = 20;
+    $scope.gender = 'male';
+    $scope.genders = {male: 'Male', female: 'Female'};
+    $scope.bloodType = 'a';
+    $scope.bloodTypes = {a: 'Type A', b: 'Type B', ab: 'Type AB', o: 'Type O'};
+    $scope.nations = {china: 'China', germany: 'Germany', france: 'France', usa: 'United States', japan: 'Japan'};
   }])
 ;

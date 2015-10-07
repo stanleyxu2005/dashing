@@ -1,38 +1,48 @@
 <div class="row">
-  <div class="col-md-6">
-    <form name="form">
-      <div class="form-group-header">Basic</div>
-      <form-control
-        type="text" label="Name:"
-        ng-model="name">
-      </form-control>
-      <div class="form-group-header">Radio Groups</div>
-      <form-control
-        type="radio" label="Radio Group:" btn-style-class="btn-sm"
-        ng-model="radio" choices="{{radioChoices}}">
-      </form-control>
-      <form-control
-        type="radio" label="Radio Group:"
-        ng-model="radio2" choices="{{radioChoices2}}">
-      </form-control>
-    </form>
+  <div class="col-md-12">
+    <div class="alert alert-warning" role="alert">
+      Form controls require Bootstrap 3. And you need define a form with the following css:
+      <code>
+        &lt;form class="form-horizontal"&gt;
+      </code>
+    </div>
   </div>
-
-  <div class="col-md-6">
-    <form name="form2">
+</div>
+<div class="row">
+  <div ng-repeat="i in [1,2] track by $index"
+       class="col-md-6">
+    <form name="form" class="form-horizontal">
       <div class="form-group-header">Basic</div>
       <form-control
-        type="text" label="Name:"
-        ng-model="name">
+        type="text" label="Name"
+        ng-model="$parent.name">
+      </form-control>
+      <form-control
+        type="positiveInteger" label="Age"
+        ng-model="$parent.age">
       </form-control>
       <div class="form-group-header">Radio Groups</div>
       <form-control
-        type="radio" label="Radio Group:" btn-style-class="btn-sm"
-        ng-model="radio" choices="{{radioChoices}}">
+        type="radio" label="Gender"
+        ng-model="$parent.gender" choices="{{genders}}">
       </form-control>
       <form-control
-        type="radio" label="Radio Group:"
-        ng-model="radio2" choices="{{radioChoices2}}">
+        type="radio" label="Blood Type"
+        ng-model="$parent.bloodType" choices="{{bloodTypes}}">
+      </form-control>
+      <form-control
+        type="radio" label="Small Sized" btn-style-class="btn-xs"
+        ng-model="$parent.bloodType" choices="{{bloodTypes}}">
+      </form-control>
+      <div class="form-group-header">Dropdown (select2)</div>
+      <form-control
+        type="choices" label="Place of Birth"
+        ng-model="$parent.nation" choices="{{nations}}">
+      </form-control>
+      <div class="form-group-header">Date/Time Picker</div>
+      <form-control
+        type="datetime" label="Appointment"
+        ng-model="$parent.dt">
       </form-control>
     </form>
   </div>

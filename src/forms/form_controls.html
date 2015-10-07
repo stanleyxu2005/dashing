@@ -1,13 +1,10 @@
-<div class="row">
-  <div class="col-sm-3" style="padding-right: 0">
-    <label class="form-label-vertical right" ng-bind="label"></label>
-  </div>
+<div class="form-group">
+  <label class="col-sm-3 control-label text-right" ng-bind="label"></label>
   <ng-switch on="renderAs">
     <!-- text input -->
     <div ng-switch-when="text">
       <div class="col-sm-8">
-        <div class="form-group"
-             ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
+        <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
           <input class="form-control input-sm"
                  type="text" ng-model="$parent.value"
                  reset-search-input="false"/>
@@ -23,7 +20,7 @@
     </div>
     <!-- select -->
     <div ng-switch-when="choices">
-      <div class="col-sm-8 form-group">
+      <div class="col-sm-8">
         <ui-select theme="select2" class="form-control"
                    ng-model="$parent.$parent.value"
                    search-enabled="allowSearchInChoices">
@@ -41,9 +38,8 @@
     </div>
     <!-- radio group -->
     <div ng-switch-when="radio">
-      <div class="col-sm-8 form-group">
-        <div class="btn-group btn-group-justified"
-             style="height: 22px; padding: 5px 0 5px 0">
+      <div class="col-sm-8">
+        <div class="btn-group btn-group-justified">
           <div ng-repeat="choice in choices track by $index"
                class="btn-group">
             <button
@@ -57,7 +53,7 @@
     </div>
     <!-- numeric input with arrow buttons -->
     <div ng-switch-when="number">
-      <div class="col-sm-4 form-group" style="padding-right: 8px"
+      <div class="col-sm-4" style="padding-right: 8px"
            ng-class="{'has-error': !pristine && invalid}">
         <input class="form-control input-sm"
                type="number" ng-attr-min="{{min}}"
@@ -66,7 +62,7 @@
     </div>
     <!-- date time picker -->
     <div ng-switch-when="datetime">
-      <div class="col-sm-4 form-group" style="padding-right: 8px"
+      <div class="col-sm-4" style="padding-right: 8px"
            ng-class="{'has-error': dateInputInvalid}">
         <input class="form-control input-sm"
                data-date-format="yyyy-MM-dd"
@@ -74,7 +70,7 @@
                ng-model="$parent.dateValue" date-type="string"
                data-autoclose="1" bs-datepicker/>
       </div>
-      <div class="col-sm-4 form-group" style="padding-left: 0"
+      <div class="col-sm-4" style="padding-left: 0"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
                data-time-format="HH:mm:ss"

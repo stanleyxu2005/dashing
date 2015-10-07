@@ -3,6 +3,7 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.forms.form_control', [
+  'ngSanitize', // required for ng-bind-html
   'dashing.filters.any',
   'dashing.util.validation',
   'mgcrea.ngStrap.datepicker', // angular-strap
@@ -82,7 +83,7 @@ angular.module('dashing.forms.form_control', [
 
           case 'radio':
             scope.choices = buildChoicesForButtonGroup(eval('(' + attrs.choices + ')'));
-            scope.buttonStyleClass = attrs.btnStyleClass || 'btn-xs';
+            scope.buttonStyleClass = attrs.btnStyleClass || 'btn-sm';
             scope.toggle = function(value) {
               scope.value = value;
             };

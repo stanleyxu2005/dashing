@@ -3,20 +3,24 @@
  * See accompanying LICENSE file.
  */
 
-.form-label-vertical {
-  line-height: 30px;
-  font-weight: 500; /* less bold than bold */
-}
-
-.form-label-vertical.right {
-  display: block;
-  text-align: right;
-}
-
 .form-group-header {
-  padding-top: 10px;
-  padding-bottom: 8px;
+  margin-top: 20px;
+  margin-bottom: 8px;
   color: #999;
   font-size: 0.9em;
   text-transform: uppercase;
+}
+
+/* Bootstrap overrides (3 rules) */
+.control-label {
+  font-weight: 500;
+  margin-right: -15px;
+}
+
+.form-group {
+  margin-bottom: 5px;
+}
+
+.form-group .btn-xs {
+  padding-bottom: 2px;
 }

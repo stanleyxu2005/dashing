@@ -6,6 +6,8 @@
     "bootstrap": "latest",
     "angular": "latest",
     "angular-animate": "latest",
+    "angular-sanitize": "latest",
+    "bootstrap-additions": "latest",
     "angular-motion": "latest",
     "angular-strap": "latest",
     "angular-smart-table": "latest",

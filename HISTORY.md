@@ -3,6 +3,8 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.2.8 (0.2.7 was published to npm currupted)
+
 ## 0.2.7
 * Improvement: Added two chinese fonts "Hiragino Sans GB" and "Microsoft YaHei" in style sheets.
 * Improvement (#20): Fixed several look and feel glitches when charts are grouped together.

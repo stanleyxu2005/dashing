@@ -9,8 +9,8 @@ angular.module('dashing.remark', [
  * A question mark icon with a tooltip.
  *
  * @param tooltip string
- * @param type question|warning (default=question)
- * @param placement top|left|right|bottom (default=top)
+ * @param type enum(question|warning) (default=question)
+ * @param placement enum(top|left|right|bottom) (default=top)
  *
  * @example
  *  <remark tooltip="This is a tooltip"></remark>

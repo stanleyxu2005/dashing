@@ -6,6 +6,12 @@ angular.module('dashing.metrics', [])
 /**
  * A card component to show metric value and its meaning.
  *
+ * @param caption string
+ * @param value number
+ * @param unit string (optional)
+ * @param sub-text string (optional)
+ *   A secondary text after the value unit string
+ *
  * @example
  *  <metrics caption="CPU" value="99.5" unit="%"></metrics>
  *  <metrics caption="Disk Write Rate" value="500" unit="MB/s"

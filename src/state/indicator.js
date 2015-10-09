@@ -9,13 +9,13 @@ angular.module('dashing.state.indicator', [
 /**
  * A small square icon that indicates one of these states: good, concern, danger or whatever.
  *
- * @param condition good|concern|danger
- *          specify the background color according to condition.
- *          fallback to gray, if condition is not specified or recognized.
+ * @param condition enum(good|concern|danger)
+ *   specify the background color according to condition
+ *   fallback to gray, if condition is not specified or recognized
  * @param tooltip string (optional)
- * @param shape stripe string (optional)
- *          stripe means a full filled bar (width=8px)
- *          fallback to a small square icon, if shape is not specified or recognized.
+ * @param shape enum(stripe) (optional)
+ *   "stripe" means a full filled bar (width=8px)
+ *   fallback to a small square icon, if shape is not specified or recognized
  *
  * @example
  *  <indicator condition="good"></indicator>

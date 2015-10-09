@@ -9,9 +9,13 @@ angular.module('dashing.state.tag', [
 /**
  * A clickable bootstrap label indicates one of these states: good, concern, danger or unknown.
  *
- * @param condition good|concern|danger|unknown
- * @param text text to shown on the tag
- * @param href link to follow when click on the tag control (optional)
+ * @param condition enum(good|concern|danger)
+ *   conditions will be rendered with different colors
+ *   fallback to gray, if condition is not specified or recognized
+ * @param text string
+ *   text to shown on the tag
+ * @param href string (optional)
+ *   link to follow when click on the tag control
  * @param tooltip string (optional)
  *
  * @example

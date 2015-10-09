@@ -7,6 +7,11 @@ angular.module('dashing.progressbar', [])
  * A combination of labels and a bootstrap progress bar. The color of the progress bar is
  * determined by the progress value.
  *
+ * @param current number
+ * @param max number
+ * @param color-mapper-fn function (optional)
+ *   function that provides particular color name for a given value
+ *
  * @example
  *  <progressbar current="50" max="100" color-mapper-fn="customColorMapperFn"></progressbar>
  */

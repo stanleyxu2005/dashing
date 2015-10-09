@@ -11,13 +11,7 @@ angular.module('dashing.charts.ring', [
  * The width of the chart will be calculated by the number bars. If its too narrow to show all bars,
  * the chart will have a data zoom control to scroll the value bars.
  *
- * @example
- *   <ring-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
- *   </ring-chart>
- *
- * @param options-bind - the option object, which the following elements:
+ * @param options-bind object
  * {
  *   height: string // the css height of the chart
  *   color: string // optional to override ring color
@@ -25,11 +19,17 @@ angular.module('dashing.charts.ring', [
  *   title: string // optional to show a title right to the ring. The total value and unit will be show as well.
  *   thickness: number // optional to override the ratio of inner/outer ring radius (default: 0.25)
  * }
- * @param datasource-bind - data object
+ * @param datasource-bind - object
  * {
      used: {value: 64, label: 'Allocated', unit: 'GB'},
      available: {value: 256 - 64, label: 'Available'}
-   };
+   }
+ *
+ * @example
+ *   <ring-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </ring-chart>
  */
   .directive('ringChart', function() {
     'use strict';

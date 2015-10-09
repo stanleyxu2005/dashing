@@ -7,10 +7,14 @@ angular.module('dashing.property', [
 ])
 /**
  * A runtime determined auto property widget, which can be rendered as progress bar,
- * button, time duration, state indicator, colored tag, etc.
+ * button, time duration, state indicator, colored tag, etc. Note that the directive
+ * is created for internal usage.
+ *
+ * @param renderer enum(Button|Bytes|DateTime|Duration|Indicator|Link|Number|ProgressBar|Tag|') (default is text)
+ * @param value-bind object
  *
  * @example
- *  <property value-bind="tagArgs" renderer="Tag"></property>
+ *  <property renderer="Tag" value-bind="tagArgs"></property>
  */
   .directive('property', function() {
     'use strict';

@@ -6,28 +6,32 @@ angular.module('dashing.tables.sortable_table', [
   'smart-table' // smart-table
 ])
 /**
- * A customized "smart-table" widget which is sortable; has nice pagination
- * control; is able to bind with a nice external search controls.
+ * A table control (based on "angular-smart-table" with these key features:
+ *  (1) Columns are sortable
+ *  (2) Support automatic pagination
+ *  (3) Bind with external search control
+ *
+ * We recommend to use the `$sortableTableBuilder` to build/update table.
+ *
+ *  @param columns-bind array
+ *    an array of column objects
+ *  @param records-bind array
+ *    an array of record objects
+ *  @param caption string (optional)
+ *    the caption of the table
+ *  @param pagination int (optional)
+ *    the number of records to be shown per page
+ *  @param search-bind object (optional)
+ *    the variable stores the text to be searched (table will be filtered by the text)
  *
  * @example
  *  <sortable-table
- *    caption="Table caption"
- *    pagination="5"
  *    columns-bind="columnsVariable"
  *    records-bind="recordsVariable"
+ *    caption="Table caption"
+ *    pagination="5"
  *    search-bind="searchVariable">
  *  </sortable-table>
- *
- *    @param caption string
- *      the caption of the table (optional)
- *    @param pagination int
- *      the number of records to be shown per page (optional)
- *    @param columns-bind array
- *      an array of column objects
- *    @param records-bind array
- *      an array of record objects
- *    @param search-bind string
- *      the text in a global search bar (optional)
  */
   .directive('sortableTable', function() {
     'use strict';

@@ -8,13 +8,7 @@ angular.module('dashing.charts.line', [
 /**
  * Line chart control.
  *
- * @example
- *   <line-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
- *   </line-chart>
- *
- * @param options-bind - the option object, which the following elements:
+ * @param options-bind object
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
@@ -37,8 +31,14 @@ angular.module('dashing.charts.line', [
  *   seriesYAxisIndex: array // indicates the y-axis index for every data series, value can be 0 or 1 (default: undefined)
  *   xAxisShowLabels: boolean // show x-axis labels (default: true)
  * }
- * @param datasource-bind - array of data objects
+ * @param datasource-bind - array
  *   every data object is {x: time|string, y: [number]}
+ *
+ * @example
+ *   <line-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </line-chart>
  */
   .directive('lineChart', function() {
     'use strict';

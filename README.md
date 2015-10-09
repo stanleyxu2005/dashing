@@ -1,4 +1,4 @@
-# [Dashing](https://github.com/stanleyxu2005/dashing)
+# [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful inside and out
 
 [![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) 
 
@@ -6,13 +6,13 @@ Dashing is a set of assembled widgets based on Bootstrap and AngularJS.
 
 **Let's make dashing widgets with a few line of code~**
 
-*Example 1: Create nice Chart with 2 Line Code!* [Demo](http://mmjd.com/dashing/examples/#/charts/line)
+Example 1: Create nice Chart with 2 Line Code! ([Demo](http://mmjd.com/dashing/examples/#/charts/line))
 ![linechart](https://cloud.githubusercontent.com/assets/5162687/9703234/928806f8-54af-11e5-9b01-6ed20ecf2aff.png)
 
-*Example 2: Toggle-able Data Series in stacked Line Chart. The data can be reused in sparkline without any code change!*
+Example 2: Toggle-able Data Series in stacked Line Chart. The data can be reused in sparkline without any code change!
 ![linechart](https://cloud.githubusercontent.com/assets/5162687/8435436/b6116760-1f83-11e5-8091-9471e85e5796.png)
 
-*Example 3: Sortable Table with rich contents and automatic Pagination* [Demo](http://mmjd.com/dashing/examples/#/tables/sortable)
+Example 3: Sortable Table with rich contents and automatic Pagination ([Demo](http://mmjd.com/dashing/examples/#/tables/sortable))
 ![sortable-table](https://cloud.githubusercontent.com/assets/5162687/10240430/6cb0ae9e-690e-11e5-9423-5bfce00d1cbc.png)
 
 ## Resources

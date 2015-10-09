@@ -11,15 +11,7 @@ angular.module('dashing.charts.bar', [
  * The width of the chart will be calculated by the number bars. If its too narrow to show all bars,
  * the chart will have a data zoom control to scroll the value bars.
  *
- * todo: support multiple series (stacked and not stacked)
- *
- * @example
- *   <bar-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
- *   </bar-chart>
- *
- * @param options-bind - the option object, which the following elements:
+ * @param options-bind - object
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
@@ -39,8 +31,14 @@ angular.module('dashing.charts.bar', [
  *   barMinSpacing: number // show data zoom control, if bar spacing is narrower than the value (default: 1)
  *   xAxisShowLabels: boolean // show x-axis labels (default: true)
  * }
- * @param datasource-bind - array of data objects
+ * @param datasource-bind - array
  *   every data object is {x: string, y: number}
+ *
+ * @example
+ *   <bar-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </bar-chart>
  */
   .directive('barChart', ['$echarts', function($echarts) {
     'use strict';

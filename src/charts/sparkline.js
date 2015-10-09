@@ -8,26 +8,26 @@ angular.module('dashing.charts.sparkline', [
 /**
  * Sparkline is an one data series line chart without axis labels.
  *
- * @example
- *   <sparkline-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
- *   </sparkline-chart>
- *
- * @param options-bind - the option object, which the following elements:
+ * @param options-bind object
  * {
  *   height: string // the css height of the chart
  *   width: string // the css width of the chart
- *   data: // an array of initial data points
+ *   data: array // an array of initial data points
  *
  *   color: string // optional to override line color
  *   visibleDataPointsNum: number // the maximal number of data points in the chart (default: unlimited)
  *   valueFormatter: function // function to override the representation of y-axis value
  *   xAxisTypeIsTime: boolean // use timeline as x-axis (currently disabled)
- *   series0Type: 'bar'|'area' // renders data series as bar or area (default: area)
+ *   series0Type: enum(bar|area) // renders data series as bar or area (default: area)
  * }
- * @param datasource-bind - array of data objects
+ * @param datasource-bind array
  *   every data object is {x: time|string, y: number|array}
+ *
+ * @example
+ *   <sparkline-chart
+ *     options-bind="::chartOptions"
+ *     datasource-bind="chartData">
+ *   </sparkline-chart>
  */
   .directive('sparklineChart', ['$echarts', function($echarts) {
     'use strict';

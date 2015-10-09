@@ -9,6 +9,7 @@ angular.module('dashing.property.bytes', [
  * Bytes as text with a human readable unit.
  *
  * @param raw number
+ *   the actual value of the byte
  * @param unit string (optional)
  *
  * @example

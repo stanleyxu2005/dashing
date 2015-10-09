@@ -3,7 +3,12 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
-## 0.2.8 (0.2.7 was published to npm currupted)
+## 0.2.9
+* Breaking changes (#27): `<form-control>` numeric types are all called "integer". Specify the `min` to `0`, `1` or undefined for different validators. 
+* Improvement (#27): `<form-control>` supports "multi-checks" and "check".
+* Bugfix (#25): ui-select required style sheets were not missing.
+
+## 0.2.8 (0.2.7 was published to npm corrupted)
 
 ## 0.2.7
 * Improvement: Added two chinese fonts "Hiragino Sans GB" and "Microsoft YaHei" in style sheets.

@@ -1,30 +1,14 @@
 <div class="form-group">
-  <label class="col-sm-3 control-label text-right" ng-bind="label"></label>
+  <label class="{{labelStyleClass}} control-label text-right" ng-bind="label"></label>
   <ng-switch on="renderAs">
-    <!-- text input -->
-    <div ng-switch-when="text">
-      <div class="col-sm-8">
-        <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
-          <input class="form-control input-sm"
-                 type="text" ng-model="$parent.value"
-                 reset-search-input="false"/>
-          <!-- form-feedback does not have a dropdown state, so we use BUTTON+SPAN solution -->
-          <button ng-if="choicesMenu"
-                  type="button" class="btn btn-sm form-control-feedback"
-                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px"
-                  bs-dropdown="choicesMenu" html="true">
-            <span class="glyphicon glyphicon-search"></span>
-          </button>
-        </div>
-      </div>
-    </div>
     <!-- select -->
     <div ng-switch-when="choices">
-      <div class="col-sm-8">
+      <div class="{{controlStyleClass}}">
         <ui-select theme="select2" class="form-control"
                    ng-model="$parent.$parent.value"
                    search-enabled="allowSearchInChoices">
-          <ui-select-match>{{$select.selected.text}}</ui-select-match>
+          <ui-select-match placeholder="{{placeholder}}"
+                           allow-clear="{{!required}}">{{$select.selected.text}}</ui-select-match>
           <ui-select-choices repeat="choice in choices|
           any: {text: $select.search, subtext: $select.search}">
             <div ng-class="{'bold': $select.selected === choice}"
@@ -36,9 +20,30 @@
         </ui-select>
       </div>
     </div>
+    <!-- check -->
+    <div ng-switch-when="check">
+      <div class="{{controlStyleClass}} checkbox">
+        <label>
+          <input type="checkbox" ng-checked="$parent.value"
+                 ng-click="$parent.value = !$parent.value"/>
+          <span ng-bind="text"></span>
+        </label>
+      </div>
+    </div>
+    <!-- check group -->
+    <div ng-switch-when="multi-checks">
+      <div class="{{controlStyleClass}}">
+        <label class="checkbox-inline"
+               ng-repeat="choice in choices track by $index">
+          <input type="checkbox" ng-checked="$parent.value[$index]"
+                 ng-click="$parent.value[$index] = !$parent.value[$index]"/>
+          <span ng-bind="choice"></span>
+        </label>
+      </div>
+    </div>
     <!-- radio group -->
     <div ng-switch-when="radio">
-      <div class="col-sm-8">
+      <div class="{{controlStyleClass}}">
         <div class="btn-group btn-group-justified">
           <div ng-repeat="choice in choices track by $index"
                class="btn-group">
@@ -52,8 +57,8 @@
       </div>
     </div>
     <!-- numeric input with arrow buttons -->
-    <div ng-switch-when="number">
-      <div class="col-sm-4" style="padding-right: 8px"
+    <div ng-switch-when="integer">
+      <div class="{{controlStyleClass}}"
            ng-class="{'has-error': !pristine && invalid}">
         <input class="form-control input-sm"
                type="number" ng-attr-min="{{min}}"
@@ -62,22 +67,40 @@
     </div>
     <!-- date time picker -->
     <div ng-switch-when="datetime">
-      <div class="col-sm-4" style="padding-right: 8px"
+      <div class="{{dateControlStyleClass}}" style="padding-right: 8px"
            ng-class="{'has-error': dateInputInvalid}">
         <input class="form-control input-sm"
                data-date-format="yyyy-MM-dd"
                type="text" size="10" placeholder="Date"
                ng-model="$parent.dateValue" date-type="string"
-               data-autoclose="1" bs-datepicker/>
+               data-autoclose="1" use-native="true" bs-datepicker/>
       </div>
-      <div class="col-sm-4" style="padding-left: 0"
+      <div class="{{timeControlStyleClass}}" style="padding-left: 0"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
                data-time-format="HH:mm:ss"
-               type="text" size="8" placeholder="Time" ng-click="fillDefaultTime()"
+               type="text" size="8" placeholder="Time"
+               ng-click="fillDefaultTime()"
                ng-model="$parent.timeValue" time-type="string"
                hour-step="-1" minute-step="-1" second-step="-1"
-               arrow-behavior="picker" bs-timepicker/>
+               arrow-behavior="picker" use-native="true" bs-timepicker/>
+      </div>
+    </div>
+    <!-- text input -->
+    <div ng-switch-default>
+      <div class="{{controlStyleClass}}">
+        <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
+          <input class="form-control input-sm"
+                 type="text" ng-model="$parent.value"
+                 reset-search-input="false"/>
+          <!-- form-feedback does not have a dropdown state, so we use BUTTON+SPAN solution -->
+          <button ng-if="choicesMenu"
+                  type="button" class="btn btn-sm form-control-feedback"
+                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px"
+                  bs-dropdown="choicesMenu" html="true">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </div>
       </div>
     </div>
   </ng-switch>

@@ -23,8 +23,10 @@ angular.module('examples')
     $scope.age = 20;
     $scope.gender = 'male';
     $scope.genders = {male: 'Male', female: 'Female'};
+    $scope.haveDriveLicense = true;
     $scope.bloodType = 'a';
     $scope.bloodTypes = {a: 'Type A', b: 'Type B', ab: 'Type AB', o: 'Type O'};
+    $scope.favoriteColorChoices = ['Blue', 'Green', 'Black'];
     $scope.nations = {china: 'China', germany: 'Germany', france: 'France', usa: 'United States', japan: 'Japan'};
   }])
 ;

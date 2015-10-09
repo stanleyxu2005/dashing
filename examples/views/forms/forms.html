@@ -21,6 +21,10 @@
         type="positiveInteger" label="Age"
         ng-model="$parent.age">
       </form-control>
+      <form-control
+        type="check" label="I have a drive license"
+        ng-model="$parent.haveDriveLicense">
+      </form-control>
       <div class="form-group-header">Radio Groups</div>
       <form-control
         type="radio" label="Gender"
@@ -31,13 +35,19 @@
         ng-model="$parent.bloodType" choices="{{bloodTypes}}">
       </form-control>
       <form-control
-        type="radio" label="Small Sized" btn-style-class="btn-xs"
-        ng-model="$parent.bloodType" choices="{{bloodTypes}}">
+        type="multi-checks" label="Favorite Colors"
+        ng-model="$parent.favoriteColors" choices="{{favoriteColorChoices}}">
       </form-control>
       <div class="form-group-header">Dropdown (select2)</div>
       <form-control
         type="choices" label="Place of Birth"
-        ng-model="$parent.nation" choices="{{nations}}">
+        ng-model="$parent.nation" choices="{{nations}}" required="true"
+        search-placeholder="Select a country">
+      </form-control>
+      <form-control
+        type="choices" label="Current Location"
+        ng-model="$parent.location" choices="{{nations}}" required="true"
+        search-placeholder="Select a country">
       </form-control>
       <div class="form-group-header">Date/Time Picker</div>
       <form-control

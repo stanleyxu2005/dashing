@@ -10,8 +10,29 @@ angular.module('dashing.forms.form_control', [
   'mgcrea.ngStrap.timepicker', // angular-strap
   'ui.select'
 ])
-
-/** Ready to use form controls */
+/**
+ * Ready to use form controls.
+ *
+ * Every control will occupy one row. The label will be shown at the left side. You still
+ * need to add a Bootstrap 3 class "form-horizontal" in the outer <form> tag.
+ *
+ * @param type enum(text|class|choices|radio|multi-checks|check|integer|datetime) (default is text input)
+ * @param label string
+ *   the text left to the control (if the container is too narrow, label will be moved to above)
+ * @param ng-model object
+ * @param required boolean (optional)
+ *   when required is set, necessary validation will be triggered, after value is changed
+ * @param invalid object (optional)
+ *   when required is set, the object will stored the valid state.
+ *
+ * The widget is being changed actively, please check the source code or example to discover more usage.
+ *
+ * @example
+ *   <form-control
+ *     type="text" label="Text Input" ng-model="value"
+ *     required="true" invalid="state">
+ *   </form-control>
+ */
   .directive('formControl', ['dashing.util.validation', function(validation) {
     'use strict';
 
@@ -30,7 +51,7 @@ angular.module('dashing.forms.form_control', [
       return result;
     }
 
-    function buildChoicesForButtonGroup(choices) {
+    function buildChoicesForRadioGroup(choices) {
       var result = [];
       angular.forEach(choices, function(choice, value) {
         result.push({
@@ -60,11 +81,13 @@ angular.module('dashing.forms.form_control', [
       templateUrl: 'forms/form_controls.html',
       replace: true,
       scope: {
-        label: '@',
         value: '=ngModel',
         invalid: '='
       },
       link: function(scope, elem, attrs) {
+        scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';
+        scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
+        scope.label = attrs.label;
         scope.renderAs = attrs.type;
         scope.pristine = true;
         scope.invalid = attrs.required;
@@ -77,36 +100,52 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'choices':
+            scope.placeholder = attrs.searchPlaceholder;
             scope.choices = buildChoicesForSelect(eval('(' + attrs.choices + ')'));
             scope.allowSearchInChoices = Object.keys(scope.choices).length >= 5;
+            scope.required = attrs.required;
             break;
 
           case 'radio':
-            scope.choices = buildChoicesForButtonGroup(eval('(' + attrs.choices + ')'));
+            scope.choices = buildChoicesForRadioGroup(eval('(' + attrs.choices + ')'));
             scope.buttonStyleClass = attrs.btnStyleClass || 'btn-sm';
             scope.toggle = function(value) {
               scope.value = value;
             };
             break;
 
+          case 'multi-checks':
+            scope.choices = eval('(' + attrs.choices + ')');
+            if (!Array.isArray(scope.choices)) {
+              scope.choices = [attrs.choices];
+            }
+            if (!Array.isArray(scope.value)) {
+              scope.value = scope.choices.map(function() {
+                return false;
+              });
+            }
+            break;
+
+          case 'check':
+            scope.text = scope.label;
+            scope.label = '';
+            break;
+
           case 'integer':
-            scope.renderAs = 'number';
             scope.validateFn = validation.integer;
-            break;
-
-          case 'positiveInteger':
-            scope.renderAs = 'number';
-            scope.min = '1';
-            scope.validateFn = validation.positiveInteger;
-            break;
-
-          case 'nonNegativeInteger':
-            scope.renderAs = 'number';
-            scope.min = '0';
-            scope.validateFn = validation.nonNegativeInteger;
+            if (attrs.hasOwnProperty('min') && validation.integer(attrs.min)) {
+              scope.min = attrs.min;
+              if (scope.min === 1) {
+                scope.validateFn = validation.positiveInteger;
+              } else if (scope.min === 0) {
+                scope.validateFn = validation.nonNegativeInteger;
+              }
+            }
             break;
 
           case 'datetime':
+            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-5';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
             scope.fillDefaultTime = function() {
               scope.timeValue = scope.timeValue || moment().format('HH:mm:00');
             };

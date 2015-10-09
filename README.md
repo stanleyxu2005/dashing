@@ -1,4 +1,4 @@
-# [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful inside and out
+## [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful inside and out
 
 [![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) 
 

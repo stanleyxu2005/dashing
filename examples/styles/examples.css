@@ -3,19 +3,8 @@
  * See accompanying LICENSE file.
  */
 
-/* Reset to use specified fonts */
-* {
-  font-family: lato, roboto, 'helvetica neue', 'segoe ui', arial, helvetica, sans-serif;
-}
-
-/* Set default font size (depends on the font face) */
-body, .form-control {
-  font-size: 13px;
-}
-
 /*
 body {
   background-color: #f4f4f4;
 }
 */
-

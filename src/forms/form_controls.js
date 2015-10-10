@@ -6,9 +6,7 @@ angular.module('dashing.forms.form_control', [
   'ngSanitize', // required for ng-bind-html
   'dashing.filters.any',
   'dashing.util.validation',
-  'mgcrea.ngStrap.tooltip', // angular-strap
-  'mgcrea.ngStrap.datepicker', // angular-strap
-  'mgcrea.ngStrap.timepicker', // angular-strap
+  'mgcrea.ngStrap',
   'ui.select'
 ])
 /**
@@ -104,7 +102,8 @@ angular.module('dashing.forms.form_control', [
           case 'choices':
             scope.placeholder = attrs.searchPlaceholder;
             scope.choices = buildChoicesForSelect(eval('(' + attrs.choices + ')'));
-            scope.allowSearchInChoices = Object.keys(scope.choices).length >= 5;
+            scope.allowSearchInChoices = attrs.hasOwnProperty('searchEnabled') ?
+              (attrs.searchEnabled === 'true') : Object.keys(scope.choices).length >= 5;
             scope.required = attrs.required;
             break;
 

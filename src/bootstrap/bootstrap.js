@@ -20,19 +20,6 @@ angular.module('dashing.util.bootstrap', [])
           default:
             return 'label-default';
         }
-      },
-      /** Convert a condition to a css color */
-      conditionToColor: function(condition) {
-        switch (condition) {
-          case 'good':
-            return '#5cb85c';
-          case 'concern':
-            return '#f0ad4e';
-          case 'danger':
-            return '#d9534f';
-          default:
-            return '#aaa';
-        }
       }
     };
   })

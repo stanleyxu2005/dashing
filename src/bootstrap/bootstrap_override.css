@@ -1,0 +1,156 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+/* Reset to use specified fonts (2 rules) */
+* {
+  font-family: roboto, 'helvetica neue', 'segoe ui', arial, helvetica, sans-serif;
+}
+
+body, .form-control {
+  font-size: 13px;
+}
+
+/* Bugfix: Angular-strap's dropdown menu will not response on clicking footer */
+html, body {
+  height: 100%;
+}
+
+/* Make alert padding narrower (2 rules) */
+.alert {
+  padding: 7px 10px 7px 10px;
+}
+
+.alert-dismissable,
+.alert-dismissible {
+  padding-right: 30px;
+}
+
+/* Bugfix: Remove too large padding after path separator */
+.breadcrumb > li {
+  padding-right: 7px;
+}
+
+/* The default padding was too large for xs size */
+.btn.btn-xs.dropdown-toggle {
+  padding: 1px 4px 3px 4px;
+  line-height: 16px;
+}
+
+/* Smaller font size and spacing for dropdown menu (3 rules) */
+.dropdown-menu {
+  font-size: 0.95em;
+}
+
+.dropdown-menu > li > a {
+  padding-left: 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu > li > a > i {
+  padding-right: 2px;
+}
+
+/* Bootstrap overrides (3 rules) */
+.control-label {
+  font-weight: 500;
+}
+
+.form-group {
+  margin-bottom: 5px;
+}
+
+.form-group .btn-xs {
+  padding-bottom: 2px;
+}
+
+/* Fix visual glitches of indicator icon in an input/search box (2 rules) */
+.form-control-feedback {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.form-control-feedback.glyphicon {
+  top: 1px;
+}
+
+/* glyphicon in a SPAN might be a bit too high than other SPAN text elements */
+.glyphicon {
+  top: 2px;
+}
+
+/* glyphicon placeholder */
+.glyphicon-none:before {
+  /* http://stackoverflow.com/questions/19598336/blank-placeholder-for-bootstrap-glyphicon */
+  content: "\e094";
+  color: transparent !important;
+}
+
+/* Adjust font size and padding for large label */
+.label-lg {
+  font-size: .85em;
+  padding: 3px 5px 4px;
+}
+
+/* Make navbar font more readable */
+.navbar-nav > li {
+  font-weight: 500;
+  font-size: 1.35rem;
+}
+
+/* More distance to the branding logo at left */
+.navbar-nav > li:first-child {
+  margin-left: 30px;
+}
+
+/* Active nav-tabs element's background color should not be hardcoded as white. */
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  background-color: transparent;
+}
+
+/* Remove 1px border from stripped table (2 rules) */
+.table-striped tbody > tr:first-child td {
+  border-top: 0 none transparent;
+}
+
+.table-striped thead > tr > th {
+  border-bottom: 0 none transparent;
+}
+
+/* Table header column should not be wrapped */
+.table thead > tr > th {
+  white-space: nowrap;
+}
+
+/* Increase the distance of table footer and table body */
+.table tfoot > tr > td {
+  padding: 14px 0 0;
+  border-top: 0 solid transparent;
+}
+
+/* Smaller font for table meta */
+.table thead > tr > th {
+  font-size: .9em;
+  vertical-align: top;
+}
+
+/* Larger table caption */
+.table caption {
+  color: #000;
+  font-size: 1.2em;
+  font-weight: 500;
+  padding-bottom: 8px;
+}
+
+/* Tune bootstrap-tooltip look and feel (2 rules) */
+.tooltip-inner {
+  max-width: none;
+  padding: 5px 10px 5px;
+}
+
+*[bs-tooltip] {
+  cursor: pointer;
+}

@@ -11,16 +11,16 @@
   text-transform: uppercase;
 }
 
-/* Bootstrap overrides (3 rules) */
-.control-label {
-  font-weight: 500;
+/* Remove too many pixels from right margin */
+.control-label.text-right {
   margin-right: -15px;
 }
 
-.form-group {
-  margin-bottom: 5px;
+/* Make the feedback icon of a form input control clickable (2 rules) */
+.clickable {
+  pointer-events: auto;
 }
 
-.form-group .btn-xs {
-  padding-bottom: 2px;
+.clickable:hover {
+  cursor: pointer;
 }

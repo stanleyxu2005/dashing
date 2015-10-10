@@ -38,7 +38,7 @@ angular.module('dashing.state.indicator', [
 
         /** Condition will affect the color */
         attrs.$observe('condition', function(condition) {
-          scope.colorStyle = util.bootstrap.conditionToColor(condition);
+          scope.colorStyle = util.color.conditionToColor(condition);
         });
         /** Tooltip text will affect the cursor type */
         attrs.$observe('tooltip', function(tooltip) {

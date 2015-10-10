@@ -27,7 +27,8 @@ angular.module('examples')
         $ptb.progressbar('Capacity').value({current: 30, max: 1024}).done(),
         $ptb.bytes('Bytes Unit').value({raw: 2684354560, unit: 'B', readable: true}).done(),
         $ptb.bytes('Bytes').value({raw: 2684354560, unit: 'B'}).done(),
-        $ptb.bytes('Bytes (simple)').value(5566).done()
+        $ptb.bytes('Bytes (simple)').value(5566).done(),
+        $ptb.tag('Running Status').value({condition: 'good', text: 'Healthy'}).done()
       ];
 
       $scope.bytes = Math.random() * 10000000;
@@ -39,7 +40,10 @@ angular.module('examples')
           {current: (Math.random() * 1024).toFixed(0), max: 1024},
           {raw: Math.random() * 10000000, unit: 'B', readable: true},
           {raw: Math.random() * 10000000, unit: 'B'},
-          Math.random() * 100000
+          Math.random() * 100000,
+          Math.random() > 0.5 ?
+          {condition: 'concern', text: 'Has Concern'} :
+          {condition: 'good', text: 'Healthy'}
         ]);
         $scope.bytes = Math.random() * 10000000;
         $scope.bytesValue = {raw: Math.random() * 10000000, unit: 'B', readable: true};

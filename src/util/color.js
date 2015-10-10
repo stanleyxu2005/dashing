@@ -23,6 +23,19 @@ angular.module('dashing.util.color', [])
         darkRed: 'rgb(212,102,138)',
         lightBlue: 'rgb(149,206,255)',
         lightGreen: 'rgb(169,255,150)'
+      },
+      /** Convert a condition to a css color */
+      conditionToColor: function(condition) {
+        switch (condition) {
+          case 'good':
+            return '#5cb85c';
+          case 'concern':
+            return '#f0ad4e';
+          case 'danger':
+            return '#d9534f';
+          default:
+            return '#aaa';
+        }
       }
     };
   })

@@ -54,6 +54,11 @@
         type="datetime" label="Appointment"
         ng-model="$parent.dt">
       </form-control>
+      <div class="form-group-header">Advanced Text Input</div>
+      <form-control
+        type="text" label="Input with Choices"
+        ng-model="$parent.name" choices="{{inputChoices}}">
+      </form-control>
     </form>
   </div>
 </div>

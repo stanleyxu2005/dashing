@@ -99,9 +99,9 @@
                  reset-search-input="false"/>
           <!-- form-feedback does not have a dropdown state, so we use BUTTON+SPAN solution -->
           <button ng-if="choicesMenu"
-                  type="button" class="btn btn-sm form-control-feedback"
-                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px"
-                  bs-dropdown="choicesMenu" html="true">
+                  type="button" class="btn btn-sm form-control-feedback clickable"
+                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px; top: 1px"
+                  bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
             <span class="glyphicon glyphicon-search"></span>
           </button>
         </div>

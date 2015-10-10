@@ -6,6 +6,7 @@ angular.module('dashing.forms.form_control', [
   'ngSanitize', // required for ng-bind-html
   'dashing.filters.any',
   'dashing.util.validation',
+  'mgcrea.ngStrap.tooltip', // angular-strap
   'mgcrea.ngStrap.datepicker', // angular-strap
   'mgcrea.ngStrap.timepicker', // angular-strap
   'ui.select'
@@ -81,13 +82,14 @@ angular.module('dashing.forms.form_control', [
       templateUrl: 'forms/form_controls.html',
       replace: true,
       scope: {
+        help: '@',
         value: '=ngModel',
         invalid: '='
       },
       link: function(scope, elem, attrs) {
         scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';
         scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
-        scope.label = attrs.label;
+        scope.label = attrs.label; // don't put to scope section, we might change it before rendering
         scope.renderAs = attrs.type;
         scope.pristine = true;
         scope.invalid = attrs.required;
@@ -132,15 +134,11 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'integer':
-            scope.validateFn = validation.integer;
-            if (attrs.hasOwnProperty('min') && validation.integer(attrs.min)) {
-              scope.min = attrs.min;
-              if (scope.min === 1) {
-                scope.validateFn = validation.positiveInteger;
-              } else if (scope.min === 0) {
-                scope.validateFn = validation.nonNegativeInteger;
-              }
-            }
+            scope.min = attrs.min;
+            scope.max = attrs.max;
+            scope.validateFn = function(value) {
+              return validation.integerInRange(value, attrs.min, attrs.max);
+            };
             break;
 
           case 'datetime':
@@ -181,7 +179,8 @@ angular.module('dashing.forms.form_control', [
         }
 
         scope.$watch('value', function(value) {
-          scope.pristine = !angular.isNumber(value) && (value || '').length === 0;
+          scope.pristine = (attrs.type !== 'integer') // integer value out of the range will be `undefined`
+            && (value || '').length === 0;
           scope.invalid =
             (angular.isFunction(scope.validateFn) && !scope.validateFn(value)) ||
             (attrs.required && scope.pristine);

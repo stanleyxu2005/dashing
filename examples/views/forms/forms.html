@@ -18,7 +18,7 @@
         ng-model="$parent.name">
       </form-control>
       <form-control
-        type="positiveInteger" label="Age"
+        type="integer" label="Age (>12)" min="13" required="true"
         ng-model="$parent.age">
       </form-control>
       <form-control
@@ -45,8 +45,8 @@
         search-placeholder="Select a country">
       </form-control>
       <form-control
-        type="choices" label="Current Location"
-        ng-model="$parent.location" choices="{{nations}}" required="true"
+        type="choices" label="Where Live" help="Optional field"
+        ng-model="$parent.location" choices="{{nations}}"
         search-placeholder="Select a country">
       </form-control>
       <div class="form-group-header">Date/Time Picker</div>

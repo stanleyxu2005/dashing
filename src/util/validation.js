@@ -8,7 +8,7 @@ angular.module('dashing.util.validation', [])
   .factory('dashing.util.validation', function() {
     'use strict';
 
-    return {
+    var self = {
       /**
        * Validate a class identifier
        */
@@ -19,22 +19,19 @@ angular.module('dashing.util.validation', [])
        * Validate an integer
        */
       integer: function(s) {
-        return s == parseInt(s, 10);
+        return /^-?\d+$/.test(s);
       },
       /**
-       * Validate a positive integer
+       * Validate an integer and in a specified range
        */
-      positiveInteger: function(s) {
-        var n = parseInt(s, 10);
-        return s == n && n > 0;
-      },
-      /**
-       * Validate a non-negative integer
-       */
-      nonNegativeInteger: function(s) {
-        var n = parseInt(s, 10);
-        return s == n && n >= 0;
+      integerInRange: function(s, min, max) {
+        if (self.integer(s)) {
+          s = Number(s);
+          return (isNaN(min) || (s >= min)) && (isNaN(max) || (s <= max));
+        }
+        return false;
       }
     };
+    return self;
   })
 ;

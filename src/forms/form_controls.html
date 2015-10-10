@@ -1,5 +1,9 @@
 <div class="form-group">
-  <label class="{{labelStyleClass}} control-label text-right" ng-bind="label"></label>
+  <label class="{{labelStyleClass}} control-label text-right">
+    <span ng-if="help"
+          style="color: red" bs-tooltip="help">*</span>
+    <span ng-bind="label"></span>
+  </label>
   <ng-switch on="renderAs">
     <!-- select -->
     <div ng-switch-when="choices">
@@ -8,7 +12,8 @@
                    ng-model="$parent.$parent.value"
                    search-enabled="allowSearchInChoices">
           <ui-select-match placeholder="{{placeholder}}"
-                           allow-clear="{{!required}}">{{$select.selected.text}}</ui-select-match>
+                           allow-clear="{{!required}}">{{$select.selected.text}}
+          </ui-select-match>
           <ui-select-choices repeat="choice in choices|
           any: {text: $select.search, subtext: $select.search}">
             <div ng-class="{'bold': $select.selected === choice}"
@@ -47,11 +52,10 @@
         <div class="btn-group btn-group-justified">
           <div ng-repeat="choice in choices track by $index"
                class="btn-group">
-            <button
-              type="button" class="btn {{buttonStyleClass}} btn-default"
-              ng-class="{'btn-primary': choice.value == value}"
-              ng-bind="choice.text" value="{{choice.value}}"
-              ng-click="toggle(choice.value)"></button>
+            <button type="button" class="btn {{buttonStyleClass}} btn-default"
+                    ng-class="{'btn-primary': choice.value == value}"
+                    ng-bind="choice.text" value="{{choice.value}}"
+                    ng-click="toggle(choice.value)"></button>
           </div>
         </div>
       </div>
@@ -61,7 +65,7 @@
       <div class="{{controlStyleClass}}"
            ng-class="{'has-error': !pristine && invalid}">
         <input class="form-control input-sm"
-               type="number" ng-attr-min="{{min}}"
+               type="number" ng-attr-min="{{min}}" ng-attr-max="{{max}}"
                ng-model="$parent.value"/>
       </div>
     </div>

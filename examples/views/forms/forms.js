@@ -26,7 +26,7 @@ angular.module('examples')
     $scope.haveDriveLicense = true;
     $scope.bloodType = 'a';
     $scope.bloodTypes = {a: 'Type A', b: 'Type B', ab: 'Type AB', o: 'Type O'};
-    $scope.favoriteColorChoices = ['Blue', 'Green', 'Black'];
+    $scope.favoriteColorChoices = ['Blue', 'Green', 'Black', 'Pink', 'Red'];
     $scope.nations = {china: 'China', germany: 'Germany', france: 'France', usa: 'United States', japan: 'Japan'};
   }])
 ;

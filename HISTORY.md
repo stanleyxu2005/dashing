@@ -8,6 +8,7 @@ The file only contains the major change history. For full change history, please
 * Improvement (#27): `<form-control>` supports "multi-checks" and "check".
 * Improvement (#29): `<property renderer="Link">` supports "target=_blank".
 * Bugfix (#25): ui-select required style sheets were not missing.
+* Bugfix (#30): `$sortableTableBuilder` should warn developer to specify a sort key, if multipe keys are defined for a column.
 
 ## 0.2.8 (0.2.7 was published to npm corrupted)
 

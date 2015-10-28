@@ -31,9 +31,14 @@ angular.module('dashing.tables.sortable_table.builder', [
       };
 
       CB.prototype.canSort = function(overrideSortKey) {
-        if (!overrideSortKey && !this.props.key) {
-          console.warn('Specify a sort key or define column key first!');
-          return;
+        if (!overrideSortKey) {
+          if (!this.props.key) {
+            console.warn('The column does not have a key. Call `.key("some")` first!');
+            return;
+          } else if (Array.isArray(this.props.key)) {
+            console.warn('Multiple keys found. We use the first key for sorting by default.');
+            overrideSortKey = this.props.key[0];
+          }
         }
 
         this.props.sortKey = overrideSortKey || this.props.key;

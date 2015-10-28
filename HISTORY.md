@@ -6,6 +6,7 @@ The file only contains the major change history. For full change history, please
 ## 0.2.9
 * Breaking changes (#27): `<form-control>` numeric types are all called "integer". Specify the `min` to `0`, `1` or undefined for different validators. 
 * Improvement (#27): `<form-control>` supports "multi-checks" and "check".
+* Improvement (#29): `<property renderer="Link">` supports "target=_blank".
 * Bugfix (#25): ui-select required style sheets were not missing.
 
 ## 0.2.8 (0.2.7 was published to npm corrupted)

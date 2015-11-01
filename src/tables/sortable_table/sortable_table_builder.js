@@ -135,6 +135,12 @@ angular.module('dashing.tables.sortable_table.builder', [
         number: function(title) {
           return new CB(renderer.NUMBER, title);
         },
+        number1: function(title) {
+          return new CB(renderer.NUMBER1, title);
+        },
+        number2: function(title) {
+          return new CB(renderer.NUMBER2, title);
+        },
         progressbar: function(title) {
           return new CB(renderer.PROGRESS_BAR, title);
         },

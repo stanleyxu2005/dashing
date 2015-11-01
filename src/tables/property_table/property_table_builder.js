@@ -67,6 +67,12 @@ angular.module('dashing.tables.property_table.builder', [])
         number: function(title) {
           return new PB(renderer.NUMBER, title);
         },
+        number1: function(title) {
+          return new PB(renderer.NUMBER1, title);
+        },
+        number2: function(title) {
+          return new PB(renderer.NUMBER2, title);
+        },
         progressbar: function(title) {
           return new PB(renderer.PROGRESS_BAR, title);
         },

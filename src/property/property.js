@@ -76,6 +76,8 @@ angular.module('dashing.property', [
     INDICATOR: 'Indicator',
     LINK: 'Link',
     NUMBER: 'Number',
+    NUMBER1: 'Number1',
+    NUMBER2: 'Number2',
     PROGRESS_BAR: 'ProgressBar',
     TAG: 'Tag',
     TEXT: undefined /* default renderer */

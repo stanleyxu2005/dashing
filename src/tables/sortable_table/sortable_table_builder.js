@@ -115,6 +115,7 @@ angular.module('dashing.tables.sortable_table.builder', [
           return new CB(renderer.BUTTON, title);
         },
         bytes: function(title) {
+          console.warn('deprecated: should use number instead');
           return new CB(renderer.BYTES, title);
         },
         datetime: function(title) {

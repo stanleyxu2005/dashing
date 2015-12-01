@@ -50,6 +50,7 @@ angular.module('dashing.tables.property_table.builder', [])
           return new PB(renderer.BUTTON, title);
         },
         bytes: function(title) {
+          console.warn('deprecated: should use number() instead');
           return new PB(renderer.BYTES, title);
         },
         datetime: function(title) {

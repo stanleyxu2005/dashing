@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.1
+* Improvement (#33): Property `<bytes>` is deprecated. Use `<number>` instead, which provides precision, unit and human-readable.
+
 ## 0.3.0
 * Improvement (#31): Allow Number1 and Number2 as showing 1 or 2 digits after period in property table.
 

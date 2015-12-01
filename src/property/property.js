@@ -27,17 +27,22 @@ angular.module('dashing.property', [
         value: '=valueBind',
         renderer: '@'
       },
-      controller: ['$scope', function($scope) {
+      controller: ['$scope', 'dsPropertyRenderer', function($scope, renderer) {
         $scope.$watch('value', function(value) {
           if (value) {
+            if ($scope.renderer === renderer.BYTES) {
+              console.warn('deprecated: should use renderer NUMBER instead');
+              $scope.renderer = renderer.NUMBER;
+            }
+
             switch ($scope.renderer) {
-              case 'Link':
+              case renderer.LINK:
                 if (!value.href) {
                   $scope.href = value.text;
                 }
                 break;
 
-              case 'Button':
+              case renderer.BUTTON:
                 if (value.href && !value.click) {
                   $scope.click = function() {
                     location.href = value.href;
@@ -45,7 +50,7 @@ angular.module('dashing.property', [
                 }
                 break;
 
-              case 'Bytes':
+              case renderer.NUMBER:
                 if (!value.hasOwnProperty('raw')) {
                   $scope.raw = value;
                   return; // fallback to simple value
@@ -67,7 +72,7 @@ angular.module('dashing.property', [
       }]
     };
   })
-  /** Renderer constants */
+/** Renderer constants */
   .constant('dsPropertyRenderer', {
     BUTTON: 'Button',
     BYTES: 'Bytes',

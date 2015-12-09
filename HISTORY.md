@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.4
+* Improvement (#35): Open link in new page for property `<button>`.
+
 ## 0.3.3
 * Improvement (#34): Allow `<metrics>` to show warning or information remark icon.
 

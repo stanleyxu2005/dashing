@@ -45,7 +45,12 @@ angular.module('dashing.property', [
               case renderer.BUTTON:
                 if (value.href && !value.click) {
                   $scope.click = function() {
-                    location.href = value.href;
+                    if (value.target) {
+                      var win = window.open(value.href, value.target);
+                      win.focus();
+                    } else {
+                      location.href = value.href;
+                    }
                   };
                 }
                 break;

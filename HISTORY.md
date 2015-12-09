@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.3
+* Improvement (#34): Allow `<metrics>` to show warning or information remark icon.
+
 ## 0.3.1
 * Improvement (#33): Property `<bytes>` is deprecated. Use `<number>` instead, which provides precision, unit and human-readable.
 
@@ -13,7 +16,7 @@ The file only contains the major change history. For full change history, please
 * Breaking changes (#27): `<form-control>` numeric types are all called "integer". Specify the `min` to `0`, `1` or undefined for different validators. 
 * Improvement (#27): `<form-control>` supports "multi-checks" and "check".
 * Improvement (#29): `<property renderer="Link">` supports "target=_blank".
-* Bugfix (#25): ui-select required style sheets were not missing.
+* Bugfix (#25): ui-select required style sheets were missing.
 * Bugfix (#30): `$sortableTableBuilder` should warn developer to specify a sort key, if multipe keys are defined for a column.
 
 ## 0.2.8 (0.2.7 was published to npm corrupted)

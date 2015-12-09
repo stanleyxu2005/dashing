@@ -26,18 +26,21 @@ angular.module('dashing.remark', [
         placement: '@'
       },
       link: function(scope, elem, attrs) {
-        switch (attrs.type) {
-          case 'info':
-            scope.fontClass = 'glyphicon glyphicon-info-sign';
-            break;
-          case 'warning':
-            scope.fontClass = 'glyphicon glyphicon-exclamation-sign';
-            break;
-          //case 'question':
-          default:
-            scope.fontClass = 'glyphicon glyphicon-question-sign';
-            break;
-        }
+        attrs.$observe('type', function(type) {
+          switch (type) {
+            case 'info':
+              scope.fontClass = 'glyphicon glyphicon-info-sign';
+              break;
+            case 'warning':
+              scope.fontClass = 'glyphicon glyphicon-warning-sign';
+              scope.colorClassSuffix = '-warning';
+              break;
+            case 'question':
+            default:
+              scope.fontClass = 'glyphicon glyphicon-question-sign';
+              break;
+          }
+        });
       }
     };
   })

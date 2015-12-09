@@ -10,3 +10,11 @@
 .remark-icon:hover {
   color: #888;
 }
+
+.remark-icon-warning {
+  color: #f0ad4e;
+}
+
+.remark-icon-warning:hover {
+  color: #ca9242;
+}

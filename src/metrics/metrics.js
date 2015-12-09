@@ -26,6 +26,7 @@ angular.module('dashing.metrics', [])
       scope: {
         caption: '@',
         help: '@',
+        remarkType: '@',
         value: '@',
         unit: '@',
         subText: '@'

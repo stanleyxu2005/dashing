@@ -3,7 +3,9 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.tables.sortable_table', [
-  'smart-table' // smart-table
+  'smart-table', // smart-table
+  'dashing.property',
+  'dashing.util'
 ])
 /**
  * A table control (based on "angular-smart-table" with these key features:
@@ -33,7 +35,7 @@ angular.module('dashing.tables.sortable_table', [
  *    search-bind="searchVariable">
  *  </sortable-table>
  */
-  .directive('sortableTable', function() {
+  .directive('sortableTable', ['dsPropertyRenderer', 'dashing.util', function(renderer, util) {
     'use strict';
 
     return {
@@ -75,7 +77,22 @@ angular.module('dashing.tables.sortable_table', [
             addStyleClass(array, 'text-nowrap', Array.isArray(column.key) && !column.vertical);
             return array.join(' ');
           });
-          // 2
+          // 2: MSIE cannot fill indication(shape=stripe) to tabel cell, so we fill a background color manually
+          var possibleStripeColumns = columns.map(function(column) {
+            if (!Array.isArray(column.key) && column.renderer === renderer.INDICATOR) {
+              return column.key;
+            }
+          });
+          scope.bgColorForStripeFix = function(index, record) {
+            var key = possibleStripeColumns[index];
+            if (key) {
+              var cell = record[key];
+              if (cell.shape === 'stripe') {
+                return util.color.conditionToColor(cell.condition);
+              }
+            }
+          };
+          // 3
           scope.multipleRendererColumnsRenderers = columns.map(function(column) {
             if (!Array.isArray(column.key)) {
               return null; // Template will not call the method at all
@@ -96,7 +113,7 @@ angular.module('dashing.tables.sortable_table', [
         scope.isArray = Array.isArray;
       }
     };
-  })
+  }])
   // TODO: as long as st-table does not support pagination start and stop
   // https://github.com/lorenzofox3/Smart-Table/issues/440
   .directive('stSummary', function() {

@@ -5,6 +5,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.3.4
 * Improvement (#35): Open link in new page for property `<button>`.
+* Bugfix (#10): Property <indicator shape="stripe"> wont show in MSIE and Firefox.
 
 ## 0.3.3
 * Improvement (#34): Allow `<metrics>` to show warning or information remark icon.

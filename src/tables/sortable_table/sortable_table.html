@@ -25,10 +25,12 @@
     </th>
   </tr>
   </thead>
-  <tbody>
-  <tr ng-repeat="record in showing track by $index">
+  <tbody style="height: 100%">
+  <tr ng-repeat="record in showing track by $index"
+      style="display: table-row; height: 100%">
     <td ng-repeat="column in columns track by $index"
-        class="{{columnStyleClass[$index]}}">
+        class="{{columnStyleClass[$index]}}"
+        style="height: 100%" ng-style="{'background-color': bgColorForStripeFix($index, record)}">
       <ng-switch on="isArray(column.key)">
         <property ng-switch-when="true"
                   ng-repeat="columnKeyChild in column.key track by $index"

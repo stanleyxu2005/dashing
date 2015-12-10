@@ -44,5 +44,6 @@ The project itself is under Apache License version 2.0. You can use the library 
 + [Angular-Strap](http://mgcrea.github.io/angular-strap) - MIT License
 + [angular-ui-select](https://github.com/angular-ui/ui-select) - MIT License
 + [Bootstrap](http://getbootstrap.com) - MIT License
-+ [Echarts](http://echarts.baidu.com/) - Baidu License
-+ [Smart-Table](http://lorenzofox3.github.io/smart-table-website/) - MIT License
++ [Echarts](http://echarts.baidu.com) - Baidu License
++ [Smart-Table](http://lorenzofox3.github.io/smart-table-website) - MIT License
++ [ng-file-upload](https://github.com/danialfarid/ng-file-upload) - MIT License

@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.5
+* Bugfix (#36): Remark icon might disappear.
+
 ## 0.3.4
 * Improvement (#35): Open link in new page for property `<button>`.
 * Bugfix (#10): Property <indicator shape="stripe"> wont show in MSIE and Firefox.

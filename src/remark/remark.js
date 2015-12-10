@@ -23,21 +23,20 @@ angular.module('dashing.remark', [
       templateUrl: 'remark/remark.html',
       scope: {
         tooltip: '@',
-        placement: '@'
+        placement: '@',
+        type: '@'
       },
-      link: function(scope, elem, attrs) {
-        attrs.$observe('type', function(type) {
+      link: function(scope, elem) {
+        scope.$watch('type', function(type) {
           switch (type) {
             case 'info':
-              scope.fontClass = 'glyphicon glyphicon-info-sign';
+              scope.styleClass = 'glyphicon glyphicon-info-sign remark-icon';
               break;
             case 'warning':
-              scope.fontClass = 'glyphicon glyphicon-warning-sign';
-              scope.colorClassSuffix = '-warning';
+              scope.styleClass = 'glyphicon glyphicon-warning-sign remark-icon-warning';
               break;
-            case 'question':
             default:
-              scope.fontClass = 'glyphicon glyphicon-question-sign';
+              scope.styleClass = 'glyphicon glyphicon-question-sign remark-icon';
               break;
           }
         });

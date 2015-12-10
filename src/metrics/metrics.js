@@ -29,6 +29,7 @@ angular.module('dashing.metrics', [])
         remarkType: '@',
         value: '@',
         unit: '@',
+        unitPlural: '@',
         subText: '@'
       }
     };

@@ -7,7 +7,12 @@
   </div>
   <h3 class="metrics-value">
     <span ng-bind="value"></span>
-    <small ng-bind="unit"></small>
+    <ng-switch on="unitPlural && value > 1">
+      <small ng-switch-when="true"
+             ng-bind="unitPlural"></small>
+      <small ng-switch-default
+             ng-bind="unit"></small>
+    </ng-switch>
   </h3>
   <small
     ng-if="subText"

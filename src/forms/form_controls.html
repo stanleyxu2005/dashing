@@ -1,8 +1,9 @@
 <div class="form-group">
   <label class="{{labelStyleClass}} control-label text-right">
-    <span ng-if="help"
-          style="color: red" bs-tooltip="help">*</span>
     <span ng-bind="label"></span>
+    <span ng-if="help" style="font-size: 0.9em">
+      <remark tooltip="{{help}}" type="info"></remark>
+    </span>
   </label>
   <ng-switch on="renderAs">
     <!-- select -->
@@ -12,7 +13,7 @@
                    ng-model="$parent.$parent.value"
                    search-enabled="allowSearchInChoices">
           <ui-select-match placeholder="{{placeholder}}"
-                           allow-clear="{{!required}}">{{$select.selected.text}}
+                           allow-clear="{{allowClearSelection}}">{{$select.selected.text}}
           </ui-select-match>
           <ui-select-choices repeat="choice in choices|
           any: {text: $select.search, subtext: $select.search}">
@@ -88,6 +89,23 @@
                ng-model="$parent.timeValue" time-type="string"
                hour-step="-1" minute-step="-1" second-step="-1"
                arrow-behavior="picker" use-native="true" bs-timepicker/>
+      </div>
+    </div>
+    <!-- upload -->
+    <div ng-switch-when="upload">
+      <div class="{{controlStyleClass}} has-feedback"
+           ng-class="{'has-error': !pristine && invalid}">
+        <input class="form-control input-sm"
+               type="text" readonly
+               ng-click="openUpload()"
+               ng-model="$parent.filename"/>
+        <!-- Toggle buttons -->
+        <span ng-hide="$parent.value"
+              class="glyphicon glyphicon-folder-open form-control-feedback form-control-feedback-sm clickable"
+              ngf-select ng-model="$parent.files" accept="{{acceptPattern}}" ngf-accept="'{{acceptPattern}}'"></span>
+        <span ng-show="$parent.value"
+              class="glyphicon glyphicon-trash form-control-feedback form-control-feedback-sm clickable"
+              ng-click="clearSelection()"></span>
       </div>
     </div>
     <!-- text input -->

@@ -3,6 +3,10 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.6
+* Improvement (#26): Support file upload control as `<form-control>`.
+* Improvement: `<form-control>` The ng-model of datetime picker is now an array with date string and time string.
+
 ## 0.3.5
 * Improvement (#37): Pluralize `<metrics>` unit.
 * Bugfix (#36): Remark icon might disappear.

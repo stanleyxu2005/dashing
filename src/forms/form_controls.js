@@ -104,7 +104,7 @@ angular.module('dashing.forms.form_control', [
             scope.choices = buildChoicesForSelect(eval('(' + attrs.choices + ')'));
             scope.allowSearchInChoices = attrs.hasOwnProperty('searchEnabled') ?
               (attrs.searchEnabled === 'true') : Object.keys(scope.choices).length >= 5;
-            scope.required = attrs.required;
+            scope.allowClearSelection = !attrs.required;
             break;
 
           case 'radio':
@@ -141,8 +141,12 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'datetime':
-            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-5';
-            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
+            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-4';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-5';
+            if (Array.isArray(scope.value) && scope.value.length === 2) {
+              scope.dateValue = scope.value[0];
+              scope.timeValue = scope.value[1];
+            }
             scope.fillDefaultTime = function() {
               scope.timeValue = scope.timeValue || moment().format('HH:mm:00');
             };
@@ -154,7 +158,7 @@ angular.module('dashing.forms.form_control', [
                 angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
-                scope.value = newVal + (scope.timeValue ? 'T' + scope.timeValue : '');
+                scope.value = [newVal, scope.timeValue];
               }
             });
             scope.$watch('timeValue', function(newVal, oldVal) {
@@ -162,9 +166,35 @@ angular.module('dashing.forms.form_control', [
                 angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
-                scope.value = (scope.dateValue ? scope.dateValue + 'T' : '') + newVal;
+                scope.value = [scope.dateValue, newVal];
               }
             });
+            break;
+
+          case 'upload':
+            scope.acceptPattern = attrs.acceptPattern;
+            scope.filename = ''; // must be '', otherwise MSIE will not response expectedly
+            scope.$watch('files', function(files) {
+              if (Array.isArray(files) && files.length) {
+                scope.value = files[0];
+                scope.filename = files[0].name;
+              } else {
+                scope.value = null;
+                scope.filename = '';
+              }
+            });
+            scope.openUpload = function() {
+              if (!scope.files) {
+                var spans = elem.find('span');
+                if (spans.length > 2) {
+                  var uploadButton = spans[spans.length - 2];
+                  uploadButton.click();
+                }
+              }
+            };
+            scope.clearSelection = function() {
+              scope.files = null;
+            };
             break;
         }
 

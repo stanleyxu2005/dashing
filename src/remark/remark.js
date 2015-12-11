@@ -26,7 +26,7 @@ angular.module('dashing.remark', [
         placement: '@',
         type: '@'
       },
-      link: function(scope, elem) {
+      link: function(scope) {
         scope.$watch('type', function(type) {
           switch (type) {
             case 'info':

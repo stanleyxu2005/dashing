@@ -3,7 +3,7 @@
     <span class="metrics-caption" ng-bind="caption"></span>
     <remark
       ng-if="help"
-      type="{{remarkType}}" tooltip="{{help}}"></remark>
+      type="{{remarkType}}" tooltip="{{help}}" ng-click="clickHelp()"></remark>
   </div>
   <h3 class="metrics-value">
     <span ng-bind="value"></span>

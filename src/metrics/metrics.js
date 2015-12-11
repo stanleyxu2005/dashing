@@ -8,14 +8,16 @@ angular.module('dashing.metrics', [])
  *
  * @param caption string
  * @param value number
- * @param unit string (optional)
+ * @param unit string (optional. You can also set unit-plural)
  * @param sub-text string (optional)
  *   A secondary text after the value unit string
+ * @param help string (optional. Show a remark icon right to the caption)
  *
  * @example
  *  <metrics caption="CPU" value="99.5" unit="%"></metrics>
  *  <metrics caption="Disk Write Rate" value="500" unit="MB/s"
  *    sub-text="SSD hard disk"></metrics>
+ *  <metrics caption="Scaned" value="10" unit="device" unit-plural="devices"></metrics>
  */
   .directive('metrics', function() {
     'use strict';
@@ -25,12 +27,13 @@ angular.module('dashing.metrics', [])
       templateUrl: 'metrics/metrics.html',
       scope: {
         caption: '@',
-        help: '@',
-        remarkType: '@',
         value: '@',
         unit: '@',
         unitPlural: '@',
-        subText: '@'
+        subText: '@',
+        help: '@',
+        remarkType: '@',
+        clickHelp: '&'
       }
     };
   })

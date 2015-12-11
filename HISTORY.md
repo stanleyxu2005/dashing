@@ -5,6 +5,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.3.7
 * Improvement (#38): Add onclick event to remark icon of `<metrics>`.
+* Improvement: Provide a bugfix style for stripe cell in `<sortable-table>`.
 
 ## 0.3.6
 * Improvement (#26): Support file upload control as `<form-control>`.

@@ -41,3 +41,14 @@ th .unit {
   font-size: 1em;
   font-weight: 400;
 }
+
+/** Force table cell width when the cell contains a stripe (2 rules) */
+th.stripe-cell-fix {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: 8px;
+}
+
+td.stripe-cell-fix {
+  padding: 0 !important;
+}

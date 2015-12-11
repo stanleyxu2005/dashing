@@ -22,7 +22,7 @@ angular.module('examples')
       'use strict';
 
       $scope.columnsVariable = [
-        $stb.indicator().key('status').done(),
+        $stb.indicator().key('status').styleClass('stripe-cell-fix').done(),
         $stb.text('Name').key('name').canSort().sortDefault().styleClass('col-md-6').done(),
         $stb.number('Count').key('count').canSort().styleClass('col-md-6').done()
       ];

@@ -87,6 +87,7 @@ angular.module('dashing.forms.form_control', [
       link: function(scope, elem, attrs) {
         scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';
         scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
+        scope.choiceIconStyleClass = attrs.choiceIconStyleClass || 'glyphicon glyphicon-menu-hamburger';
         scope.label = attrs.label; // don't put to scope section, we might change it before rendering
         scope.renderAs = attrs.type;
         scope.pristine = true;
@@ -141,32 +142,38 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'datetime':
-            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-4';
-            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-5';
-            if (Array.isArray(scope.value) && scope.value.length === 2) {
-              scope.dateValue = scope.value[0];
-              scope.timeValue = scope.value[1];
-            }
+            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-5';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
             scope.fillDefaultTime = function() {
-              scope.timeValue = scope.timeValue || moment().format('HH:mm:00');
+              if (!scope.timeValue) {
+                var now = new Date();
+                scope.timeValue = [
+                  (now.getHours() + 100).toString().slice(1),
+                  (now.getMinutes() + 100).toString().slice(1),
+                  '00'].join(':');
+              }
             };
             // date time control has a built-in validator
             scope.dateInputInvalid = false;
             scope.timeInputInvalid = false;
             scope.$watch('dateValue', function(newVal, oldVal) {
-              scope.dateInputInvalid =
-                angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
+              scope.dateInputInvalid = angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
                 scope.value = [newVal, scope.timeValue];
               }
             });
             scope.$watch('timeValue', function(newVal, oldVal) {
-              scope.timeInputInvalid =
-                angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
+              scope.timeInputInvalid = angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
                 scope.value = [scope.dateValue, newVal];
+              }
+            });
+            scope.$watchCollection('value', function(val) {
+              if (Array.isArray(val) && val.length === 2) {
+                scope.dateValue = val[0];
+                scope.timeValue = val[1];
               }
             });
             break;

@@ -181,8 +181,7 @@ function remove_files(files) {
 
 // DEV: trigger build automatically when file is changed
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.css', ['min-css']);
-  gulp.watch(['src/**/*.js', 'src/**/*.html'], ['min-js']);
+  gulp.watch(['src/**/*.css', 'src/**/*.js', 'src/**/*.html'], ['min-css', 'min-js']);
 });
 
 // DEV: static check before project commit

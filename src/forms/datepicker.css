@@ -1,0 +1,51 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.datepicker .dow {
+  color: #999;
+  padding-bottom: 3px;
+  border-bottom: #ccc solid 1px;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+/* Reduce default radius from 3px to 1px (better than 0) */
+.btn-no-radius {
+  border-radius: 1px;
+}
+
+.datepicker .btn {
+  font-weight: 500;
+}
+
+/* Fix calendar card height, otherwise when switch to year view, the buttons will appear at wrong place (4 rules) */
+.datepicker.dropdown-menu.datepicker-mode-1 tbody button,
+.datepicker.dropdown-menu.datepicker-mode-2 tbody button {
+  height: 50px;
+}
+
+.datepicker.dropdown-menu {
+  height: 204px;
+  padding: 8px 8px 8px 8px;
+}
+
+.datepicker .dt-header > th {
+  padding-bottom: 8px;
+}
+
+.datepicker .dow {
+  padding-top: 1px; /* otherwise when switch to year view, the row will move up 1px */
+}
+
+.timepicker.dropdown-menu {
+  padding: 8px 8px 8px 8px;
+}
+
+.timepicker .time-separator {
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 15px;
+  font-weight: 700;
+}

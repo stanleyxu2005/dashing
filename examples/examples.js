@@ -4,6 +4,7 @@
  */
 
 angular.module('examples', [
+  'ngAnimate',
   'ui.router',
   'dashing'
 ])

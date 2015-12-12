@@ -65,42 +65,51 @@
     <div ng-switch-when="integer">
       <div class="{{controlStyleClass}}"
            ng-class="{'has-error': !pristine && invalid}">
-        <input class="form-control input-sm"
-               type="number" ng-attr-min="{{min}}" ng-attr-max="{{max}}"
+        <input type="number" class="form-control input-sm"
+               ng-attr-min="{{min}}" ng-attr-max="{{max}}"
                ng-model="$parent.value"/>
       </div>
     </div>
     <!-- date time picker -->
     <div ng-switch-when="datetime">
-      <div class="{{dateControlStyleClass}}" style="padding-right: 8px"
+      <div class="{{dateControlStyleClass}}"
            ng-class="{'has-error': dateInputInvalid}">
-        <input class="form-control input-sm"
-               data-date-format="yyyy-MM-dd"
-               type="text" size="10" placeholder="Date"
-               ng-model="$parent.dateValue" date-type="string"
-               data-autoclose="1"
-               template-url="forms/datepicker.html"
-               use-native="true" bs-datepicker/>
+        <div class="input-group">
+          <div class="input-group-addon at-left">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </div>
+          <input type="text" class="form-control input-sm last-input-radius-fix"
+                 ng-model="$parent.dateValue" placeholder="Date"
+                 data-autoclose="true" date-type="string" data-date-format="yyyy-MM-dd" size="10"
+                 template-url="forms/angular_strap/date_picker.html"
+                 use-native="true" bs-datepicker/>
+        </div>
       </div>
-      <div class="{{timeControlStyleClass}}" style="padding-left: 0"
+      <div class="{{timeControlStyleClass}}"
            ng-class="{'has-error': timeInputInvalid}">
-        <input class="form-control input-sm"
-               data-time-format="HH:mm:ss"
-               type="text" size="8" placeholder="Time"
-               ng-click="fillDefaultTime()"
-               ng-model="$parent.timeValue" time-type="string"
-               hour-step="-1" minute-step="-1" second-step="-1" data-length="1"
-               arrow-behavior="picker"
-               template-url="forms/timepicker.html"
-               use-native="true" bs-timepicker/>
+        <div class="input-group">
+          <div class="input-group-addon at-left">
+            <span class="glyphicon glyphicon-time"></span>
+          </div>
+          <!--<input class="form-control input-sm last-input-radius-fix"-->
+                 <!--type="text" placeholder="Time" arrow-behavior="picker"-->
+                 <!--ng-model="$parent.timeValue"-->
+                 <!--ng-click="fillDefaultTime()"-->
+                 <!--time-type="string" data-time-format="HH:mm:ss" size="8"-->
+                 <!--hour-step="1" minute-step="1" second-step="1" data-length="3"-->
+                 <!--template-url="forms/angular_strap/time_picker.html"-->
+                 <!--use-native="true" bs-timepicker/>-->
+          <input type="text" class="form-control input-sm last-input-radius-fix"
+                 ng-model="$parent.timeValue" placeholder="Time"
+                 bs-dropdown="timeValues" placement="auto bottom-left" html="true"/>
+        </div>
       </div>
     </div>
     <!-- upload -->
     <div ng-switch-when="upload">
       <div class="{{controlStyleClass}} has-feedback"
            ng-class="{'has-error': !pristine && invalid}">
-        <input class="form-control input-sm"
-               type="text" readonly
+        <input type="text" readonly class="form-control input-sm"
                ng-click="openUpload()"
                ng-model="$parent.filename"/>
         <!-- Toggle buttons -->
@@ -116,16 +125,16 @@
     <div ng-switch-default>
       <div class="{{controlStyleClass}}">
         <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
-          <input class="form-control input-sm"
-                 type="text" ng-model="$parent.value"
-                 reset-search-input="false"/>
-          <!-- form-feedback does not have a dropdown state, so we use BUTTON+SPAN solution -->
-          <button ng-if="choicesMenu"
-                  type="button" class="btn btn-sm form-control-feedback clickable"
-                  style="height: 28px; line-height: 100%; padding: 0 0 2px 0; right: 1px; top: 1px"
-                  bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
-            <span class="glyphicon glyphicon-search"></span>
-          </button>
+          <div ng-class="{'input-group': choicesMenu}">
+            <div ng-if="choicesMenu"
+                 class="input-group-addon at-left"
+                 bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
+              <span class="{{choiceIconStyleClass}} clickable"></span>
+            </div>
+            <input type="text" class="form-control input-sm"
+                   ng-model="$parent.value"
+                   reset-search-input="false"/>
+          </div>
         </div>
       </div>
     </div>

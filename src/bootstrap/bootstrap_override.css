@@ -49,7 +49,12 @@ html, body {
 }
 
 .dropdown-menu > li > a > i {
-  padding-right: 2px;
+  padding-right: 3px;
+}
+
+/* Bugfix: Chrome will show a blue border out of the dropdown menu */
+.dropdown-menu {
+  outline: 0 none;
 }
 
 /* Bootstrap overrides (3 rules) */

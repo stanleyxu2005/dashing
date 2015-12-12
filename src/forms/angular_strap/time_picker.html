@@ -4,7 +4,7 @@
     <tr class="text-center">
       <th>
         <button tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 0)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 0)">
           <i class="glyphicon glyphicon-triangle-top"></i>
         </button>
       </th>
@@ -13,7 +13,7 @@
       </th>
       <th>
         <button tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 1)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 1)">
           <i class="glyphicon glyphicon-triangle-top"></i>
         </button>
       </th>
@@ -22,7 +22,7 @@
       </th>
       <th>
         <button ng-if="showSeconds" tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 2)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 2)">
           <i class="glyphicon glyphicon-triangle-top"></i>
         </button>
       </th>
@@ -40,7 +40,7 @@
         </button>
       </td>
       <td>
-        <span class="time-separator"
+        <span class="time-separator form-group-header" style="padding-right: 6px"
               ng-bind="i == midIndex ? timeSeparator : ' '"></span>
       </td>
       <td class="text-center">
@@ -53,7 +53,7 @@
         </button>
       </td>
       <td>
-        <span class="time-separator"
+        <span class="time-separator form-group-header" style="padding-right: 6px"
               ng-bind="i == midIndex ? timeSeparator : ' '"></span>
       </td>
       <td class="text-center">
@@ -78,7 +78,7 @@
     <tr class="text-center">
       <th>
         <button tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 0)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 0)">
           <i class="glyphicon glyphicon-triangle-bottom"></i>
         </button>
       </th>
@@ -87,7 +87,7 @@
       </th>
       <th>
         <button tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 1)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 1)">
           <i class="glyphicon glyphicon-triangle-bottom"></i>
         </button>
       </th>
@@ -96,7 +96,7 @@
       </th>
       <th>
         <button ng-if="showSeconds" tabindex="-1" type="button"
-                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(1, 2)">
+                class="btn btn-sm btn-default btn-no-radius pull-left" ng-click="$arrowAction(-1, 2)">
           <i class="glyphicon glyphicon-triangle-bottom"></i>
         </button>
       </th>

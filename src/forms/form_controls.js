@@ -3,35 +3,35 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.forms.form_control', [
-  'ngSanitize', // required for ng-bind-html
-  'dashing.filters.any',
-  'dashing.util.validation',
-  'mgcrea.ngStrap',
-  'ui.select'
-])
-/**
- * Ready to use form controls.
- *
- * Every control will occupy one row. The label will be shown at the left side. You still
- * need to add a Bootstrap 3 class "form-horizontal" in the outer <form> tag.
- *
- * @param type enum(text|class|choices|radio|multi-checks|check|integer|datetime) (default is text input)
- * @param label string
- *   the text left to the control (if the container is too narrow, label will be moved to above)
- * @param ng-model object
- * @param required boolean (optional)
- *   when required is set, necessary validation will be triggered, after value is changed
- * @param invalid object (optional)
- *   when required is set, the object will stored the valid state.
- *
- * The widget is being changed actively, please check the source code or example to discover more usage.
- *
- * @example
- *   <form-control
- *     type="text" label="Text Input" ng-model="value"
- *     required="true" invalid="state">
- *   </form-control>
- */
+    'ngSanitize', // required for ng-bind-html
+    'dashing.filters.any',
+    'dashing.util.validation',
+    'mgcrea.ngStrap',
+    'ui.select'
+  ])
+  /**
+   * Ready to use form controls.
+   *
+   * Every control will occupy one row. The label will be shown at the left side. You still
+   * need to add a Bootstrap 3 class "form-horizontal" in the outer <form> tag.
+   *
+   * @param type enum(text|class|choices|radio|multi-checks|check|integer|datetime) (default is text input)
+   * @param label string
+   *   the text left to the control (if the container is too narrow, label will be moved to above)
+   * @param ng-model object
+   * @param required boolean (optional)
+   *   when required is set, necessary validation will be triggered, after value is changed
+   * @param invalid object (optional)
+   *   when required is set, the object will stored the valid state.
+   *
+   * The widget is being changed actively, please check the source code or example to discover more usage.
+   *
+   * @example
+   *   <form-control
+   *     type="text" label="Text Input" ng-model="value"
+   *     required="true" invalid="state">
+   *   </form-control>
+   */
   .directive('formControl', ['dashing.util.validation', function(validation) {
     'use strict';
 
@@ -75,6 +75,24 @@ angular.module('dashing.forms.form_control', [
       });
     }
 
+    function buildTimeValuesForTimePicker(time, onSelect) {
+      return [1,2,3,4].map(function(value) {
+        return {
+          text: '12:30 <span class="time-desp">' + value + ' Minutes Later</span>',
+          click: function() {
+            onSelect(value);
+          }
+        };
+        //};
+        //
+        //  {text: '12:30 <span class="time-desp"></span>', click: function() {}},
+        //  {text: "12:31 <span class='time-desp'>5 Minutes Later</span>", click: function() {}},
+        //  {text: "12:32 <span class='time-desp'>5 Minutes Later</span>", click: function() {}},
+        //  {text: "12:33 <span class='time-desp'>5 Minutes Later</span>", click: function() {}}
+        //];
+      });
+    }
+
     return {
       restrict: 'E',
       templateUrl: 'forms/form_controls.html',
@@ -85,8 +103,9 @@ angular.module('dashing.forms.form_control', [
         invalid: '='
       },
       link: function(scope, elem, attrs) {
-        scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';
-        scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
+        scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-4';
+        scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-8';
+        scope.choiceIconStyleClass = attrs.choiceIconStyleClass || 'glyphicon glyphicon-menu-hamburger';
         scope.label = attrs.label; // don't put to scope section, we might change it before rendering
         scope.renderAs = attrs.type;
         scope.pristine = true;
@@ -133,6 +152,7 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'integer':
+            scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-4';
             scope.min = attrs.min;
             scope.max = attrs.max;
             scope.validateFn = function(value) {
@@ -142,7 +162,7 @@ angular.module('dashing.forms.form_control', [
 
           case 'datetime':
             scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-4';
-            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-5';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
             if (Array.isArray(scope.value) && scope.value.length === 2) {
               scope.dateValue = scope.value[0];
               scope.timeValue = scope.value[1];
@@ -150,6 +170,8 @@ angular.module('dashing.forms.form_control', [
             scope.fillDefaultTime = function() {
               scope.timeValue = scope.timeValue || moment().format('HH:mm:00');
             };
+            scope.timeValues = buildTimeValuesForTimePicker(
+              scope.timeValue || moment().format('HH:mm:00'));
             // date time control has a built-in validator
             scope.dateInputInvalid = false;
             scope.timeInputInvalid = false;
@@ -162,6 +184,7 @@ angular.module('dashing.forms.form_control', [
               }
             });
             scope.$watch('timeValue', function(newVal, oldVal) {
+              console.log(newVal);
               scope.timeInputInvalid =
                 angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;

@@ -24,3 +24,14 @@
 .clickable:hover {
   cursor: pointer;
 }
+
+/* Centralize icon position */
+.input-group-addon.at-left {
+  padding: 5px 7px 6px 8px;
+}
+
+/* Bugfix: the last input control inside an input-group does not have right side radius */
+.input-group input.last-input-radius-fix {
+  border-bottom-right-radius: 3px !important;
+  border-top-right-radius: 3px !important;
+}

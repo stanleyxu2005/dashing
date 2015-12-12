@@ -5,22 +5,21 @@
 
 .datepicker .dow {
   color: #999;
-  padding-top: 1px; /* otherwise when switch to year view, the row will move up 1px */
   padding-bottom: 3px;
   border-bottom: #ccc solid 1px;
   font-weight: 400;
   font-size: 11px;
 }
 
-.datepicker .dt-header > th {
-  padding-bottom: 8px;
-}
-
 .btn-no-radius {
   border-radius: 0;
 }
 
-/* otherwise when switch to year view, the buttons will appear at wrong place */
+.datepicker .btn {
+  font-weight: 500;
+}
+
+/* otherwise when switch to year view, the buttons will appear at wrong place (4 rules) */
 .datepicker.dropdown-menu.datepicker-mode-1 tbody button,
 .datepicker.dropdown-menu.datepicker-mode-2 tbody button {
   height: 50px;
@@ -31,13 +30,24 @@
   padding: 8px 8px 8px 8px;
 }
 
+.datepicker .dt-header > th {
+  padding-bottom: 8px;
+}
+
+.datepicker .dow {
+  padding-top: 1px; /* otherwise when switch to year view, the row will move up 1px */
+}
+
+/* fixed timepicker height (2 rules) */
 .timepicker.dropdown-menu {
   padding: 8px 8px 8px 8px;
 }
 
 .timepicker .time-separator {
-  padding-left: 3px;
-  padding-right: 3px;
-  font-size: 15px;
-  font-weight: 700;
+  padding-left: 6px;
+  font-weight: 900;
+}
+
+.time-desp {
+  color: #ccc;
 }

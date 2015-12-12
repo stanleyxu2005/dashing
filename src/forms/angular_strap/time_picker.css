@@ -1,0 +1,13 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+.time-picker .time-value {
+  display: inline-block;
+  width: 60px;
+}
+
+.time-picker .time-desp {
+  color: #ccc;
+}

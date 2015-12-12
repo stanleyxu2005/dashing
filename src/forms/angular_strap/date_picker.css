@@ -37,17 +37,3 @@
 .datepicker .dow {
   padding-top: 1px; /* otherwise when switch to year view, the row will move up 1px */
 }
-
-/* fixed timepicker height (2 rules) */
-.timepicker.dropdown-menu {
-  padding: 8px 8px 8px 8px;
-}
-
-.timepicker .time-separator {
-  padding-left: 6px;
-  font-weight: 900;
-}
-
-.time-desp {
-  color: #ccc;
-}

@@ -28,10 +28,10 @@ angular.module('examples')
     $scope.bloodTypes = {a: 'Type A', b: 'Type B', ab: 'Type AB', o: 'Type O'};
     $scope.favoriteColorChoices = ['Blue', 'Green', 'Black', 'Pink', 'Red'];
     $scope.nations = {china: 'China', germany: 'Germany', france: 'France', usa: 'United States', japan: 'Japan'};
-    $scope.inputChoices = _.times(8, function(i) {
+    $scope.inputChoices = _.times(4, function(i) {
       return {
-        text: 'Item ' + i,
-        icon: 'glyphicon glyphicon-random'
+        text: 'This is choice ' + i,
+        icon: 'glyphicon glyphicon-bookmark'
       };
     });
   }])

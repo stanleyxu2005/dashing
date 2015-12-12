@@ -64,8 +64,8 @@ angular.module('dashing.util.text', [])
         if (duration.length > 1 && duration[1].label === ' ms') {
           duration = [duration[0]];
         }
-        return duration.map(function(unit) {
-          return unit.value + unit.label;
+        return duration.map(function(piece) {
+          return piece.value + piece.label;
         }).join(compact ? ' ' : ' and ');
       }
     };

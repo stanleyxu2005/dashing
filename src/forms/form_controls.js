@@ -3,36 +3,37 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.forms.form_control', [
-    'ngSanitize', // required for ng-bind-html
-    'dashing.filters.any',
-    'dashing.util.validation',
-    'mgcrea.ngStrap',
-    'ui.select'
-  ])
-  /**
-   * Ready to use form controls.
-   *
-   * Every control will occupy one row. The label will be shown at the left side. You still
-   * need to add a Bootstrap 3 class "form-horizontal" in the outer <form> tag.
-   *
-   * @param type enum(text|class|choices|radio|multi-checks|check|integer|datetime) (default is text input)
-   * @param label string
-   *   the text left to the control (if the container is too narrow, label will be moved to above)
-   * @param ng-model object
-   * @param required boolean (optional)
-   *   when required is set, necessary validation will be triggered, after value is changed
-   * @param invalid object (optional)
-   *   when required is set, the object will stored the valid state.
-   *
-   * The widget is being changed actively, please check the source code or example to discover more usage.
-   *
-   * @example
-   *   <form-control
-   *     type="text" label="Text Input" ng-model="value"
-   *     required="true" invalid="state">
-   *   </form-control>
-   */
-  .directive('formControl', ['dashing.util.validation', function(validation) {
+  'ngSanitize', // required for ng-bind-html
+  'dashing.filters.any',
+  'dashing.util.text',
+  'dashing.util.validation',
+  'mgcrea.ngStrap',
+  'ui.select'
+])
+/**
+ * Ready to use form controls.
+ *
+ * Every control will occupy one row. The label will be shown at the left side. You still
+ * need to add a Bootstrap 3 class "form-horizontal" in the outer <form> tag.
+ *
+ * @param type enum(text|class|choices|radio|multi-checks|check|integer|datetime) (default is text input)
+ * @param label string
+ *   the text left to the control (if the container is too narrow, label will be moved to above)
+ * @param ng-model object
+ * @param required boolean (optional)
+ *   when required is set, necessary validation will be triggered, after value is changed
+ * @param invalid object (optional)
+ *   when required is set, the object will stored the valid state.
+ *
+ * The widget is being changed actively, please check the source code or example to discover more usage.
+ *
+ * @example
+ *   <form-control
+ *     type="text" label="Text Input" ng-model="value"
+ *     required="true" invalid="state">
+ *   </form-control>
+ */
+  .directive('formControl', ['dashing.util', function(util) {
     'use strict';
 
     function buildChoicesForSelect(choices) {
@@ -76,20 +77,15 @@ angular.module('dashing.forms.form_control', [
     }
 
     function buildTimeValuesForTimePicker(time, onSelect) {
-      return [1,2,3,4].map(function(value) {
+      return [1, 5, 15, 30, 60, 90, 120].map(function(minutes) {
+        var ms = minutes * 60 * 1000;
         return {
-          text: '12:30 <span class="time-desp">' + value + ' Minutes Later</span>',
+          value: '12:30',
+          duration: 'in ' + util.text.toHumanReadableDuration(ms),
           click: function() {
-            onSelect(value);
+            onSelect(time + ms);
           }
         };
-        //};
-        //
-        //  {text: '12:30 <span class="time-desp"></span>', click: function() {}},
-        //  {text: "12:31 <span class='time-desp'>5 Minutes Later</span>", click: function() {}},
-        //  {text: "12:32 <span class='time-desp'>5 Minutes Later</span>", click: function() {}},
-        //  {text: "12:33 <span class='time-desp'>5 Minutes Later</span>", click: function() {}}
-        //];
       });
     }
 
@@ -115,7 +111,7 @@ angular.module('dashing.forms.form_control', [
         switch (attrs.type) {
           case 'class':
             scope.renderAs = 'text';
-            scope.validateFn = validation.class;
+            scope.validateFn = util.validation.class;
             break;
 
           case 'choices':
@@ -156,40 +152,44 @@ angular.module('dashing.forms.form_control', [
             scope.min = attrs.min;
             scope.max = attrs.max;
             scope.validateFn = function(value) {
-              return validation.integerInRange(value, attrs.min, attrs.max);
+              return util.validation.integerInRange(value, attrs.min, attrs.max);
             };
             break;
 
           case 'datetime':
             scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-4';
             scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
-            if (Array.isArray(scope.value) && scope.value.length === 2) {
-              scope.dateValue = scope.value[0];
-              scope.timeValue = scope.value[1];
-            }
-            scope.fillDefaultTime = function() {
-              scope.timeValue = scope.timeValue || moment().format('HH:mm:00');
-            };
-            scope.timeValues = buildTimeValuesForTimePicker(
-              scope.timeValue || moment().format('HH:mm:00'));
+
             // date time control has a built-in validator
             scope.dateInputInvalid = false;
             scope.timeInputInvalid = false;
+
+            if (!scope.timeValue) {
+              var now = new Date();
+              scope.timeValue = [
+                (now.getHours() + 100).toString().slice(1),
+                (now.getMinutes() + 100).toString().slice(1),
+                '00'].join(':');
+            }
+            scope.now = (new Date()).setSeconds(0).getTime();
             scope.$watch('dateValue', function(newVal, oldVal) {
-              scope.dateInputInvalid =
-                angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
+              scope.dateInputInvalid = angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
                 scope.value = [newVal, scope.timeValue];
               }
             });
             scope.$watch('timeValue', function(newVal, oldVal) {
-              console.log(newVal);
-              scope.timeInputInvalid =
-                angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
+              scope.timeInputInvalid = angular.isUndefined(newVal) && !angular.isUndefined(oldVal);
               scope.invalid = scope.dateInputInvalid || scope.timeInputInvalid;
               if (newVal) {
                 scope.value = [scope.dateValue, newVal];
+              }
+            });
+            scope.$watchCollection('value', function(val) {
+              if (Array.isArray(val) && val.length === 2) {
+                scope.dateValue = val[0];
+                scope.timeValue = val[1];
               }
             });
             break;

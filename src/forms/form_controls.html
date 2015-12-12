@@ -79,8 +79,9 @@
             <span class="glyphicon glyphicon-calendar"></span>
           </div>
           <input type="text" class="form-control input-sm last-input-radius-fix"
-                 ng-model="$parent.dateValue" placeholder="Date"
-                 data-autoclose="true" date-type="string" data-date-format="yyyy-MM-dd" size="10"
+                 placeholder="Date"
+                 ng-model="$parent.dateValue" date-type="string"
+                 data-autoclose="true" data-date-format="yyyy-MM-dd" size="10"
                  template-url="forms/angular_strap/date_picker.html"
                  use-native="true" bs-datepicker/>
         </div>
@@ -91,17 +92,13 @@
           <div class="input-group-addon at-left">
             <span class="glyphicon glyphicon-time"></span>
           </div>
-          <!--<input class="form-control input-sm last-input-radius-fix"-->
-                 <!--type="text" placeholder="Time" arrow-behavior="picker"-->
-                 <!--ng-model="$parent.timeValue"-->
-                 <!--ng-click="fillDefaultTime()"-->
-                 <!--time-type="string" data-time-format="HH:mm:ss" size="8"-->
-                 <!--hour-step="1" minute-step="1" second-step="1" data-length="3"-->
-                 <!--template-url="forms/angular_strap/time_picker.html"-->
-                 <!--use-native="true" bs-timepicker/>-->
           <input type="text" class="form-control input-sm last-input-radius-fix"
-                 ng-model="$parent.timeValue" placeholder="Time"
-                 bs-dropdown="timeValues" placement="auto bottom-left" html="true"/>
+                 placeholder="Time" arrow-behavior="picker"
+                 ng-model="$parent.timeValue" time-type="string"
+                 data-time-format="HH:mm:ss" size="8"
+                 hour-step="1" minute-step="1" second-step="1" data-length="3"
+                 template-url="forms/angular_strap/time_picker.html"
+                 use-native="true" bs-timepicker/>
         </div>
       </div>
     </div>

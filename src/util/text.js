@@ -55,7 +55,11 @@ angular.module('dashing.util.text', [])
           var unit = units[i];
           var t = x % unit.mod;
           if (t !== 0) {
-            duration.unshift({label: unit.label, value: t});
+            var unitLabel = unit.label;
+            if (t === 1 && unitLabel.length > ' ms'.length) {
+              unitLabel = unitLabel.slice(0, -1);
+            }
+            duration.unshift({label: unitLabel, value: t});
           }
           x = (x - t) / unit.mod;
         }

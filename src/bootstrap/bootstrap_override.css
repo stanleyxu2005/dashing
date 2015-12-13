@@ -72,6 +72,11 @@ html, body {
   padding-bottom: 2px;
 }
 
+/* Remove the annoying clear input text icon "X" from MSIE 10+ */
+.form-control::-ms-clear {
+  display: none;
+}
+
 /* Fix visual glitches of indicator icon in an input/search box (2 rules) */
 .form-control-feedback {
   cursor: pointer;

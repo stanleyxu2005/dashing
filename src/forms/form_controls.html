@@ -72,27 +72,29 @@
     </div>
     <!-- date time picker -->
     <div ng-switch-when="datetime">
-      <div class="{{dateControlStyleClass}}" style="padding-right: 8px"
+      <div class="{{dateControlStyleClass}} has-feedback"
            ng-class="{'has-error': dateInputInvalid}">
         <input class="form-control input-sm"
                data-date-format="yyyy-MM-dd"
-               type="text" size="10" placeholder="Date"
+               type="text" size="10" placeholder="YYYY-MM-DD"
                ng-model="$parent.dateValue" date-type="string"
                data-autoclose="1"
                template-url="forms/datepicker.html"
                use-native="true" bs-datepicker/>
+        <span class="glyphicon glyphicon-calendar form-control-feedback fc-feedback-sm"></span>
       </div>
-      <div class="{{timeControlStyleClass}}" style="padding-left: 0"
+      <div class="{{timeControlStyleClass}} has-feedback" style="padding-left: 0"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
                data-time-format="HH:mm:ss"
-               type="text" size="8" placeholder="Time"
+               type="text" size="8" placeholder="HH:mm:ss"
                ng-click="fillDefaultTime()"
                ng-model="$parent.timeValue" time-type="string"
                hour-step="1" minute-step="1" second-step="1" data-length="3"
                arrow-behavior="picker"
                template-url="forms/timepicker.html"
                use-native="true" bs-timepicker/>
+        <span class="glyphicon glyphicon-time form-control-feedback fc-feedback-sm"></span>
       </div>
     </div>
     <!-- upload -->
@@ -104,21 +106,20 @@
                ng-model="$parent.filename"/>
         <!-- Toggle buttons -->
         <span ng-hide="$parent.value"
-              class="glyphicon glyphicon-folder-open form-control-feedback form-control-feedback-sm clickable"
+              class="glyphicon glyphicon-folder-open form-control-feedback fc-feedback-sm clickable"
               ngf-select ng-model="$parent.files" accept="{{acceptPattern}}" ngf-accept="'{{acceptPattern}}'"></span>
         <span ng-show="$parent.value"
-              class="glyphicon glyphicon-trash form-control-feedback form-control-feedback-sm clickable"
+              class="glyphicon glyphicon-trash form-control-feedback fc-feedback-sm clickable"
               ng-click="clearSelection()"></span>
       </div>
     </div>
     <!-- text input -->
     <div ng-switch-default>
       <div class="{{controlStyleClass}}">
-        <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
+        <div ng-class="{'has-error': !pristine && invalid}">
           <div ng-class="{'input-group': choicesMenu}">
             <input type="text" class="form-control input-sm"
-                   ng-model="$parent.value"
-                   reset-search-input="false"/>
+                   ng-model="$parent.value"/>
             <div ng-if="choicesMenu"
                  class="input-group-btn">
               <button type="button" class="btn btn-sm btn-default dropdown-toggle"

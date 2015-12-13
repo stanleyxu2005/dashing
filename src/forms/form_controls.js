@@ -142,8 +142,8 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'datetime':
-            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-5';
-            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
+            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-md-5';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-md-4';
             scope.fillDefaultTime = function() {
               if (!scope.timeValue) {
                 var now = new Date();

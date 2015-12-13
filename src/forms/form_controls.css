@@ -24,3 +24,14 @@
 .clickable:hover {
   cursor: pointer;
 }
+
+/* Fix the icon position issue when corresponding input-control is small (2 rules) */
+.fc-feedback-sm.glyphicon {
+  width: 29px;
+  height: 29px;
+  line-height: 29px;
+}
+
+.has-feedback .form-control.input-sm {
+  padding-right: 29px !important;
+}

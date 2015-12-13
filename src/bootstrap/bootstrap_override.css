@@ -8,7 +8,9 @@
   font-family: roboto, 'helvetica neue', 'segoe ui', arial, helvetica, sans-serif;
 }
 
-body, .form-control {
+body, .form-control,
+.dropdown-menu,
+.input-group-btn > ul.dropdown-menu {
   font-size: 13px;
 }
 
@@ -38,18 +40,18 @@ html, body {
   line-height: 16px;
 }
 
-/* Smaller font size and spacing for dropdown menu (3 rules) */
-.dropdown-menu {
-  font-size: 0.95em;
-}
-
+/* Adjust text/icon position for dropdown menu (3 rules) */
 .dropdown-menu > li > a {
-  padding-left: 12px;
+  padding-left: 10px;
   cursor: pointer;
 }
 
 .dropdown-menu > li > a > i {
   padding-right: 4px;
+}
+
+.dropdown-menu .glyphicon {
+  font-size: 12px;
 }
 
 /* Bugfix: Chrome will show a blue border out of the dropdown menu */

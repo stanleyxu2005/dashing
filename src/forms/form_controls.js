@@ -203,6 +203,10 @@ angular.module('dashing.forms.form_control', [
               scope.files = null;
             };
             break;
+
+          default:
+            scope.hideMenuCaret = ['true', '1'].indexOf(attrs.hideMenuCaret) !== -1;
+            break;
         }
 
         // provide a choice list for text-input control

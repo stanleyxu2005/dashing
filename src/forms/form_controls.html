@@ -116,14 +116,18 @@
       <div class="{{controlStyleClass}}">
         <div ng-class="{'has-error': !pristine && invalid, 'has-feedback': choicesMenu}">
           <div ng-class="{'input-group': choicesMenu}">
-            <div ng-if="choicesMenu"
-                 class="input-group-addon at-left"
-                 bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
-              <span class="{{choiceIconStyleClass}} clickable"></span>
-            </div>
             <input type="text" class="form-control input-sm"
                    ng-model="$parent.value"
                    reset-search-input="false"/>
+            <div ng-if="choicesMenu"
+                 class="input-group-btn">
+              <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                      bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
+                <span class="{{choiceIconStyleClass}} clickable"></span>
+                <span ng-if="!hideMenuCaret"
+                      class="caret"></span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

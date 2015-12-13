@@ -16,7 +16,11 @@ Dashing is a set of assembled widgets based on Bootstrap and AngularJS.
 
 **Example 3:** Sortable Table with rich contents and automatic Pagination ([Demo](http://mmjd.com/dashing/examples/#/tables/sortable))
 
-![sortable-table](https://cloud.githubusercontent.com/assets/5162687/10240430/6cb0ae9e-690e-11e5-9423-5bfce00d1cbc.png)
+![sortable-table](https://cloud.githubusercontent.com/assets/5162687/11765804/59b87efc-a1a3-11e5-843c-96688c7065b6.png)
+
+**Example 4:** Fancy Date Picker ([Demo](http://mmjd.com/dashing/examples/#/forms/forms))
+
+![form-control](https://cloud.githubusercontent.com/assets/5162687/11765795/cebf8584-a1a2-11e5-9055-81d38ca34088.png)
 
 ## Resources
 

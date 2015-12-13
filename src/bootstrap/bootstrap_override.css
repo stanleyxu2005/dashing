@@ -163,6 +163,8 @@ html, body {
   padding: 5px 10px 5px;
 }
 
-*[bs-tooltip] {
-  cursor: pointer;
+/* Avoid modal title (usually h4) bottom remain large empty area */
+.modal-header h4,
+.modal-header h5 {
+  margin-bottom: 0;
 }

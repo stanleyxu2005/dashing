@@ -31,7 +31,7 @@ angular.module('dashing.property.number', [
       },
       link: function(scope, elem, attrs) {
         attrs.$observe('raw', function(number) {
-          if (['true', '1'].indexOf(attrs.readable) !== -1) {
+          if (['true', '1'].indexOf(String(attrs.readable)) !== -1) {
             var hr = util.text.toHumanReadableNumber(Number(number), 1024);
             scope.value = hr.value.toFixed(0);
             scope.unit = hr.modifier + attrs.unit;

@@ -205,7 +205,7 @@ angular.module('dashing.forms.form_control', [
             break;
 
           default:
-            scope.hideMenuCaret = ['true', '1'].indexOf(attrs.hideMenuCaret) !== -1;
+            scope.hideMenuCaret = ['true', '1'].indexOf(String(attrs.hideMenuCaret)) !== -1;
             break;
         }
 

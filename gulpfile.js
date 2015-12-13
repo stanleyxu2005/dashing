@@ -6,7 +6,7 @@
 
 var project = require('./package.json');
 var license = {
-  dashing: '/*! dashing (assembled widgets) v' + project.version + ' | Apache License 2.0 | github.com/stanleyxu2005/dashing */\n',
+  dashing: '/*! dashing (assembled widgets) v' + project.version + ' | Apache License 2.0 | https://github.com/stanleyxu2005/dashing */\n',
   select2: '/*! Select2 | Apache License 2.0 | Copyright 2014 Igor Vaynberg */\n',
   select2_bootstrap: '/*! Select2 Bootstrap 3 CSS v1.4.6 | MIT License | github.com/t0m/select2-bootstrap-css */\n'
 };

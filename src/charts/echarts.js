@@ -204,7 +204,7 @@ angular.module('dashing.charts.echarts', [
         var result = [];
         angular.forEach(grouped, function(group) {
           var selected = group.reduce(function(p, c) {
-            return Math.abs(p.value) > Math.abs(c.value) ? p : c;
+            return Math.abs(Number(p.value)) > Math.abs(c.value) ? p : c;
           });
           selected.value = group.reduce(function(p, c) {
             return {value: p.value + c.value};

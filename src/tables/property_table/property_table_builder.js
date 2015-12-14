@@ -85,11 +85,12 @@ angular.module('dashing.tables.property_table.builder', [])
         },
 
         /** Updates table values */
-        $update: function(props, values) {
-          angular.forEach(values, function(value, index) {
+        $update: function(target, values) {
+          angular.forEach(values, function(value, i) {
             var field = Array.isArray(value) ? 'values' : 'value';
-            props[index][field] = value;
+            target[i][field] = value;
           });
+          return target;
         }
       };
 

@@ -110,6 +110,18 @@ angular.module('dashing.tables.sortable_table.builder', [
         return this.props;
       };
 
+      function arrayKeyEqual(lhs, rhs, key) {
+        var equal = true;
+        angular.forEach(rhs, function(value, i) {
+          var one = lhs[i];
+          if (!one.hasOwnProperty(key) || one.key !== rhs.key) {
+            equal = false;
+            return false; // cancel foreach loop
+          }
+        });
+        return equal;
+      }
+
       return {
         button: function(title) {
           return new CB(renderer.BUTTON, title);
@@ -150,6 +162,18 @@ angular.module('dashing.tables.sortable_table.builder', [
         },
         text: function(title) {
           return new CB(renderer.TEXT, title);
+        },
+
+        /** Return updated table records or a new array */
+        $update: function(target, values, keyToCheck) {
+          if (((target || []).length !== (values || []).length) ||
+            (keyToCheck && !arrayKeyEqual(target, values, keyToCheck))) {
+            return values;
+          }
+          angular.forEach(values, function(value, i) {
+            target[i] = value;
+          });
+          return target;
         },
 
         /** Debug util */

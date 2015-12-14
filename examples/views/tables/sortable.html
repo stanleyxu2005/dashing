@@ -2,9 +2,9 @@
   <div class="col-md-6">
     <h4>Table 1</h4>
     <sortable-table
-      caption="Table caption"
-      columns-bind="columnsVariable"
-      records-bind="recordsVariable"
+      caption="{{recordsCount}} records update in every {{updateIntervalInSeconds}} seconds"
+      columns-bind="data.cols"
+      records-bind="data.rows"
       search-bind="search">
     </sortable-table>
   </div>

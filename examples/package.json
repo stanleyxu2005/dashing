@@ -17,5 +17,9 @@
     "moment": "latest",
     "underscore": "latest"
   },
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-concat": "latest"
+  },
   "main": "gulpfile.js"
 }

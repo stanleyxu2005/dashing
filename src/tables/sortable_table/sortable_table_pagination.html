@@ -1,27 +1,34 @@
-<div class="pull-left">
+<div class="pull-left hidden-sm hidden-xs"
+     style="margin-bottom: 10px">
+  <!-- if pagination is too long, it will automatically move to second line by having the margin-bottom -->
   <st-summary></st-summary>
 </div>
 <div class="pull-right">
   <div ng-if="pages.length >= 2"
-       class="btn-group btn-group-xs">
-    <!--
-    <button type="button" class="btn btn-default"
-            ng-class="{disabled: 1==currentPage}" ng-click="selectPage(1)">
-      <span class="glyphicon glyphicon-step-backward"></span></button>-->
-    <button type="button" class="btn btn-default"
-            ng-class="{disabled:1==currentPage}" ng-click="selectPage(currentPage-1)">
+       class="btn-group btn-group-xs tb-pagination">
+    <button ng-if="pages[0] > 1 + 10"
+            type="button" class="btn btn-default"
+            ng-click="selectPage(1)">
+      1
+    </button>
+    <button ng-if="pages[0] > 1"
+            type="button" class="btn btn-default"
+            ng-click="selectPage(currentPage - 1)">
       &laquo;</button>
     <button type="button" class="btn btn-default"
             ng-repeat="page in pages track by $index"
-            ng-class="{active:page==currentPage}" ng-click="selectPage(page)">
+            ng-class="{active: page == currentPage}"
+            ng-click="selectPage(page)">
       {{page}}
     </button>
-    <button type="button" class="btn btn-default"
-            ng-class="{disabled:numPages==currentPage}" ng-click="selectPage(currentPage+1)">
+    <button ng-if="pages[pages.length - 1] < numPages"
+            type="button" class="btn btn-default"
+            ng-click="selectPage(currentPage + 1)">
       &raquo;</button>
-    <!--
-    <button type="button" class="btn btn-default"
-            ng-class="{disabled: numPages==currentPage}" ng-click="selectPage(numPages)">
-      <span class="glyphicon glyphicon-step-forward"></span></button>-->
+    <button ng-if="pages[pages.length - 1] < numPages - 10"
+            type="button" class="btn btn-default"
+            ng-click="selectPage(numPages)">
+      {{numPages}}
+    </button>
   </div>
 </div>

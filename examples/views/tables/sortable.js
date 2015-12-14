@@ -17,24 +17,42 @@ angular.module('examples')
         });
     }])
 
-  .controller('SortableTableControl', ['$scope', '$sortableTableBuilder',
-    function($scope, $stb) {
+  .controller('SortableTableControl', ['$scope', '$interval', '$sortableTableBuilder',
+    function($scope, $interval, $stb) {
       'use strict';
 
-      $scope.columnsVariable = [
-        $stb.indicator().key('status').styleClass('stripe-cell-fix').done(),
-        $stb.text('Name').key('name').canSort().sortDefaultDescent().styleClass('col-md-6').done(),
-        $stb.number('Count').key('count').canSort().styleClass('col-md-6').done()
-      ];
+      $scope.data = {
+        cols: [
+          $stb.indicator().key('status').styleClass('stripe-cell-fix').done(),
+          $stb.number('ID').key('id').canSort().sortDefaultDescent().styleClass('col-md-1').done(),
+          $stb.text('Name').key('name').canSort().styleClass('col-md-5').done(),
+          $stb.number('Count').key('count').unit('bytes').canSort().styleClass('col-md-6').done()
+        ],
+        rows: []
+      };
 
-      $scope.recordsVariable = [{
-        status: {shape: 'stripe', condition: 'good', tooltip: 'You should see a 8px wide stripe'},
-        name: 'Record #1',
-        count: 10000000
-      }, {
-        status: {shape: 'stripe', condition: 'good', tooltip: 'You should see a 8px wide stripe'},
-        name: 'Record #2',
-        count: 20000000
-      }];
+      $scope.recordsCount = 10000;
+      $scope.updateIntervalInSeconds = 3;
+
+      function updateRecords() {
+        var newValueArray = _.times($scope.recordsCount, function(i) {
+          return {
+            status: {shape: 'stripe', condition: 'good', tooltip: 'You should see a 8px wide stripe'},
+            id: i,
+            name: 'Record #' + i,
+            count: Math.random() * 1000000
+          };
+        });
+        $scope.data.rows = $stb.$update($scope.data.rows, newValueArray, 'id');
+      }
+
+      updateRecords();
+      var p = $interval(updateRecords, $scope.updateIntervalInSeconds * 1000);
+      $scope.$on('destroy', function() {
+        if (p) {
+          $interval.clear(p);
+        }
+      })
+
     }])
 ;

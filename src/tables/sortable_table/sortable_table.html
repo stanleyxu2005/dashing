@@ -12,7 +12,7 @@
       <remark ng-if="column.help"
               type="question" tooltip="{{::column.help}}"></remark>
       <span ng-if="column.unit"
-            class="unit" ng-bind="column.unit"></span>
+            class="unit" ng-bind="::column.unit"></span>
     </th>
   </tr>
   <tr ng-show="false">

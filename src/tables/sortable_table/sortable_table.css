@@ -52,3 +52,11 @@ th.stripe-cell-fix {
 td.stripe-cell-fix {
   padding: 0 !important;
 }
+
+/** Make sure 1-9 button and 10-99 button will have same widths, otherwise clicking position will float */
+.tb-pagination > button {
+  min-width: 26px;
+  clear: none;
+  float: right;
+  display: inline-block;
+}

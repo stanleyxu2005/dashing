@@ -7,7 +7,7 @@
     <th ng-repeat="column in columns track by $index"
         class="{{::columnStyleClass[$index]}}"
         ng-attr-st-sort="{{::column.sortKey}}"
-        ng-attr-st-sort-default={{::column.defaultSort}}>
+        ng-attr-st-sort-default="{{::column.defaultSort}}">
       <span ng-bind="::column.name"></span>
       <remark ng-if="column.help"
               type="question" tooltip="{{::column.help}}"></remark>

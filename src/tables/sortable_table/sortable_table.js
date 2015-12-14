@@ -143,5 +143,6 @@ angular.module('dashing.tables.sortable_table', [
     'use strict';
 
     stConfig.sort.skipNatural = true;
+    stConfig.sort.delay = -1;
   }])
 ;

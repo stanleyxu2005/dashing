@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.8
+* Bugfix (#41): `<sortable-table>` flicker, if default sort direction is descending.
+
 ## 0.3.7
 * Feature (#22): Polished datetime picker.
 * Improvement (#38): Add onclick event to remark icon of `<metrics>`.

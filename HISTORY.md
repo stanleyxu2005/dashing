@@ -4,6 +4,7 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.3.8
+* Bugfix (#46): Sortable table wont render records correctly if sort key's value equals 0.
 * Bugfix (#45): Chart's right margin was too large (when only one y-axis is used).
 * Bugfix (#42): Added a helper method to update `<sortable-table>` records and changed the pagination control.
 * Bugfix (#41): `<sortable-table>` flicker, if default sort direction is descending.

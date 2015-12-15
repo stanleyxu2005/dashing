@@ -30,13 +30,15 @@ angular.module('dashing.property.number', [
         raw: '@'
       },
       link: function(scope, elem, attrs) {
-        attrs.$observe('raw', function(number) {
-          if (['true', '1'].indexOf(String(attrs.readable)) !== -1) {
-            var hr = util.text.toHumanReadableNumber(Number(number), 1024);
+        var readable = ['true', '1'].indexOf(String(attrs.readable)) !== -1;
+
+        attrs.$observe('raw', function(raw) {
+          if (readable) {
+            var hr = util.text.toHumanReadableNumber(Number(raw), 1024);
             scope.value = hr.value.toFixed(0);
             scope.unit = hr.modifier + attrs.unit;
           } else {
-            scope.value = $filter('number')(number, Number(attrs.precision) || 0);
+            scope.value = $filter('number')(raw, Number(attrs.precision) || 0);
             scope.unit = attrs.unit;
           }
         });

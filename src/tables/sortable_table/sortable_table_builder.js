@@ -166,8 +166,10 @@ angular.module('dashing.tables.sortable_table.builder', [
 
         /** Return updated table records or a new array */
         $update: function(target, values, keyToCheck) {
-          if (((target || []).length !== (values || []).length) ||
-            (keyToCheck && !arrayKeyEqual(target, values, keyToCheck))) {
+          if ((target || []).length !== (values || []).length) {
+            return values;
+          }
+          if (angular.isString(keyToCheck) && !arrayKeyEqual(target, values, keyToCheck)) {
             return values;
           }
           angular.forEach(values, function(value, i) {

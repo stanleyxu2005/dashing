@@ -28,13 +28,13 @@ angular.module('dashing.property', [
         renderer: '@'
       },
       controller: ['$scope', 'dsPropertyRenderer', function($scope, renderer) {
-        $scope.$watch('value', function(value) {
-          if (value) {
-            if ($scope.renderer === renderer.BYTES) {
-              console.warn('deprecated: should use renderer NUMBER instead');
-              $scope.renderer = renderer.NUMBER;
-            }
+        if ($scope.renderer === renderer.BYTES) {
+          console.warn('deprecated: should use renderer NUMBER instead');
+          $scope.renderer = renderer.NUMBER;
+        }
 
+        $scope.$watch('value', function(value) {
+          if (angular.isObject(value)) {
             switch ($scope.renderer) {
               case renderer.LINK:
                 if (!value.href) {
@@ -54,23 +54,19 @@ angular.module('dashing.property', [
                   };
                 }
                 break;
-
-              case renderer.NUMBER:
-                if (!value.hasOwnProperty('raw')) {
-                  $scope.raw = value;
-                  return; // fallback to simple value
-                }
-                break;
             }
 
-            if (angular.isObject(value)) {
-              if (value.hasOwnProperty('value')) {
-                // `value.value` will assign `$scope.value`, which will trigger watch notification again.
-                console.warn({message: 'Ignore `value.value`, because it is a reversed field.', object: value});
-                delete value.value;
-              }
-              // bind all value fields to scope.
-              angular.merge($scope, value);
+            if (value.hasOwnProperty('value')) {
+              // `value.value` will assign `$scope.value`, which will trigger watch notification again.
+              console.warn({message: 'Ignore `value.value`, because it is a reversed field.', object: value});
+              delete value.value;
+            }
+            // bind all value fields to scope.
+            angular.merge($scope, value);
+          }
+          else if (angular.isNumber(value)) {
+            if ($scope.renderer === renderer.NUMBER) {
+              $scope.raw = value; // convert simple value to valid number value option
             }
           }
         });

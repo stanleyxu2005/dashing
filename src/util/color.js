@@ -21,7 +21,7 @@ angular.module('dashing.util.color', [])
         darkGray: 'rgb(92,92,97)',
         darkPink: 'rgb(212,102,138)',
         darkRed: 'rgb(212,102,138)',
-        lightBlue: 'rgb(149,206,255)',
+        lightBlue: 'rgb(93,201,242)',
         lightGreen: 'rgb(169,255,150)'
       },
       /** Convert a condition to a css color */

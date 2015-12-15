@@ -492,7 +492,7 @@ angular.module('dashing.charts.echarts', [
         var colors = util.color.palette;
         switch (seriesNum) {
           case 1:
-            return [colors.orange];
+            return [colors.lightBlue];
           case 2:
             return [colors.blue, colors.darkBlue];
           default:

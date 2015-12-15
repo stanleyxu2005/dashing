@@ -107,6 +107,7 @@ angular.module('dashing.charts.line', [
           grid: angular.merge({
             borderWidth: 0,
             x: Math.max(15, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
+            x2: 15, /* increase the right margin, otherwise last label might be cropped */
             y: 20, y2: 25
           }, use.grid),
           xAxis: [{

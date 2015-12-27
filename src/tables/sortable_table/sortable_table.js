@@ -35,7 +35,7 @@ angular.module('dashing.tables.sortable_table', [
  *    search-bind="searchVariable">
  *  </sortable-table>
  */
-  .directive('sortableTable', ['dsPropertyRenderer', 'dashing.util', function(renderer, util) {
+  .directive('sortableTable', ['dsPropertyRenderer', 'dashing.util', 'stConfig', function(renderer, util, stConfig) {
     'use strict';
 
     return {
@@ -46,7 +46,8 @@ angular.module('dashing.tables.sortable_table', [
         pagination: '@',
         columns: '=columnsBind',
         records: '=recordsBind',
-        search: '=searchBind'
+        search: '=searchBind',
+        selectionChanged: '&'
       },
       link: function(scope, elem) {
         // TODO: https://github.com/lorenzofox3/Smart-Table/issues/436
@@ -108,6 +109,15 @@ angular.module('dashing.tables.sortable_table', [
             });
           });
         });
+
+        scope.handlePageChanged = function(newPage) {
+          var itemPerPage = scope.pagination ?
+            Number(scope.pagination) : stConfig.pagination.itemsByPage;
+          var from = (newPage - 1) * itemPerPage;
+          var to = Math.min(from + itemPerPage, scope.records.length) - 1;
+          scope.selectionChanged({selection: {from: from, to: to}});
+        };
+        scope.handlePageChanged(1);
 
         // Expose isArray into template.
         scope.isArray = Array.isArray;

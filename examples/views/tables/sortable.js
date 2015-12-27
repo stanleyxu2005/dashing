@@ -31,6 +31,10 @@ angular.module('examples')
         rows: []
       };
 
+      $scope.handleSelectionChanged = function(selection) {
+        console.log(selection);
+      };
+
       $scope.recordsCount = 10000;
       $scope.updateIntervalInSeconds = 3;
 
@@ -52,7 +56,6 @@ angular.module('examples')
         if (p) {
           $interval.clear(p);
         }
-      })
-
+      });
     }])
 ;

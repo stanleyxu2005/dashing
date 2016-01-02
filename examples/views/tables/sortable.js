@@ -24,9 +24,9 @@ angular.module('examples')
       $scope.data = {
         cols: [
           $stb.indicator().key('status').styleClass('stripe-cell-fix').done(),
-          $stb.number('ID').key('id').canSort().sortDefaultDescent().styleClass('col-md-1').done(),
-          $stb.text('Name').key('name').canSort().styleClass('col-md-5').done(),
-          $stb.number('Count').key('count').unit('bytes').canSort().styleClass('col-md-6').done()
+          $stb.number('ID').key('id').canSort().sortDefaultDescent().styleClass('col-md-2').textLeft().done(),
+          $stb.text('Description').key('name').canSort().styleClass('col-md-4').done(),
+          $stb.number('Average QPS').key('qps').unit('Past minute').canSort().styleClass('col-md-6').done()
         ],
         rows: []
       };
@@ -39,8 +39,8 @@ angular.module('examples')
           return {
             status: {shape: 'stripe', condition: 'good', tooltip: 'You should see a 8px wide stripe'},
             id: i,
-            name: 'Record #' + i,
-            count: Math.random() * 1000000
+            name: 'Some text',
+            qps: Math.random() * 1000000
           };
         });
         $scope.data.rows = $stb.$update($scope.data.rows, newValueArray, 'id');

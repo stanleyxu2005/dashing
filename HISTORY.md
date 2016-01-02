@@ -3,6 +3,10 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.3.9
+* Improvement (#2): Click sort arrow will show animation.
+* Improvement: Able to align a numberic column to left by setting `.textLeft()`.
+
 ## 0.3.8
 * Improvement (#47): Use a more elegant/active color theme for bar chart.
 * Bugfix (#46): Sortable table wont render records correctly if sort key's value equals 0.

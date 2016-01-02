@@ -15,6 +15,7 @@ angular.module('dashing.tables.sortable_table.builder', [
 
       var CB = function(renderer, title) {
         this.props = renderer ? {renderer: renderer} : {};
+        this.props.styleClassArray = [];
         if (title) {
           this.title(title);
         }
@@ -80,7 +81,25 @@ angular.module('dashing.tables.sortable_table.builder', [
       };
 
       CB.prototype.styleClass = function(styleClass) {
-        this.props.styleClass = styleClass;
+        var styles = styleClass.split(' ');
+        angular.forEach(styles, function(style) {
+          if (this.props.styleClassArray.indexOf(style) === -1) {
+            this.props.styleClassArray.push(style);
+          }
+        }, this);
+        return this;
+      };
+
+      CB.prototype.textRight = function() {
+        this.styleClass('text-right');
+        return this;
+      };
+
+      CB.prototype.textLeft = function() {
+        var i = this.props.styleClassArray.indexOf('text-right');
+        if (i !== -1) {
+          this.props.styleClassArray.splice(i, 1);
+        }
         return this;
       };
 
@@ -128,7 +147,7 @@ angular.module('dashing.tables.sortable_table.builder', [
         },
         bytes: function(title) {
           console.warn('deprecated: should use number instead');
-          return new CB(renderer.BYTES, title);
+          return (new CB(renderer.BYTES, title)).textRight();
         },
         datetime: function(title) {
           return new CB(renderer.DATETIME, title);
@@ -146,13 +165,13 @@ angular.module('dashing.tables.sortable_table.builder', [
           return new CB(renderers, title);
         },
         number: function(title) {
-          return new CB(renderer.NUMBER, title);
+          return (new CB(renderer.NUMBER, title)).textRight();
         },
         number1: function(title) {
-          return new CB(renderer.NUMBER1, title);
+          return (new CB(renderer.NUMBER1, title)).textRight();
         },
         number2: function(title) {
-          return new CB(renderer.NUMBER2, title);
+          return (new CB(renderer.NUMBER2, title)).textRight();
         },
         progressbar: function(title) {
           return new CB(renderer.PROGRESS_BAR, title);

@@ -72,8 +72,7 @@ angular.module('dashing.tables.sortable_table', [
             }
 
             var array = [];
-            addStyleClass(array, column.styleClass, column.styleClass !== undefined);
-            addStyleClass(array, 'text-right', column.renderer && column.renderer.indexOf('Number') === 0);
+            addStyleClass(array, column.styleClassArray.join(' '), column.styleClassArray.length);
             addStyleClass(array, 'text-nowrap', Array.isArray(column.key) && !column.vertical);
             return array.join(' ');
           });

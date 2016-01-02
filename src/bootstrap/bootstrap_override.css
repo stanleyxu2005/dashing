@@ -145,7 +145,7 @@ html, body {
 
 /* Smaller font for table meta */
 .table thead > tr > th {
-  font-size: .9em;
+  font-size: 12px;
   vertical-align: top;
 }
 

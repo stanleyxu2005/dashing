@@ -1,8 +1,8 @@
-## [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful inside and out
+## [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful, inside and out
 
 [![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) 
 
-Dashing is a set of assembled widgets based on Bootstrap and AngularJS. 
+Dashing is a set of assembled widgets based on Bootstrap 3 and AngularJS 1.x. Making fancy dashboard can never be so easy, ever!
 
 **Let's make dashing widgets with a few line of code~**
 
@@ -24,13 +24,13 @@ Dashing is a set of assembled widgets based on Bootstrap and AngularJS.
 
 ## Resources
 
-* Show Case: [Example Gallery](http://mmjd.com/dashing/examples) | [GearPump Dashboard](https://github.com/gearpump/gearpump)
+* Show Case: [Example Gallery](http://mmjd.com/dashing/examples) | [Gearpump Dashboard](https://github.com/gearpump/gearpump)
 * [Installation Guide](https://github.com/stanleyxu2005/dashing/blob/master/INSTALL.md)
 * API documentation */coming soon/*
 
-## How to contribute
+## How to Contribute
 
-The project is started by [Qian Xu](http://mmjd.com/). You can raise issues or submit PRs at [GitHub](https://github.com/stanleyxu2005/dashing). Contributions to the dashing library are very welcome!
+The project is created by [Qian Xu](http://mmjd.com/). You can raise issues or submit PRs at [GitHub](https://github.com/stanleyxu2005/dashing). Contributions to the dashing library are very welcome!
 
 To build the project from source code:
 
@@ -49,5 +49,5 @@ The project itself is under Apache License version 2.0. You can use the library 
 + [angular-ui-select](https://github.com/angular-ui/ui-select) - MIT License
 + [Bootstrap](http://getbootstrap.com) - MIT License
 + [Echarts](http://echarts.baidu.com) - Baidu License
-+ [Smart-Table](http://lorenzofox3.github.io/smart-table-website) - MIT License
 + [ng-file-upload](https://github.com/danialfarid/ng-file-upload) - MIT License
++ [Smart-Table](http://lorenzofox3.github.io/smart-table-website) - MIT License

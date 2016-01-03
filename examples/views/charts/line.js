@@ -56,10 +56,9 @@ angular.module('examples')
         })
       });
       $scope.lineChartOption4 = angular.extend({}, $scope.lineChartOption, {
-        height: '108px',
+        height: '108px'
       });
 
-      var i = 0;
       $interval(function() {
         $scope.lineChartData = nextData();
       }, 2000);

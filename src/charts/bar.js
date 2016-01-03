@@ -64,7 +64,6 @@ angular.module('dashing.charts.bar', [
           yAxisShowMinorAxisLine: false,
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
-          yBoundaryGap: [0.2, 0.2],
           static: true,
           rotate: false,
           xAxisShowLabels: true
@@ -72,9 +71,9 @@ angular.module('dashing.charts.bar', [
 
         use = angular.merge({
           barMaxWidth: use.rotate ? 20 : 16,
-          barMinWidth: use.rotate ? 8 : 7,
-          barMaxSpacing: 4,
-          barMinSpacing: 1
+          barMaxSpacing: use.rotate ? 5 : 4,
+          barMinWidth: use.rotate ? 6 : 4,
+          barMinSpacing: use.rotate ? 2 : 1
         }, use);
 
         var data = use.data;
@@ -185,8 +184,8 @@ angular.module('dashing.charts.bar', [
           if (use.rotate) {
             var gridMarginY = options.grid.borderWidth * 2 + options.grid.y + options.grid.y2;
             if (chartHeight < gridMarginY + drawAllBarMinWidth) {
-              console.info('Increased the height to ' + (gridMarginY + drawAllBarMinWidth) + 'px, ' +
-                'because rotated bar chart does not support data zoom yet.');
+              console.info('The chart is too short to hold so many bars, so that we increase the height to ' +
+                (gridMarginY + drawAllBarMinWidth) + 'px for you.');
               options.height = (gridMarginY + drawAllBarMinWidth) + 'px';
             } else if (chartHeight > gridMarginY + drawAllBarMaxWidth) {
               options.height = (gridMarginY + drawAllBarMaxWidth) + 'px';
@@ -218,6 +217,9 @@ angular.module('dashing.charts.bar', [
               if (visibleWidthForBars > drawAllBarMaxWidth) {
                 // Too few bars to fill up the whole area, so increase the right/bottom margin
                 options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
+              } else {
+                roundedVisibleWidthForBars = Math.floor(visibleWidthForBars / data.length) * data.length;
+                options.grid.x2 += visibleWidthForBars - roundedVisibleWidthForBars;
               }
             }
           }

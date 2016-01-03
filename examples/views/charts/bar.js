@@ -6,7 +6,7 @@
 angular.module('examples')
 
   .config(['$stateProvider',
-    function($stateProvider) {
+    function ($stateProvider) {
       'use strict';
 
       $stateProvider
@@ -18,16 +18,15 @@ angular.module('examples')
     }])
 
   .controller('BarChartCtrl', ['$scope', '$interval', '$echarts',
-    function($scope, $interval, $echarts) {
+    function ($scope, $interval, $echarts) {
       'use strict';
 
       var maxChartDataPoints = 30;
       $scope.barChartOption = {
         height: '140px',
-        //color: 'red',
         valueLabelPosition: 'right',
         yAxisLabelFormatter: $echarts.axisLabelFormatter(),
-        data: _.range(maxChartDataPoints).map(function(i) {
+        data: _.range(maxChartDataPoints).map(function (i) {
           return {
             x: 'Day ' + i,
             y: [
@@ -42,8 +41,7 @@ angular.module('examples')
         data: $scope.barChartOption.data.slice(0, 16)
       });
       $scope.barChartOption3 = angular.extend({}, $scope.barChartOption, {
-        seriesNames: ['1', '2', '3', '4'],
-        barMinWidth: 16
+        seriesNames: ['1', '2', '3', '4']
       });
       $scope.barChartOption4 = angular.extend({}, $scope.barChartOption, {
         seriesNames: ['1']
@@ -51,13 +49,31 @@ angular.module('examples')
       $scope.barChartOption5 = angular.extend({}, $scope.barChartOption4, {
         xAxisShowLabels: false
       });
+      $scope.barChartOption6 = angular.extend({}, $scope.barChartOption, {
+        seriesNames: ['Price'],
+        data: _.range(100).map(function (i) {
+          return {
+            x: i,
+            y: [Math.floor(Math.random() * 1000 + 50)]
+          };
+        })
+      });
+      $scope.barChartOption7 = angular.extend({}, $scope.barChartOption, {
+        seriesNames: ['Price'],
+        data: _.range(50).map(function (i) {
+          return {
+            x: i,
+            y: [Math.floor(Math.random() * 1000 + 50)]
+          };
+        })
+      });
 
       $scope.barUseNegativeColorOption = {
         height: '140px',
-        colors: ['rgb(255,127,39)', 'rgb(255,201,14)'],
+        colors: ['red', 'green'],
         valueLabelPosition: 'right',
         yAxisLabelFormatter: $echarts.axisLabelFormatter(),
-        data: _.range(maxChartDataPoints).map(function(i) {
+        data: _.range(maxChartDataPoints).map(function (i) {
           var y = Math.floor(Math.random() * 1000 - 500);
           return {
             x: 'd' + i,
@@ -67,8 +83,8 @@ angular.module('examples')
         seriesNames: ['Price', 'Price']
       };
 
-      $interval(function() {
-        $scope.barChartData = _.range(maxChartDataPoints).map(function(i) {
+      $interval(function () {
+        $scope.barChartData = _.range(maxChartDataPoints).map(function (i) {
           return {
             x: 'Day ' + i,
             y: [
@@ -81,13 +97,25 @@ angular.module('examples')
             ]
           };
         });
-        $scope.barChartData2 = _.range($scope.barChartOption2.data.length).map(function(i) {
+        $scope.barChartData2 = _.range($scope.barChartOption2.data.length).map(function (i) {
           return {
             x: 'Day ' + i,
             y: [
-              Math.floor(Math.random() * 12000 - 5000),
-              Math.floor(Math.random() * 12000 - 5000)
+              Math.floor(Math.random() * 12000),
+              Math.floor(Math.random() * 12000)
             ]
+          };
+        });
+        $scope.barChartData6 = _.range($scope.barChartOption6.data.length).map(function (i) {
+          return {
+            x: i,
+            y: [Math.floor(Math.random() * 12000)]
+          };
+        });
+        $scope.barChartData7 = _.range($scope.barChartOption7.data.length).map(function (i) {
+          return {
+            x: i,
+            y: [Math.floor(Math.random() * 12000)]
           };
         });
       }, 3000);

@@ -6,6 +6,8 @@ The file only contains the major change history. For full change history, please
 ## 0.3.9
 * Improvement (#2): Click sort arrow will show animation.
 * Improvement: Able to align a numberic column to left by setting `.textLeft()`.
+* Improvement: Tooltip y-position will be 10px below chart top border.
+* Bugfix: Bar chart will have an integral bar width and updated the demo page.
 
 ## 0.3.8
 * Improvement (#47): Use a more elegant/active color theme for bar chart.

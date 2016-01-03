@@ -45,7 +45,7 @@ angular.module('dashing.charts.line', [
 
     return {
       restrict: 'E',
-      template: '<echart options="::echartOptions" data="data"></echart>',
+      template: '<echart options="::echartOptions"></echart>',
       scope: {
         options: '=optionsBind',
         data: '=datasourceBind'

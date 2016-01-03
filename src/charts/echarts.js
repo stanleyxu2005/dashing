@@ -60,9 +60,7 @@ angular.module('dashing.charts.echarts', [
           angular.element(window).on('resize', chart.resize);
           $scope.$on('$destroy', function() {
             angular.element(window).off('resize', chart.resize);
-          });
-          // Must after `chart.resize` is removed
-          $scope.$on('$destroy', function() {
+            // Must after `chart.resize` is removed
             chart.dispose();
             chart = null;
           });
@@ -86,21 +84,19 @@ angular.module('dashing.charts.echarts', [
               // the chart.
               if (options.dataPointsQueue && options.dataPointsQueue.length) {
                 addDataPoints(options.dataPointsQueue);
-                delete options.dataPointsQueue;
               }
-              delete options.data;
             }
           }
 
           initializeDoneCheck();
 
           /** Method to add data points to chart */
-          function addDataPoints(data, newYAxisMaxValue) {
+          function addDataPoints(data) {
             if (!data || (Array.isArray(data) && !data.length)) {
               return;
             }
             try {
-              // try to re-initialize when data is available
+              // try to complete the initialization, as soon as data is available
               if (!initialized) {
                 $echarts.fillAxisData(options, util.array.ensureArray(data));
                 chart.setOption(options, /*overwrite=*/true);
@@ -121,11 +117,6 @@ angular.module('dashing.charts.echarts', [
               var seriesNum = currentOption.series.length;
               var dataArray = makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime);
               if (dataArray.length > 0) {
-                if (newYAxisMaxValue !== undefined) {
-                  chart.setOption({
-                    yAxis: [{max: newYAxisMaxValue}]
-                  }, /*overwrite=*/false);
-                }
                 chart.addData(dataArray);
               }
             } catch (ex) {
@@ -167,7 +158,10 @@ angular.module('dashing.charts.echarts', [
         borderRadius: 2,
         padding: 0, // don't add padding here, otherwise empty tooltip will be a black square
         showDelay: 0,
-        transitionDuration: 0.5
+        transitionDuration: 0.5,
+        position: function(pos) {
+          return [pos[0], 10];
+        }
       },
       textStyle: {
         fontFamily: 'Roboto,"Helvetica Neue","Segoe UI","Hiragino Sans GB","Microsoft YaHei",Arial,Helvetica,SimSun,sans-serif',
@@ -443,7 +437,6 @@ angular.module('dashing.charts.echarts', [
           options.dataPointsQueue = dataSplit.newer;
         }
 
-        delete options.xAxis[0].data;
         angular.forEach(options.series, function(series) {
           series.data = [];
         });

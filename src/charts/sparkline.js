@@ -49,7 +49,8 @@ angular.module('dashing.charts.sparkline', [
       },
       controller: ['$scope', function($scope) {
         var use = angular.merge({
-          color: 'rgb(0,119,215)'
+          color: 'rgb(0,119,215)',
+          yAxisBoundaryGap: [0, 0.5]
         }, $scope.options);
 
         if (use.xAxisTypeIsTime) {
@@ -71,11 +72,12 @@ angular.module('dashing.charts.sparkline', [
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,
             boundaryGap: false,
+            axisLine: false,
             axisLabel: false,
             splitLine: false
           }],
           yAxis: [{
-            boundaryGap: [0, 0.1],
+            boundaryGap: use.yAxisBoundaryGap,
             show: false
           }],
           series: [$echarts.makeDataSeries({

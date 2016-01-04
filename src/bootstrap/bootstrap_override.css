@@ -145,6 +145,7 @@ html, body {
 
 /* Smaller font for table meta */
 .table thead > tr > th {
+  font-weight: 500;
   font-size: 12px;
   vertical-align: top;
 }

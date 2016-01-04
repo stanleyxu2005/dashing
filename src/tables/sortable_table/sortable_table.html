@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover"
+<table class="table table-hover"
        st-table="showing" st-safe-src="records">
   <caption ng-if="caption"
            ng-bind="caption"></caption>
@@ -42,10 +42,14 @@
       </ng-switch>
     </td>
   </tr>
-  <tr ng-if="records !== null && !showing.length">
+  <tr ng-if="search && (!showing || !showing.length)">
     <td colspan="{{columns.length}}" class="text-center">
-      <i>No data found</i>
+      <h5 ng-bind="emptySearchResult"></h5>
     </td>
+  </tr>
+  <tr ng-if="!search && (!records || !records.length)">
+    <td colspan="{{columns.length}}" class="text-center"
+        ng-transclude></td>
   </tr>
   </tbody>
   <tfoot ng-if="records.length">

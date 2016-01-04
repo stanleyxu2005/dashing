@@ -124,11 +124,11 @@ html, body {
 }
 
 /* Remove 1px border from stripped table (2 rules) */
-.table-striped tbody > tr:first-child td {
+.table tbody > tr:first-child td {
   border-top: 0 none transparent;
 }
 
-.table-striped thead > tr > th {
+.table thead > tr > th {
   border-bottom: 0 none transparent;
 }
 

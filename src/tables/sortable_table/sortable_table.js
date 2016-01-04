@@ -35,18 +35,20 @@ angular.module('dashing.tables.sortable_table', [
  *    search-bind="searchVariable">
  *  </sortable-table>
  */
-  .directive('sortableTable', ['dsPropertyRenderer', 'dashing.util', function(renderer, util) {
+  .directive('sortableTable', ['dsPropertyRenderer', 'dashing.util', 'dashing.i18n', function(renderer, util, i18n) {
     'use strict';
 
     return {
       restrict: 'E',
       templateUrl: 'tables/sortable_table/sortable_table.html',
+      transclude: true,
       scope: {
         caption: '@',
         pagination: '@',
         columns: '=columnsBind',
         records: '=recordsBind',
-        search: '=searchBind'
+        search: '=searchBind',
+        emptySearchResult: '@'
       },
       link: function(scope, elem) {
         // TODO: https://github.com/lorenzofox3/Smart-Table/issues/436
@@ -55,6 +57,8 @@ angular.module('dashing.tables.sortable_table', [
           searchControl.value = val || ''; // empty string means to show all records
           angular.element(searchControl).triggerHandler('input');
         });
+
+        scope.emptySearchResult = scope.emptySearchResult || i18n.emptySearchResult;
 
         // Columns are not changed after table is created, we cache frequently accessed values rather than
         // evaluating them in every digest cycle.
@@ -115,12 +119,12 @@ angular.module('dashing.tables.sortable_table', [
   }])
   // TODO: as long as st-table does not support pagination start and stop
   // https://github.com/lorenzofox3/Smart-Table/issues/440
-  .directive('stSummary', function() {
+  .directive('stSummary', ['dashing.i18n', function(i18n) {
     'use strict';
 
     return {
       require: '^stTable',
-      template: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
+      template: i18n.paginationSummary,
       link: function(scope, element, attrs, stTable) {
         scope.stRange = {
           from: null,
@@ -134,7 +138,7 @@ angular.module('dashing.tables.sortable_table', [
         });
       }
     };
-  })
+  }])
 /**
  * Override smart-table's default behavior(s)
  */

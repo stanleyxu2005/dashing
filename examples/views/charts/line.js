@@ -61,6 +61,6 @@ angular.module('examples')
 
       $interval(function() {
         $scope.lineChartData = nextData();
-      }, 2000);
+      }, 5000);
     }])
 ;

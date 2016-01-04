@@ -130,12 +130,20 @@ angular.module('dashing.tables.sortable_table', [
           from: null,
           to: null
         };
-        scope.$watch('currentPage', function() {
+        scope.$watch('currentPage', updateText);
+        scope.$watch('totalItemCount', updateText);
+
+        function updateText() {
           var pagination = stTable.tableState().pagination;
-          scope.stRange.from = pagination.start + 1;
-          scope.stRange.to = scope.currentPage === pagination.numberOfPages ?
-            pagination.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
-        });
+          if (pagination.totalItemCount === 0) {
+            scope.stRange.from = 0;
+            scope.stRange.to = 0;
+          } else {
+            scope.stRange.from = pagination.start + 1;
+            scope.stRange.to = scope.currentPage === pagination.numberOfPages ?
+              pagination.totalItemCount : (scope.stRange.from + scope.stItemsByPage - 1);
+          }
+        }
       }
     };
   }])

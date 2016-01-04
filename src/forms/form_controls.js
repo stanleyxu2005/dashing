@@ -144,13 +144,17 @@ angular.module('dashing.forms.form_control', [
           case 'datetime':
             scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-md-5';
             scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-md-4';
+            scope.fillDefaultDate = function() {
+              if (!scope.dateValue) {
+                scope.dateValue = new Date();
+              }
+            };
             scope.fillDefaultTime = function() {
               if (!scope.timeValue) {
                 var now = new Date();
-                scope.timeValue = [
-                  (now.getHours() + 100).toString().slice(1),
-                  (now.getMinutes() + 100).toString().slice(1),
-                  '00'].join(':');
+                now.setSeconds(0);
+                now.setMilliseconds(0);
+                scope.timeValue = now;
               }
             };
             // date time control has a built-in validator

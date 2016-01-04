@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.0
+* Improvement (#49): Auto select the current date for date picker.
+
 ## 0.3.9
 * Improvement (#2): Click sort arrow will show animation.
 * Improvement: Able to align a numberic column to left by setting `.textLeft()`.

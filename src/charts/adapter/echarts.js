@@ -61,17 +61,23 @@ angular.module('dashing.charts.adapter.echarts', [
     EchartWrapper.prototype = {
 
       rebuild: function(options) {
+        this.chart.hideLoading();
         this.chart.clear();
-        this.chart.setOption(options, /*overwrite=*/true);
-        this.initOptions = angular.copy(options);
+        this.initOptions = null;
 
-        this._applyGroupingFix(options.groupId);
-        if (this.isGraphDataAvailable()) {
-          // Initial data points will all be added to canvas, but we want to limit the number of
-          // maximal visible data points. So we put the rest of them into a queue and add them to
-          // chart after the option is applied.
-          this.addDataPoints(options.dataPointsQueue, /*silent=*/true);
+        this.chart.setOption(options, /*overwrite=*/true);
+        this.chart.resize();
+
+        if (!this.isGraphDataAvailable()) {
+          this.initOptions = angular.copy(options);
+          return;
         }
+
+        // Initial data points will all be added to canvas, but we want to limit the number of
+        // maximal visible data points. So we put the rest of them into a queue and add them to
+        // chart after the option is applied.
+        this.addDataPoints(options.dataPointsQueue, /*silent=*/true);
+        this._applyGroupingFix(options.groupId);
       },
 
       _applyGroupingFix: function(groupId) {
@@ -89,7 +95,7 @@ angular.module('dashing.charts.adapter.echarts', [
           return;
         }
 
-        if (!this.isGraphDataAvailable()) {
+        if (this.initOptions !== null) {
           this.rebuild(this.initOptions);
         }
 
@@ -141,7 +147,10 @@ angular.module('dashing.charts.adapter.echarts', [
       },
 
       isGraphDataAvailable: function() {
-        return angular.isDefined(this.chart.getOption().xAxis);
+        var currentOptions = this.chart.getOption();
+        return angular.isObject(currentOptions.xAxis) &&
+          currentOptions.xAxis.length &&
+          currentOptions.xAxis[0].data;
       },
 
       updateOption: function(options) {
@@ -385,12 +394,9 @@ angular.module('dashing.charts.adapter.echarts', [
           if (replaceLookup && replaceLookup.hasOwnProperty(value)) {
             return replaceLookup[value];
           }
-          if (angular.isNumber(value)) {
-            value = Number(value); // echarts gives `value` decimal as string
-            if (value !== 0) {
-              var hr = util.text.toHumanReadableNumber(value, 1000, 1);
-              value = hr.value + (unit ? ' ' + hr.modifier + unit : hr.modifier.toLowerCase());
-            }
+          if (value != 0 && angular.isNumber(value)) {
+            var hr = util.text.toHumanReadableNumber(value, 1000, 1);
+            return hr.value + (unit ? ' ' + hr.modifier + unit : hr.modifier.toLowerCase());
           }
           return value;
         };

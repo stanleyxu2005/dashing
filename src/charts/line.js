@@ -53,7 +53,7 @@ angular.module('dashing.charts.line', [
           yAxisSplitNum: 3,
           yAxisShowSplitLine: true,
           yAxisLabelWidth: 60,
-          yAxisLabelFormatter: $echarts.axisLabelFormatter('', {0: '1'}),
+          yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           yAxisScaled: false,
           xAxisShowLabels: true
         }, dsOptions);

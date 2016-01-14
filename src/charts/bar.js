@@ -3,7 +3,9 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.charts.bar', [
-  'dashing.charts.echarts'
+  'dashing.charts.adapter.echarts',
+  'dashing.charts.look_and_feel',
+  'dashing.util'
 ])
 /**
  * Bar chart control.
@@ -36,29 +38,15 @@ angular.module('dashing.charts.bar', [
  *
  * @example
  *   <bar-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
+ *     options-bind="options"
+ *     datasource-bind="dataArray">
  *   </bar-chart>
  */
-  .directive('barChart', ['$echarts', function($echarts) {
-    'use strict';
+  .directive('barChart', ['dashing.charts.look_and_feel', 'dashing.util', '$echarts',
+    function(lookAndFeel, util, $echarts) {
+      'use strict';
 
-    return {
-      restrict: 'E',
-      template: '<echart options="::echartOptions"></echart>',
-      scope: {
-        options: '=optionsBind',
-        data: '=datasourceBind'
-      },
-      link: function(scope) {
-        var echartScope = scope.$$childHead;
-        scope.$watch('data', function(data) {
-          if (data) {
-            echartScope.addDataPoints(data);
-          }
-        });
-      },
-      controller: ['$scope', '$element', function($scope, $element) {
+      function toEchartOptions(dsOptions, scope) {
         var use = angular.merge({
           yAxisSplitNum: 3,
           yAxisShowMinorAxisLine: false,
@@ -67,7 +55,7 @@ angular.module('dashing.charts.bar', [
           static: true,
           rotate: false,
           xAxisShowLabels: true
-        }, $scope.options);
+        }, dsOptions);
 
         use = angular.merge({
           barMaxWidth: use.rotate ? 20 : 16,
@@ -84,11 +72,10 @@ angular.module('dashing.charts.bar', [
         $echarts.validateSeriesNames(use, data);
 
         if (!Array.isArray(use.colors) || !use.colors.length) {
-          use.colors = $echarts.barChartColorRecommendation(
-            use.seriesNames.length || 1);
+          use.colors = lookAndFeel.barChartColorRecommendation(use.seriesNames.length || 1);
         }
         var colors = use.colors.map(function(base) {
-          return $echarts.buildColorStates(base);
+          return lookAndFeel.buildColorStates(base);
         });
         var axisColor = colors.length > 1 ? '#999' : colors[0].line;
 
@@ -192,7 +179,7 @@ angular.module('dashing.charts.bar', [
             }
           } else {
             var gridMarginX = options.grid.borderWidth * 2 + options.grid.x + options.grid.x2;
-            var chartControlWidth = angular.element($element[0]).children()[0].offsetWidth;
+            var chartControlWidth = scope.getChartControlWidthFn();
             var visibleWidthForBars = chartControlWidth - gridMarginX;
 
             if (drawAllBarMinWidth > 0 && drawAllBarMinWidth > visibleWidthForBars) {
@@ -210,8 +197,7 @@ angular.module('dashing.charts.bar', [
                 y: chartHeight - scrollbarHeight - scrollbarGridMargin,
                 handleColor: axisColor
               };
-              options.dataZoom.fillerColor =
-                zrender.tool.color.alpha(options.dataZoom.handleColor, 0.08);
+              options.dataZoom.fillerColor = util.color.alpha(options.dataZoom.handleColor, 0.08);
               options.grid.y2 += scrollbarHeight + scrollbarGridMargin * 2;
             } else if (data.length) {
               if (visibleWidthForBars > drawAllBarMaxWidth) {
@@ -225,8 +211,25 @@ angular.module('dashing.charts.bar', [
           }
         }
 
-        $scope.echartOptions = options;
-      }]
-    };
-  }])
+        return options;
+      }
+
+      return {
+        restrict: 'E',
+        template: '<echart options="::initOptions" api="api"></echart>',
+        scope: {
+          options: '=optionsBind',
+          data: '=datasourceBind'
+        },
+        link: function(scope) {
+          return $echarts.linkFn(scope, toEchartOptions);
+        },
+        controller: ['$scope', '$element', function($scope, $element) {
+          $scope.getChartControlWidthFn = function() {
+            return angular.element($element[0]).children()[0].offsetWidth;
+          };
+          $scope.initOptions = toEchartOptions($scope.options, $scope);
+        }]
+      };
+    }])
 ;

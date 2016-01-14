@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0
  * See accompanying LICENSE file.
  */
-angular.module('dashing.charts.echarts', [
+angular.module('dashing.charts.adapter.echarts', [
   'dashing.util'
 ])
 /**
@@ -11,43 +11,19 @@ angular.module('dashing.charts.echarts', [
  * Recommend use `<echart options="::YourOptions"></echart>`, because the options will not accept new changes
  * anyway after the directive is stabilized.
  */
-  .directive('echart', ['dashing.util', function(util) {
+  .directive('echart', ['EchartWrapper', function(EchartWrapper) {
     'use strict';
-
-    function makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime) {
-      var array = [];
-      angular.forEach(util.array.ensureArray(data), function(datum) {
-        var dataGrow = dataPointsGrowNum-- > 0;
-        var yValues = util.array.ensureArray(datum.y).slice(0, seriesNum);
-        if (xAxisTypeIsTime) {
-          angular.forEach(yValues, function(yValue, seriesIndex) {
-            var params = [seriesIndex, [datum.x, yValue], /*isHead=*/false, dataGrow];
-            array.push(params);
-          });
-        } else {
-          var lastSeriesIndex = yValues.length - 1;
-          angular.forEach(yValues, function(yValue, seriesIndex) {
-            var params = [seriesIndex, yValue, /*isHead=*/false, dataGrow];
-            if (seriesIndex === lastSeriesIndex) {
-              // x-axis label (for category type) must be added to the last series!
-              params.push(datum.x);
-            }
-            array.push(params);
-          });
-        }
-      });
-      return array;
-    }
 
     return {
       restrict: 'E',
       template: '<div></div>',
       replace: true /* tag will be replaced as div, otherwise echart cannot find a container to stay. */,
       scope: {
-        options: '='
+        options: '=',
+        api: '='
       },
-      controller: ['$scope', '$element', 'dsEchartsDefaults', '$echarts',
-        function($scope, $element, defaults, $echarts) {
+      controller: ['$scope', '$element', 'dashing.charts.echarts.defaults',
+        function($scope, $element, defaults) {
           var options = $scope.options;
           var elem0 = $element[0];
           angular.forEach(['width', 'height'], function(prop) {
@@ -56,6 +32,7 @@ angular.module('dashing.charts.echarts', [
             }
           });
           var chart = echarts.init(elem0);
+          chart.setTheme(defaults.lookAndFeel);
 
           angular.element(window).on('resize', chart.resize);
           $scope.$on('$destroy', function() {
@@ -65,76 +42,120 @@ angular.module('dashing.charts.echarts', [
             chart = null;
           });
 
-          chart.setTheme(defaults.lookAndFeel);
-          chart.setOption(options, /*overwrite=*/true);
-
-          // Automatically group charts with same group id
-          if (angular.isFunction(chart.group) && options.hasOwnProperty('groupId')) {
-            chart.groupId = options.groupId;
-            chart.group();
-          }
-
-          // If no data is provided, the chart is not initialized. And you can see a caution on the canvas.
-          var initialized = angular.isDefined(chart.getOption().xAxis);
-
-          function initializeDoneCheck() {
-            if (initialized) {
-              // If data points are more than the maximal visible data points, we put them into a queue and then
-              // add them to the chart after the option is applied, otherwise all data points will be shown on
-              // the chart.
-              if (options.dataPointsQueue && options.dataPointsQueue.length) {
-                addDataPoints(options.dataPointsQueue);
-              }
-            }
-          }
-
-          initializeDoneCheck();
-
-          /** Method to add data points to chart */
-          function addDataPoints(data) {
-            if (!data || (Array.isArray(data) && !data.length)) {
-              return;
-            }
-            try {
-              // try to complete the initialization, as soon as data is available
-              if (!initialized) {
-                $echarts.fillAxisData(options, util.array.ensureArray(data));
-                chart.setOption(options, /*overwrite=*/true);
-                initialized = angular.isDefined(chart.getOption().xAxis);
-                initializeDoneCheck();
-                if (initialized) {
-                  chart.hideLoading();
-                }
-                return;
-              }
-
-              var currentOption = chart.getOption();
-              var actualVisibleDataPoints = currentOption.series[0].data.length;
-              var dataPointsGrowNum = Math.max(0,
-                (currentOption.visibleDataPointsNum || defaults.visibleDataPointsNum) - actualVisibleDataPoints);
-              var xAxisTypeIsTime = (currentOption.xAxis[0].type === 'time') || // or rotated bar chart
-                (currentOption.xAxis[0].type === 'value' && currentOption.yAxis[0].type === 'time');
-              var seriesNum = currentOption.series.length;
-              var dataArray = makeDataArray(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime);
-              if (dataArray.length > 0) {
-                chart.addData(dataArray);
-              }
-            } catch (ex) {
-            }
-          }
-
-          /** Export these functions. */
-          $scope.addDataPoints = addDataPoints;
-          $scope.getChartControl = function() {
-            return chart;
-          };
+          $scope.api = new EchartWrapper(chart);
+          $scope.api.rebuild(options);
         }]
     };
   }])
 /**
+ * Provide apis for operate Echart.
+ */
+  .service('EchartWrapper', ['dashing.util', function(util) {
+    'use strict';
+
+    var EchartWrapper = function(chart) {
+      this.chart = chart;
+      this.initOptions = null;
+    };
+
+    EchartWrapper.prototype = {
+
+      rebuild: function(options) {
+        this.chart.clear();
+        this.chart.setOption(options, /*overwrite=*/true);
+        this.initOptions = angular.copy(options);
+
+        this._applyGroupingFix(options.groupId);
+        if (this.isGraphDataAvailable()) {
+          // Initial data points will all be added to canvas, but we want to limit the number of
+          // maximal visible data points. So we put the rest of them into a queue and add them to
+          // chart after the option is applied.
+          this.addDataPoints(options.dataPointsQueue, /*silent=*/true);
+        }
+      },
+
+      _applyGroupingFix: function(groupId) {
+        if (angular.isFunction(this.chart.group) && String(groupId).length) {
+          this.chart.groupId = groupId;
+          this.chart.group();
+        }
+      },
+
+      addDataPoints: function(dataPoints, silent) {
+        if (!Array.isArray(dataPoints) || !dataPoints.length) {
+          if (!silent) {
+            console.warn({msg: 'Invalid input data points', data: dataPoints});
+          }
+          return;
+        }
+
+        if (!this.isGraphDataAvailable()) {
+          this.rebuild(this.initOptions);
+        }
+
+        var currentChartOptions = this.chart.getOption();
+        var dataArray = this._dataPointsToDataArray(dataPoints, currentChartOptions);
+        if (dataArray.length > 0) {
+          this.chart.addData(dataArray);
+        }
+      },
+
+      _dataPointsToDataArray: function(dataPoints, options) {
+        try {
+          var actualVisibleDataPoints = options.series[0].data.length;
+          var dataPointsGrowNum = Math.max(0,
+            (options.visibleDataPointsNum || Number.MAX_VALUE) - actualVisibleDataPoints);
+          var xAxisTypeIsTime = (options.xAxis[0].type === 'time') || // or rotated bar chart
+            (options.xAxis[0].type === 'value' && options.yAxis[0].type === 'time');
+          var seriesNum = options.series.length;
+
+          return this._makeDataArray(dataPoints, seriesNum, dataPointsGrowNum, xAxisTypeIsTime);
+        } catch (ex) {
+        }
+        return [];
+      },
+
+      _makeDataArray: function(data, seriesNum, dataPointsGrowNum, xAxisTypeIsTime) {
+        var array = [];
+        angular.forEach(util.array.ensureArray(data), function(datum) {
+          var dataGrow = dataPointsGrowNum-- > 0;
+          var yValues = util.array.ensureArray(datum.y).slice(0, seriesNum);
+          if (xAxisTypeIsTime) {
+            angular.forEach(yValues, function(yValue, seriesIndex) {
+              var params = [seriesIndex, [datum.x, yValue], /*isHead=*/false, dataGrow];
+              array.push(params);
+            });
+          } else {
+            var lastSeriesIndex = yValues.length - 1;
+            angular.forEach(yValues, function(yValue, seriesIndex) {
+              var params = [seriesIndex, yValue, /*isHead=*/false, dataGrow];
+              if (seriesIndex === lastSeriesIndex) {
+                // x-axis label (for category type) must be added to the last series!
+                params.push(datum.x);
+              }
+              array.push(params);
+            });
+          }
+        });
+        return array;
+      },
+
+      isGraphDataAvailable: function() {
+        return angular.isDefined(this.chart.getOption().xAxis);
+      },
+
+      updateOption: function(options) {
+        this.chart.setOption(options, /*overwrite=*/false);
+      }
+
+    };
+
+    return EchartWrapper;
+  }])
+/**
  * Constants of chart
  */
-  .constant('dsEchartsDefaults', {
+  .constant('dashing.charts.echarts.defaults', {
     // Echarts look and feel recommendation
     lookAndFeel: {
       markLine: {
@@ -458,55 +479,19 @@ angular.module('dashing.charts.echarts', [
           options.xAxis[0].data = xLabels;
         }
       },
-      /**
-       * Return a recommended color palette for line chart.
-       */
-      lineChartColorRecommendation: function(seriesNum) {
-        var colors = util.color.palette;
-        switch (seriesNum) {
-          case 1:
-            return [colors.blue];
-          case 2:
-            return [colors.blue, colors.blueishGreen];
-          default:
-            return util.array.repeatArray([
-              colors.blue,
-              colors.purple,
-              colors.blueishGreen,
-              colors.darkRed,
-              colors.orange
-            ], seriesNum);
-        }
-      },
-      /**
-       * Return a recommended color palette for bar chart.
-       */
-      barChartColorRecommendation: function(seriesNum) {
-        var colors = util.color.palette;
-        switch (seriesNum) {
-          case 1:
-            return [colors.lightBlue];
-          case 2:
-            return [colors.blue, colors.darkBlue];
-          default:
-            return util.array.repeatArray([
-              colors.lightGreen,
-              colors.darkGray,
-              colors.lightBlue,
-              colors.blue,
-              colors.darkBlue
-            ], seriesNum);
-        }
-      },
-      /**
-       * Build colors for state set.
-       */
-      buildColorStates: function(base) {
-        return {
-          line: base,
-          area: zrender.tool.color.lift(base, -0.92),
-          hover: zrender.tool.color.lift(base, 0.15)
-        };
+      /** A common link function to watch data and option changes for chart control. */
+      linkFn: function(scope, toEchartOptionFn) {
+        scope.$watch('data', function(data) {
+          if (data) {
+            var dataArray = Array.isArray(data) ? data : [data];
+            scope.api.addDataPoints(dataArray);
+          }
+        });
+        scope.$watch('options', function(newOptions, oldOptions) {
+          if (!angular.equals(newOptions, oldOptions)) {
+            scope.api.rebuild(toEchartOptionFn(newOptions, scope));
+          }
+        }, /*deep=*/true);
       }
     };
   }])

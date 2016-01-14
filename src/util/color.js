@@ -21,7 +21,7 @@ angular.module('dashing.util.color', [])
         darkGray: 'rgb(92,92,97)',
         darkPink: 'rgb(212,102,138)',
         darkRed: 'rgb(212,102,138)',
-        lightBlue: 'rgb(93,201,242)',
+        lightBlue: 'rgb(35,183,229)',
         lightGreen: 'rgb(169,255,150)'
       },
       /** Convert a condition to a css color */
@@ -36,6 +36,14 @@ angular.module('dashing.util.color', [])
           default:
             return '#aaa';
         }
+      },
+      /** Return a lighter color. Level is a number in range [-1, 1] */
+      lighter: function(color, level) {
+        return zrender.tool.color.lift(color, level);
+      },
+      /** Return a color with alpha chanel. Transparency is a number in range [0, 1] */
+      alpha: function(color, transparency) {
+        return zrender.tool.color.alpha(color, transparency);
       }
     };
   })

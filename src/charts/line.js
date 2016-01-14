@@ -3,7 +3,8 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.charts.line', [
-  'dashing.charts.echarts'
+  'dashing.charts.adapter.echarts',
+  'dashing.charts.look_and_feel'
 ])
 /**
  * Line chart control.
@@ -36,29 +37,15 @@ angular.module('dashing.charts.line', [
  *
  * @example
  *   <line-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
+ *     options-bind="options"
+ *     datasource-bind="dataArray">
  *   </line-chart>
  */
-  .directive('lineChart', function() {
-    'use strict';
+  .directive('lineChart', ['dashing.charts.look_and_feel', '$echarts',
+    function(lookAndFeel, $echarts) {
+      'use strict';
 
-    return {
-      restrict: 'E',
-      template: '<echart options="::echartOptions"></echart>',
-      scope: {
-        options: '=optionsBind',
-        data: '=datasourceBind'
-      },
-      link: function(scope) {
-        var echartScope = scope.$$childHead;
-        scope.$watch('data', function(data) {
-          if (data) {
-            echartScope.addDataPoints(data);
-          }
-        });
-      },
-      controller: ['$scope', '$echarts', function($scope, $echarts) {
+      function toEchartOptions(dsOptions) {
         var use = angular.merge({
           seriesStacked: true,
           seriesLineSmooth: false,
@@ -69,17 +56,16 @@ angular.module('dashing.charts.line', [
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           yAxisScaled: false,
           xAxisShowLabels: true
-        }, $scope.options);
+        }, dsOptions);
 
         var data = use.data;
         $echarts.validateSeriesNames(use, data);
 
         if (!Array.isArray(use.colors) || !use.colors.length) {
-          use.colors = $echarts.lineChartColorRecommendation(
-            use.seriesNames.length || 1);
+          use.colors = lookAndFeel.lineChartColorRecommendation(use.seriesNames.length || 1);
         }
         var colors = use.colors.map(function(base) {
-          return $echarts.buildColorStates(base);
+          return lookAndFeel.buildColorStates(base);
         });
         var axisColor = '#ccc';
         var borderLineStyle = {
@@ -208,8 +194,22 @@ angular.module('dashing.charts.line', [
           options.grid.y += 12;
         }
 
-        $scope.echartOptions = options;
-      }]
-    };
-  })
+        return options;
+      }
+
+      return {
+        restrict: 'E',
+        template: '<echart options="::initOptions" api="api"></echart>',
+        scope: {
+          options: '=optionsBind',
+          data: '=datasourceBind'
+        },
+        link: function(scope) {
+          return $echarts.linkFn(scope, toEchartOptions);
+        },
+        controller: ['$scope', function($scope) {
+          $scope.initOptions = toEchartOptions($scope.options);
+        }]
+      };
+    }])
 ;

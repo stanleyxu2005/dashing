@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.1
+* Feature (#51): Exposed charts apis to directive. Chart will be repainted, if option is changed.
+
 ## 0.4.0
 * Improvement (#49): Auto select the current date for date picker.
 * Improvement (#50): Allow user to customize empty sortable table.

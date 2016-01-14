@@ -3,7 +3,8 @@
  * See accompanying LICENSE file.
  */
 angular.module('dashing.charts.sparkline', [
-  'dashing.charts.echarts'
+  'dashing.charts.adapter.echarts',
+  'dashing.charts.look_and_feel'
 ])
 /**
  * Sparkline is an one data series line chart without axis labels.
@@ -25,48 +26,35 @@ angular.module('dashing.charts.sparkline', [
  *
  * @example
  *   <sparkline-chart
- *     options-bind="::chartOptions"
- *     datasource-bind="chartData">
+ *     options-bind="options"
+ *     datasource-bind="dataArray">
  *   </sparkline-chart>
  */
-  .directive('sparklineChart', ['$echarts', function($echarts) {
-    'use strict';
+  .directive('sparklineChart', ['dashing.charts.look_and_feel', '$echarts',
+    function(lookAndFeel, $echarts) {
+      'use strict';
 
-    return {
-      restrict: 'E',
-      template: '<echart options="::echartOptions"></echart>',
-      scope: {
-        options: '=optionsBind',
-        data: '=datasourceBind'
-      },
-      link: function(scope) {
-        var echartScope = scope.$$childHead;
-        scope.$watch('data', function(data) {
-          if (data) {
-            echartScope.addDataPoints(data);
-          }
-        });
-      },
-      controller: ['$scope', function($scope) {
+      function toEchartOptions(dsOptions) {
         var use = angular.merge({
-          color: 'rgb(0,119,215)',
+          color: lookAndFeel.lineChartColorRecommendation(1)[0],
           yAxisBoundaryGap: [0, 0.5]
-        }, $scope.options);
+        }, dsOptions);
 
         if (use.xAxisTypeIsTime) {
-          // todo: https://github.com/ecomfe/echarts/issues/1954
-          console.warn('Echarts does not have a good experience for time series, so we fallback to category.');
+          console.warn('Echarts does not have a good experience for time series, so we fallback to category. ' +
+            'Please track https://github.com/ecomfe/echarts/issues/1954');
           use.xAxisTypeIsTime = false;
         }
 
-        var colors = $echarts.buildColorStates(use.color);
+        var colors = lookAndFeel.buildColorStates(use.color);
+        var defaultMargin = 5; // less than 5px might crop data point
         var options = {
           height: use.height,
           width: use.width,
           tooltip: $echarts.categoryTooltip(use.valueFormatter),
           grid: angular.merge({
             borderWidth: 1,
-            x: 5, y: 5, x2: 5, /* add 5px margin to avoid overlap a data point */
+            x: defaultMargin, y: defaultMargin, x2: defaultMargin,
             y2: 1 /* reduce to 1px, because 5px will have a thick ugly grey border */
           }, use.grid),
           xAxis: [{
@@ -96,8 +84,22 @@ angular.module('dashing.charts.sparkline', [
         var data = use.data;
         $echarts.fillAxisData(options, data, use);
 
-        $scope.echartOptions = options;
-      }]
-    };
-  }])
+        return options;
+      }
+
+      return {
+        restrict: 'E',
+        template: '<echart options="::initOptions" api="api"></echart>',
+        scope: {
+          options: '=optionsBind',
+          data: '=datasourceBind'
+        },
+        link: function(scope) {
+          return $echarts.linkFn(scope, toEchartOptions);
+        },
+        controller: ['$scope', function($scope) {
+          $scope.initOptions = toEchartOptions($scope.options);
+        }]
+      };
+    }])
 ;

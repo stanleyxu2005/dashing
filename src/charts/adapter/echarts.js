@@ -380,8 +380,11 @@ angular.module('dashing.charts.adapter.echarts', [
       /**
        * Formatter to change axis label to human readable values.
        */
-      axisLabelFormatter: function(unit) {
+      axisLabelFormatter: function(unit, replaceLookup) {
         return function(value) {
+          if (replaceLookup && replaceLookup.hasOwnProperty(value)) {
+            return replaceLookup[value];
+          }
           if (angular.isNumber(value)) {
             value = Number(value); // echarts gives `value` decimal as string
             if (value !== 0) {

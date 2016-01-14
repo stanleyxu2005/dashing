@@ -5,6 +5,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.4.1
 * Feature (#51): Exposed charts apis to directive. Chart will be repainted, if option is changed.
+* Improvement (#52): Optional to hide "0" on y-axis for line and bar charts.
 
 ## 0.4.0
 * Improvement (#49): Auto select the current date for date picker.

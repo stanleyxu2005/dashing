@@ -40,7 +40,7 @@ angular.module('examples')
       $scope.lineChartOption = {
         height: '168px',
         //xAxisType: 'time',
-        yAxisLabelFormatter: $echarts.axisLabelFormatter('B'),
+        yAxisLabelFormatter: $echarts.axisLabelFormatter('B', {0: ''}),
         data: _.range(maxChartDataPoints).map(function() {
           return nextData();
         }),

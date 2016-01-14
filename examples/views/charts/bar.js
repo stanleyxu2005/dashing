@@ -25,7 +25,7 @@ angular.module('examples')
       $scope.barChartOption = {
         height: '140px',
         valueLabelPosition: 'right',
-        yAxisLabelFormatter: $echarts.axisLabelFormatter(),
+        yAxisLabelFormatter: $echarts.axisLabelFormatter('', {0: ''}),
         data: _.range(maxChartDataPoints).map(function (i) {
           return {
             x: 'Day ' + i,
@@ -70,7 +70,7 @@ angular.module('examples')
 
       $scope.barUseNegativeColorOption = {
         height: '140px',
-        colors: ['red', 'green'],
+        colors: ['rgb(234,67,53)', 'rgb(52,168,83)'],
         valueLabelPosition: 'right',
         yAxisLabelFormatter: $echarts.axisLabelFormatter(),
         data: _.range(maxChartDataPoints).map(function (i) {

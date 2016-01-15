@@ -20,7 +20,8 @@ angular.module('dashing.charts.adapter.echarts', [
       replace: true /* tag will be replaced as div, otherwise echart cannot find a container to stay. */,
       scope: {
         options: '=',
-        api: '='
+        api: '=',
+        onResize: '&'
       },
       controller: ['$scope', '$element', 'dashing.charts.echarts.defaults',
         function($scope, $element, defaults) {
@@ -34,9 +35,17 @@ angular.module('dashing.charts.adapter.echarts', [
           var chart = echarts.init(elem0);
           chart.setTheme(defaults.lookAndFeel);
 
-          angular.element(window).on('resize', chart.resize);
+          function handleResizeEvent() {
+            var handled = $scope.onResize();
+            if (handled) {
+              return $scope.$apply();
+            }
+            chart.resize();
+          }
+
+          angular.element(window).on('resize', handleResizeEvent);
           $scope.$on('$destroy', function() {
-            angular.element(window).off('resize', chart.resize);
+            angular.element(window).off('resize', handleResizeEvent);
             // Must after `chart.resize` is removed
             chart.dispose();
             chart = null;

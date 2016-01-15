@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.2
+* Bugfix (#1): When window is resized, the bar chart should recalculate all bar positions.
+
 ## 0.4.1
 * Feature (#51): Exposed charts apis to directive. Chart will be repainted, if option is changed.
 * Improvement (#52): Optional to hide "0" on y-axis for line and bar charts.

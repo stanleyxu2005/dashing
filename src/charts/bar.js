@@ -216,7 +216,7 @@ angular.module('dashing.charts.bar', [
 
       return {
         restrict: 'E',
-        template: '<echart options="::initOptions" api="api"></echart>',
+        template: '<echart options="::initOptions" api="api" on-resize="handleResize()"></echart>',
         scope: {
           options: '=optionsBind',
           data: '=datasourceBind'
@@ -229,6 +229,10 @@ angular.module('dashing.charts.bar', [
             return angular.element($element[0]).children()[0].offsetWidth;
           };
           $scope.initOptions = toEchartOptions($scope.options, $scope);
+          $scope.handleResize = function() {
+            $scope.options._dirty = new Date();
+            return true;
+          };
         }]
       };
     }])

@@ -32,6 +32,7 @@ angular.module('dashing.charts.bar', [
  *   barMinWidth: number // show data zoom control, if bar width is narrower than the value (default: 7)
  *   barMinSpacing: number // show data zoom control, if bar spacing is narrower than the value (default: 1)
  *   xAxisShowLabels: boolean // show x-axis labels (default: true)
+ *   margin: {left: number, right: number, top: number, bottom: number} // override the margin values
  * }
  * @param datasource-bind - array
  *   every data object is {x: string, y: number}
@@ -54,7 +55,8 @@ angular.module('dashing.charts.bar', [
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           static: true,
           rotate: false,
-          xAxisShowLabels: true
+          xAxisShowLabels: true,
+          margin: {left: undefined, right: undefined, top: undefined, bottom: undefined}
         }, dsOptions);
 
         use = angular.merge({
@@ -79,6 +81,8 @@ angular.module('dashing.charts.bar', [
         });
         var axisColor = colors.length > 1 ? '#999' : colors[0].line;
 
+        var minMargin = 15;
+        var horizontalMargin = Math.max(minMargin, use.yAxisLabelWidth);
         var options = {
           height: use.height,
           width: use.width,
@@ -93,9 +97,10 @@ angular.module('dashing.charts.bar', [
             }),
           grid: angular.merge({
             borderWidth: 0,
-            x: Math.max(15, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
-            x2: 15, /* increase the right margin, otherwise last label might be cropped */
-            y: 15, y2: 28
+            x: use.margin.left || horizontalMargin,
+            x2: use.margin.right || horizontalMargin,
+            y: use.margin.top || minMargin,
+            y2: use.margin.bottom || minMargin + 13
           }, use.grid),
           xAxis: [{
             // dashing bar-chart does not support time as x-axis values
@@ -161,7 +166,6 @@ angular.module('dashing.charts.bar', [
         }
 
         if (use.static) {
-          // todo: currently the calculation can only happen at initialization stage, the chart will not response on a resizing event.
           var drawBarMinWidth = use.barMinWidth + use.barMinSpacing;
           var drawBarMaxWidth = use.barMaxWidth + use.barMaxSpacing;
           var drawAllBarMinWidth = data.length * drawBarMinWidth;
@@ -203,7 +207,7 @@ angular.module('dashing.charts.bar', [
               if (visibleWidthForBars > drawAllBarMaxWidth) {
                 // Too few bars to fill up the whole area, so increase the right/bottom margin
                 options.grid.x2 += chartControlWidth - drawAllBarMaxWidth - gridMarginX;
-              } else {
+              } else if (!angular.isDefined(use.margin.right)) {
                 roundedVisibleWidthForBars = Math.floor(visibleWidthForBars / data.length) * data.length;
                 options.grid.x2 += visibleWidthForBars - roundedVisibleWidthForBars;
               }

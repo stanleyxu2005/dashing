@@ -31,6 +31,7 @@ angular.module('dashing.charts.line', [
  *   seriesLineSmooth: boolean // draw line of series smooth (default: false)
  *   seriesYAxisIndex: array // indicates the y-axis index for every data series, value can be 0 or 1 (default: undefined)
  *   xAxisShowLabels: boolean // show x-axis labels (default: true)
+ *   margin: {left: number, right: number, top: number, bottom: number} // override the margin values
  * }
  * @param datasource-bind - array
  *   every data object is {x: time|string, y: [number]}
@@ -55,7 +56,8 @@ angular.module('dashing.charts.line', [
           yAxisLabelWidth: 60,
           yAxisLabelFormatter: $echarts.axisLabelFormatter(''),
           yAxisScaled: false,
-          xAxisShowLabels: true
+          xAxisShowLabels: true,
+          margin: {left: undefined, right: undefined, top: undefined, bottom: undefined}
         }, dsOptions);
 
         var data = use.data;
@@ -76,6 +78,7 @@ angular.module('dashing.charts.line', [
           }
         };
 
+        var horizontalMargin = Math.max(15, use.yAxisLabelWidth);
         var options = {
           height: use.height,
           width: use.width,
@@ -92,9 +95,10 @@ angular.module('dashing.charts.line', [
             }),
           grid: angular.merge({
             borderWidth: 0,
-            x: Math.max(15, use.yAxisLabelWidth), /* add 5px margin to avoid overlap a data point */
-            x2: 15, /* increase the right margin, otherwise last label might be cropped */
-            y: 20, y2: 25
+            x: use.margin.left || horizontalMargin,
+            x2: use.margin.right || horizontalMargin,
+            y: use.margin.top || 20,
+            y2: use.margin.bottom || 25
           }, use.grid),
           xAxis: [{
             type: use.xAxisTypeIsTime ? 'time' : undefined,
@@ -140,7 +144,6 @@ angular.module('dashing.charts.line', [
             yAxis2.axisLabel.formatter = use.yAxis2LabelFormatter;
           }
           options.yAxis.push(yAxis2);
-          options.grid.x2 = options.grid.x;
         }
 
         $echarts.fillAxisData(options, data, use);
@@ -184,6 +187,7 @@ angular.module('dashing.charts.line', [
             })
           };
           options.legend.y = 6;
+          options.grid.y += 14;
           if (use.title) {
             options.legend.y += titleHeight;
             options.grid.y += legendHeight;

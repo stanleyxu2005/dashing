@@ -4,6 +4,7 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.4.2
+* Improvment (#44): Allow to override line and bar chart's margin.
 * Bugfix (#1): When window is resized, the bar chart should recalculate all bar positions.
 
 ## 0.4.1
@@ -12,7 +13,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.4.0
 * Improvement (#49): Auto select the current date for date picker.
-* Improvement (#50): Allow user to customize empty sortable table.
+* Improvement (#50): Allow to customize empty sortable table.
 
 ## 0.3.9
 * Improvement (#2): Click sort arrow will show animation.

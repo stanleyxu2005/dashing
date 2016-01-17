@@ -223,7 +223,7 @@ angular.module('dashing.charts.adapter.echarts', [
     function buildTooltipSeriesTable(name, array, use) {
 
       function tooltipSeriesColorIndicatorHtml(color) {
-        var border = zrender.tool.color.lift(color, -0.2);
+        var border = util.color.lighter(color, -0.2);
         return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
       }
 
@@ -430,7 +430,7 @@ angular.module('dashing.charts.adapter.echarts', [
             },
             emphasis: {
               color: args.colors.hover,
-              borderColor: zrender.tool.color.alpha(args.colors.line, 0.3)
+              borderColor: util.color.alpha(args.colors.line, 0.3)
             }
           }
         };

@@ -1,6 +1,11 @@
 <table class="table table-striped table-hover">
-  <caption ng-if="caption"
-           ng-bind="caption"></caption>
+  <caption ng-if="caption">
+    {{caption}}
+    <remark ng-if="captionTooltip"
+            type="info" tooltip="{{captionTooltip}}"></remark>
+    <small ng-if="subCaption"
+           class="visible-md" ng-bind="subCaption"></small>
+  </caption>
   <tbody>
   <tr ng-repeat="prop in props track by $index">
     <td ng-attr-ng-class="propNameClass">

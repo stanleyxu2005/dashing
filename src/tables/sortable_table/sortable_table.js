@@ -21,6 +21,10 @@ angular.module('dashing.tables.sortable_table', [
  *    an array of record objects
  *  @param caption string (optional)
  *    the caption of the table
+ * @param caption-tooltip string (optional)
+ *   the tooltip of the caption
+ * @param sub-caption string (optional)
+ *   the table description
  *  @param pagination int (optional)
  *    the number of records to be shown per page
  *  @param search-bind object (optional)
@@ -31,6 +35,8 @@ angular.module('dashing.tables.sortable_table', [
  *    columns-bind="columnsVariable"
  *    records-bind="recordsVariable"
  *    caption="Table caption"
+ *    caption-tooltip="What is this table"
+ *    sub-caption="Table description"
  *    pagination="5"
  *    search-bind="searchVariable">
  *  </sortable-table>
@@ -44,6 +50,8 @@ angular.module('dashing.tables.sortable_table', [
       transclude: true,
       scope: {
         caption: '@',
+        captionTooltip: '@',
+        subCaption: '@',
         pagination: '@',
         columns: '=columnsBind',
         records: '=recordsBind',

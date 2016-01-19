@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.3
+* Improvment (#54): Allow table caption to have tooltip and sub-caption.
+
 ## 0.4.2
 * Improvment (#44): Allow to override line and bar chart's margin.
 * Bugfix (#1): When window is resized, the bar chart should recalculate all bar positions.

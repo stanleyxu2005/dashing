@@ -1,7 +1,12 @@
 <table class="table table-hover"
        st-table="showing" st-safe-src="records">
-  <caption ng-if="caption"
-           ng-bind="caption"></caption>
+  <caption ng-if="caption">
+    {{caption}}
+    <remark ng-if="captionTooltip"
+            type="info" tooltip="{{captionTooltip}}"></remark>
+    <small ng-if="subCaption"
+           class="visible-md" ng-bind="subCaption"></small>
+  </caption>
   <thead>
   <tr>
     <th ng-repeat="column in columns track by $index"

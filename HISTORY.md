@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.4
+* Improvment (#54): Tooltip of table caption will be right to the caption.
+
 ## 0.4.3
 * Improvment (#54): Allow table caption to have tooltip and sub-caption.
 

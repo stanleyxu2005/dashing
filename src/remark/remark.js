@@ -11,6 +11,7 @@ angular.module('dashing.remark', [
  * @param tooltip string
  * @param type enum(question|warning) (default=question)
  * @param placement enum(top|left|right|bottom) (default=top)
+ * @param trigger set(hover|focus|click) (default=[hover, focus])
  *
  * @example
  *  <remark tooltip="This is a tooltip"></remark>
@@ -24,7 +25,8 @@ angular.module('dashing.remark', [
       scope: {
         tooltip: '@',
         placement: '@',
-        type: '@'
+        type: '@',
+        trigger: '@'
       },
       link: function(scope) {
         scope.$watch('type', function(type) {

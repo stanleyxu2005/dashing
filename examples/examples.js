@@ -5,6 +5,7 @@
 
 angular.module('examples', [
   'ngAnimate',
+  'ngSanitize',
   'ui.router',
   'dashing'
 ])

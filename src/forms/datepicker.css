@@ -20,7 +20,7 @@
   font-weight: 500;
 }
 
-/* Fix calendar card height, otherwise when switch to year view, the buttons will appear at wrong place (4 rules) */
+/* Fix calendar card height, otherwise when switch to year view, the buttons will appear at wrong place (5 rules) */
 .datepicker.dropdown-menu.datepicker-mode-1 tbody button,
 .datepicker.dropdown-menu.datepicker-mode-2 tbody button {
   height: 50px;
@@ -28,7 +28,11 @@
 
 .datepicker.dropdown-menu {
   height: 228px;
-  padding: 8px 8px 8px 8px;
+  padding: 8px;
+}
+
+.datepicker.dropdown-menu tbody {
+  height: auto;
 }
 
 .datepicker .dt-header > th {
@@ -37,15 +41,4 @@
 
 .datepicker .dow {
   padding-top: 1px; /* otherwise when switch to year view, the row will move up 1px */
-}
-
-.timepicker.dropdown-menu {
-  padding: 8px 8px 8px 8px;
-}
-
-.timepicker .time-separator {
-  padding-left: 3px;
-  padding-right: 3px;
-  font-size: 15px;
-  font-weight: 700;
 }

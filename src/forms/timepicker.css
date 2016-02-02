@@ -1,0 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * See accompanying LICENSE file.
+ */
+
+/** Make fonts and control spacing smaller (2 rules) */
+.timepicker.dropdown-menu {
+  padding: 8px 8px 8px 8px;
+}
+
+.timepicker .time-separator {
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 15px;
+  font-weight: 700;
+}

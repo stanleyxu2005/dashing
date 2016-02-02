@@ -22,8 +22,7 @@
     <tr ng-if="showLabels" ng-bind-html="labels"></tr>
     </thead>
     <tbody>
-    <tr ng-repeat="(i, row) in rows track by $index"
-        style="height: 21px">
+    <tr ng-repeat="(i, row) in rows track by $index">
       <td class="text-center" ng-repeat="(j, el) in row track by $index">
         <button tabindex="-1" type="button" class="btn btn-sm btn-default btn-no-radius"
                 style="width: 100%; padding: 4px 3px"

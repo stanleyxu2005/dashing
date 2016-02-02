@@ -38,14 +38,16 @@ angular.module('dashing.forms.form_control', [
     function buildChoicesForSelect(choices) {
       var result = [];
       angular.forEach(choices, function(choice, value) {
+        var item = {value: value};
         if (angular.isString(choice)) {
-          choice = {text: choice};
+          item.text = choice;
+        } else {
+          item.text = choice.text;
+          if (choice.hasOwnProperty('subtext')) {
+            item.subtext = choice.subtext;
+          }
         }
-        result.push({
-          value: value,
-          text: choice.text,
-          subtext: choice.subtext
-        });
+        result.push(item);
       });
       return result;
     }

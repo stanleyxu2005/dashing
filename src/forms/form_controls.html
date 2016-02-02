@@ -6,7 +6,7 @@
     </span>
   </label>
   <ng-switch on="renderAs">
-    <!-- select -->
+    <!-- choices -->
     <div ng-switch-when="choices">
       <div class="{{controlStyleClass}}">
         <ui-select theme="select2" class="form-control"
@@ -75,11 +75,9 @@
       <div class="{{dateControlStyleClass}} has-feedback"
            ng-class="{'has-error': dateInputInvalid}">
         <input class="form-control input-sm"
-               data-date-format="yyyy-MM-dd"
                type="text" size="10" placeholder="YYYY-MM-DD"
+               data-date-format="yyyy-MM-dd" ng-model="$parent.dateValue" date-type="string"
                ng-click="fillDefaultDate()"
-               ng-model="$parent.dateValue" date-type="string"
-               data-autoclose="1"
                template-url="forms/datepicker.html"
                use-native="true" bs-datepicker/>
         <span class="glyphicon glyphicon-calendar form-control-feedback fc-feedback-sm"></span>
@@ -87,11 +85,10 @@
       <div class="{{timeControlStyleClass}} has-feedback" style="padding-left: 0"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
-               data-time-format="HH:mm:ss"
                type="text" size="8" placeholder="HH:mm:ss"
-               ng-click="fillDefaultTime()"
-               ng-model="$parent.timeValue" time-type="string"
+               data-time-format="HH:mm:ss" ng-model="$parent.timeValue" time-type="string"
                hour-step="1" minute-step="1" second-step="1" data-length="3"
+               ng-focus="fillDefaultTime()"
                arrow-behavior="picker"
                template-url="forms/timepicker.html"
                use-native="true" bs-timepicker/>

@@ -8,16 +8,22 @@ angular.module('examples')
   .controller('LayoutCtrl', ['$scope', function($scope) {
     'use strict';
 
+    var minimalWidth = 960;
+
     $scope.windowInnerWidth = function() {
       return window.innerWidth;
     };
 
     $scope.$watch($scope.windowInnerWidth, function(width) {
-      $scope.toggle = true;
+      if ($scope.open && width < minimalWidth) {
+        $scope.open = false;
+      } else if (!$scope.open && width > minimalWidth) {
+        $scope.open = true;
+      }
     });
 
     $scope.toggleSidebar = function() {
-      $scope.toggle = !$scope.toggle;
+      $scope.open = !$scope.open;
     };
 
     window.onresize = function() {

@@ -4,7 +4,6 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.4.5
-* Feature (#58): Replace Bootstrap 3's glyphicon with octicon
 * Bugfix (#57): Date picker was not rendered correctly for Firefox
 * Updated example build script (angular 1.4.9 has conflict with attribute required="true")
 

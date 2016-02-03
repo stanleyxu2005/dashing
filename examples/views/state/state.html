@@ -1,32 +1,13 @@
-<div class="row">
-  <div class="col-md-12">
-    <h4>Indicators</h4>
+<indicator tooltip="Good should be green" condition="good"></indicator>
+<indicator tooltip="Concern should be orange" condition="concern"></indicator>
+<indicator tooltip="Danger should be red" condition="danger"></indicator>
+<indicator tooltip="Unknown condition, fallback to default color." condition="whatever"></indicator>
+<p>
+  <indicator tooltip="{{text}}" condition="{{condition}}"></indicator>
+  Condition: {{condition}}
+</p>
 
-    <h3>
-      Condition: good
-      <indicator tooltip="Good should be green" condition="good"></indicator>
-    </h3>
-    <h4>
-      Condition: concern
-      <indicator tooltip="Concern should be orange" condition="concern"></indicator>
-    </h4>
-    <h5>
-      Condition: danger
-      <indicator tooltip="Danger should be red" condition="danger"></indicator>
-    </h5>
-    <h6>
-      Condition: whatever
-      <indicator tooltip="Unknown condition, fallback to default color." condition="whatever"></indicator>
-    </h6>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <h4>Tags</h4>
-    <tag condition="good" text="Build passed"></tag>
-    <tag condition="good" text="Build passed" tooltip="When you see the tooltip, the cursor should be a hand"></tag>
-    <tag href="/path/to/page" condition="danger" text="error" tooltip="Build failed"></tag>
-    <tag condition="{{condition}}" text="{{text}}"></tag>
-  </div>
-</div>
+<tag condition="good" text="Build passed"></tag>
+<tag condition="good" text="Build passed" tooltip="When you see the tooltip, the cursor should be a hand"></tag>
+<tag href="/path/to/page" condition="danger" text="error" tooltip="Build failed"></tag>
+<tag condition="{{condition}}" text="{{text}}"></tag>

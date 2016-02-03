@@ -32,13 +32,13 @@ angular.module('dashing.remark', [
         scope.$watch('type', function(type) {
           switch (type) {
             case 'info':
-              scope.styleClass = 'remark-icon octicon octicon-info';
+              scope.styleClass = 'glyphicon glyphicon-info-sign remark-icon';
               break;
             case 'warning':
-              scope.styleClass = 'remark-icon-warning octicon octicon-alert';
+              scope.styleClass = 'glyphicon glyphicon-warning-sign remark-icon-warning';
               break;
             default:
-              scope.styleClass = 'remark-icon octicon octicon-question';
+              scope.styleClass = 'glyphicon glyphicon-question-sign remark-icon';
               break;
           }
         });

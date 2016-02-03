@@ -26,12 +26,10 @@
 }
 
 /* Fix the icon position issue when corresponding input-control is small (2 rules) */
-.fc-feedback-sm.glyphicon,
-.fc-feedback-sm.octicon {
+.fc-feedback-sm.glyphicon {
   width: 29px;
-  margin-top: 1px;
-  height: 28px;
-  line-height: 28px;
+  height: 29px;
+  line-height: 29px;
 }
 
 .has-feedback .form-control.input-sm {

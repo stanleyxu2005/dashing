@@ -31,7 +31,7 @@ angular.module('examples')
     $scope.inputChoices = _.times(4, function(i) {
       return {
         text: 'This is choice ' + (i + 1),
-        icon: 'octicon octicon-bookmark'
+        icon: 'glyphicon glyphicon-bookmark'
       };
     });
   }])

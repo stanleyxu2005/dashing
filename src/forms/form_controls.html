@@ -77,21 +77,21 @@
         <input class="form-control input-sm"
                type="text" size="10" placeholder="YYYY-MM-DD"
                data-date-format="yyyy-MM-dd" ng-model="$parent.dateValue" date-type="string"
-               ng-click="fillDefaultDate()"
+               ng-click="fillDefaultDate()" autoclose="true" use-native="true"
                template-url="forms/datepicker.html"
-               use-native="true" bs-datepicker/>
+               bs-datepicker/>
         <span class="glyphicon glyphicon-calendar form-control-feedback fc-feedback-sm"></span>
       </div>
-      <div class="{{timeControlStyleClass}} has-feedback" style="padding-left: 0"
+      <div class="{{timeControlStyleClass}} has-feedback"
+           ng-style="{'padding-left': timeControlLeftMargin, 'margin-top': timeControlTopMargin}"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
                type="text" size="8" placeholder="HH:mm:ss"
                data-time-format="HH:mm:ss" ng-model="$parent.timeValue" time-type="string"
                hour-step="1" minute-step="1" second-step="1" data-length="3"
-               ng-focus="fillDefaultTime()"
-               arrow-behavior="picker"
+               ng-focus="fillDefaultTime()" use-native="true" arrow-behavior="picker"
                template-url="forms/timepicker.html"
-               use-native="true" bs-timepicker/>
+               bs-timepicker/>
         <span class="glyphicon glyphicon-time form-control-feedback fc-feedback-sm"></span>
       </div>
     </div>

@@ -77,6 +77,20 @@ angular.module('dashing.forms.form_control', [
       });
     }
 
+    function fixDateTimeControlMarginResponsive(scope) {
+      var widthBreakPoint = 768; // http://getbootstrap.com/css/#responsive-utilities
+      scope.$watch(function() {
+        return window.innerWidth;
+      }, function(width) {
+        scope.timeControlLeftMargin = width < widthBreakPoint ? '15px' : '0';
+        scope.timeControlTopMargin = width < widthBreakPoint ? '4px' : '0';
+      });
+
+      window.onresize = function() {
+        scope.$apply();
+      };
+    }
+
     return {
       restrict: 'E',
       templateUrl: 'forms/form_controls.html',
@@ -144,8 +158,9 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'datetime':
-            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-md-5';
-            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-md-4';
+            scope.dateControlStyleClass = attrs.dateControlStyleClass || 'col-sm-5';
+            scope.timeControlStyleClass = attrs.timeControlStyleClass || 'col-sm-4';
+            fixDateTimeControlMarginResponsive(scope);
             scope.fillDefaultDate = function() {
               if (!scope.dateValue) {
                 scope.dateValue = new Date();

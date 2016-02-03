@@ -89,7 +89,7 @@ angular.module('dashing.forms.form_control', [
       link: function(scope, elem, attrs) {
         scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';
         scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
-        scope.choiceIconStyleClass = attrs.choiceIconStyleClass || 'glyphicon glyphicon-menu-hamburger';
+        scope.choiceIconStyleClass = attrs.choiceIconStyleClass || 'octicon octicon-three-bars';
         scope.label = attrs.label; // don't put to scope section, we might change it before rendering
         scope.renderAs = attrs.type;
         scope.pristine = true;

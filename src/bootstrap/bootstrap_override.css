@@ -50,6 +50,7 @@ html, body {
   padding-right: 4px;
 }
 
+.dropdown-menu .octicon,
 .dropdown-menu .glyphicon {
   font-size: 12px;
 }

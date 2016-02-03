@@ -80,7 +80,7 @@
                ng-click="fillDefaultDate()"
                template-url="forms/datepicker.html"
                use-native="true" bs-datepicker/>
-        <span class="glyphicon glyphicon-calendar form-control-feedback fc-feedback-sm"></span>
+        <span class="form-control-feedback fc-feedback-sm octicon octicon-calendar"></span>
       </div>
       <div class="{{timeControlStyleClass}} has-feedback" style="padding-left: 0"
            ng-class="{'has-error': timeInputInvalid}">
@@ -92,7 +92,7 @@
                arrow-behavior="picker"
                template-url="forms/timepicker.html"
                use-native="true" bs-timepicker/>
-        <span class="glyphicon glyphicon-time form-control-feedback fc-feedback-sm"></span>
+        <span class="form-control-feedback fc-feedback-sm octicon octicon-clock"></span>
       </div>
     </div>
     <!-- upload -->
@@ -105,10 +105,10 @@
                ng-model="$parent.filename"/>
         <!-- Toggle buttons -->
         <span ng-hide="$parent.value"
-              class="glyphicon glyphicon-folder-open form-control-feedback fc-feedback-sm clickable"
+              class="form-control-feedback fc-feedback-sm clickable octicon octicon-file-submodule"
               ngf-select ng-model="$parent.files" accept="{{acceptPattern}}" ngf-accept="'{{acceptPattern}}'"></span>
         <span ng-show="$parent.value"
-              class="glyphicon glyphicon-trash form-control-feedback fc-feedback-sm clickable"
+              class="form-control-feedback fc-feedback-sm clickable octicon octicon-trashcan"
               ng-click="clearSelection()"></span>
       </div>
     </div>

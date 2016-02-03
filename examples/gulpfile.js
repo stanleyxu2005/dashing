@@ -37,8 +37,8 @@ gulp.task('deps-js', function() {
     'node_modules/angular-strap/dist/angular-strap.tpl.js',
     'node_modules/ui-select/dist/select.js',
     'node_modules/dashing-deps/echarts/**/echarts-all.js',
-    'node_modules/jquery/dist/jquery.js',
-    'node_modules/bootstrap/dist/js/bootstrap.js',
+    //'node_modules/jquery/dist/jquery.js',
+    //'node_modules/bootstrap/dist/js/bootstrap.js',
     // not dashing required libraries
     //'node_modules/highcharts-release/adapters/standalone-framework.src.js',
     //'node_modules/highcharts-release/highcharts.src.js',

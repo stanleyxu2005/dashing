@@ -6,6 +6,7 @@ The file only contains the major change history. For full change history, please
 ## 0.4.5
 * Bugfix (#57): Date picker was not rendered correctly for Firefox
 * Bugfix (#55): Date time picker control was not aligned on small screen
+* Bugfix (#59): Library breaks with angular 1.4.9
 * Updated example build script (angular 1.4.9 has conflict with attribute required="true")
 
 ## 0.4.4

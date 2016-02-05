@@ -3,9 +3,9 @@
   "description": "Dashing framework examples",
   "license": "Apache-2.0",
   "dependencies": {
-    "angular": "1.5.0",
-    "angular-animate": "1.5.0",
-    "angular-sanitize": "1.5.0",
+    "angular": "latest",
+    "angular-animate": "latest",
+    "angular-sanitize": "latest",
     "bootstrap": "latest",
     "jquery": "latest",
     "angular-strap": "latest",

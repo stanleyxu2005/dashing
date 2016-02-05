@@ -98,7 +98,7 @@ angular.module('dashing.forms.form_control', [
       scope: {
         help: '@',
         value: '=ngModel',
-        invalid: '='
+        invalid: '=?'
       },
       link: function(scope, elem, attrs) {
         scope.labelStyleClass = attrs.labelStyleClass || 'col-sm-3';

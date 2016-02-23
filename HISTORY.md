@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.6
+* Improvement (#60): Hide table header when no records in table (not in search mode)
+
 ## 0.4.5
 * Bugfix (#57): Date picker was not rendered correctly for Firefox
 * Bugfix (#55): Date time picker control was not aligned on small screen

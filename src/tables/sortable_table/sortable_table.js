@@ -120,6 +120,10 @@ angular.module('dashing.tables.sortable_table', [
           });
         });
 
+        scope.hasRecords = function() {
+          return scope.search || (Array.isArray(scope.records) && scope.records.length > 0);
+        };
+
         // Expose isArray into template.
         scope.isArray = Array.isArray;
       }

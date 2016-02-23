@@ -22,7 +22,7 @@ angular.module('examples')
       'use strict';
 
       $scope.props = [
-        $ptb.number('Number').value(123456).help('number').done(),
+        $ptb.number('Number').value(123456).done(),
         $ptb.text('Text').value('Dashing is cool').done(),
         $ptb.progressbar('Capacity').value({current: 30, max: 1024}).done(),
         $ptb.number('Number (simple)').value(5566).done(),

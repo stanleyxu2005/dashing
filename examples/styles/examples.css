@@ -3,8 +3,16 @@
  * See accompanying LICENSE file.
  */
 
-/*
-body {
-  background-color: #f4f4f4;
+/* Empty table description (3 rules) */
+.table-no-data {
+  padding-bottom: 20px;
 }
-*/
+
+.table-no-data .glyphicon,
+.table-no-data-sm .glyphicon {
+  color: #bbb;
+}
+
+.table-no-data-sm .glyphicon {
+  margin-right: 6px;
+}

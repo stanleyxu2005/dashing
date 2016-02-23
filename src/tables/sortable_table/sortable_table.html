@@ -3,13 +3,17 @@
   <caption ng-if="caption">
     {{caption}}
     <remark ng-if="captionTooltip"
-            type="info" tooltip="{{captionTooltip}}"
+            tooltip="{{captionTooltip}}"
             placement="right"></remark>
     <small ng-if="subCaption"
            class="visible-md" ng-bind="subCaption"></small>
   </caption>
   <thead>
-  <tr>
+  <tr ng-if="!hasRecords()">
+    <th colspan="{{columns.length}}" class="text-center active"
+        ng-transclude></th>
+  </tr>
+  <tr ng-if="hasRecords()">
     <th ng-repeat="column in columns track by $index"
         class="{{::columnStyleClass[$index]}}"
         ng-attr-st-sort="{{::column.sortKey}}"
@@ -52,10 +56,6 @@
     <td colspan="{{columns.length}}" class="text-center">
       <h5 ng-bind="emptySearchResult"></h5>
     </td>
-  </tr>
-  <tr ng-if="!search && (!records || !records.length)">
-    <td colspan="{{columns.length}}" class="text-center"
-        ng-transclude></td>
   </tr>
   </tbody>
   <tfoot ng-if="records.length">

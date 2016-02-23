@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-6">
     <sortable-table
-      caption="Large table with {{recordsCount}} dynamic records"
+      caption="Data Table with {{recordsCount}} records"
       caption-tooltip="The table will be updated periodically"
       columns-bind="data.cols"
       records-bind="data.rows"
@@ -11,11 +11,14 @@
 
   <div class="col-md-6">
     <sortable-table
-      caption="Empty table"
+      caption="Data Table"
       columns-bind="data.cols">
-      <div style="padding-bottom: 12px">
-        <h4>No data rows defined</h4>
-        <span>When you see this panel, it means you have forgotten to feed data.</span>
+      <div class="table-no-data">
+        <h4>
+          <span class="glyphicon glyphicon-bullhorn"></span>
+          No data records
+        </h4>
+        <h5>When you see this panel, it means there is no data.</h5>
       </div>
     </sortable-table>
   </div>

@@ -5,6 +5,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.4.6
 * Improvement (#60): Hide table header when no records in table (not in search mode)
+* Improvement (#61): Sort data point values in chart's tooltip by name
 
 ## 0.4.5
 * Bugfix (#57): Date picker was not rendered correctly for Firefox

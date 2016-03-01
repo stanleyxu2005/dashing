@@ -227,7 +227,7 @@ angular.module('dashing.charts.adapter.echarts', [
         return '<div style="width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; border: 1px solid ' + border + '; background-color: ' + color + '"></div>';
       }
 
-      function mergeValuesAndSortDescent(array) {
+      function mergeValuesAndSortByName(array) {
         var grouped = {};
         angular.forEach(array, function(point) {
           grouped[point.name] = grouped[point.name] || [];
@@ -245,7 +245,7 @@ angular.module('dashing.charts.adapter.echarts', [
           result.push(selected);
         });
 
-        return $filter('orderBy')(result, 'value', /*reversed=*/true);
+        return result.reverse();
       }
 
       var valueFormatter = use.valueFormatter || defaultValueFormatter;
@@ -253,7 +253,7 @@ angular.module('dashing.charts.adapter.echarts', [
       return '<div style="padding: 8px">' + [
           (use.nameFormatter || defaultNameFormatter)(name),
           '<table>' +
-          mergeValuesAndSortDescent(array).map(function(point) {
+          mergeValuesAndSortByName(array).map(function(point) {
             if (point.value === '-') {
               return '';
             } else {

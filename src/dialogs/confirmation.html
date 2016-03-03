@@ -1,0 +1,21 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4 ng-if="title"
+            class="modal-title" ng-bind="title"></h4>
+        <h5 style="font-weight: 400" ng-bind="content"></h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-primary"
+                ng-click="close(1)"
+                ng-bind="text.yesButton">
+        </button>
+        <button type="button" class="btn btn-sm btn-default"
+                ng-click="close(0)"
+                ng-bind="text.noButton">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

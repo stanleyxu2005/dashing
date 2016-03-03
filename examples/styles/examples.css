@@ -6,6 +6,7 @@
 /* Empty table description (3 rules) */
 .table-no-data {
   padding-bottom: 20px;
+  padding-top: 20px;
 }
 
 .table-no-data .glyphicon,

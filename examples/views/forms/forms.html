@@ -45,7 +45,7 @@
         search-placeholder="Select a country">
       </form-control>
       <form-control
-        type="choices" label="Where Live" help="Optional field"
+        type="choices" label="Where Live" help="This field is optional"
         ng-model="$parent.location" choices="{{nations}}"
         search-placeholder="Select a country">
       </form-control>
@@ -59,6 +59,13 @@
         type="text" label="Input with Choices"
         ng-model="$parent.name2" choices="{{inputChoices}}">
       </form-control>
+      <div class="form-group-header"></div>
+      <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-sm btn-primary">Save Data</button>
+        <button class="btn btn-sm btn-default" ng-click="reset()">Reset</button>
+      </div>
+      </div>
     </form>
   </div>
 </div>

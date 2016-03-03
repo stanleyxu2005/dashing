@@ -8,6 +8,9 @@ angular.module('dashing')
  */
   .constant('dashing.i18n', {
     emptySearchResult: 'No results matched your search :-(',
-    paginationSummary: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records'
+    paginationSummary: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
+    confirmationDialogTitle: 'Confirmation',
+    confirmationYesButtonText: 'Yes',
+    confirmationNoButtonText: 'No, Thanks'
   })
 ;

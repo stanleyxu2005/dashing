@@ -11,6 +11,7 @@ angular.module('dashing', [
   'dashing.charts.metrics_sparkline',
   'dashing.charts.ring',
   'dashing.charts.sparkline',
+  'dashing.dialogs',
   'dashing.forms.form_control',
   'dashing.forms.searchbox',
   'dashing.metrics',

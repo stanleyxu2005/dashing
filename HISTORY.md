@@ -4,6 +4,7 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.4.6
+* Feature (#62): Create a confirmation dialog service
 * Improvement (#60): Hide table header when no records in table (not in search mode)
 * Improvement (#61): Sort data point values in chart's tooltip by name
 

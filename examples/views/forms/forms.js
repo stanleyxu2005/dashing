@@ -17,7 +17,7 @@ angular.module('examples')
         });
     }])
 
-  .controller('FormsCtrl', ['$scope', function($scope) {
+  .controller('FormsCtrl', ['$scope', '$dialogs', function($scope, $dialogs) {
     'use strict';
 
     $scope.age = 20;
@@ -34,5 +34,11 @@ angular.module('examples')
         icon: 'glyphicon glyphicon-bookmark'
       };
     });
+
+    $scope.reset = function() {
+      $dialogs.confirm('Do you want to reset to default?', function() {
+        console.info('Reset');
+      });
+    }
   }])
 ;

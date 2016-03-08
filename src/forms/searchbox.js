@@ -19,7 +19,18 @@ angular.module('dashing.forms.searchbox', [
       scope: {
         placeholder: '@',
         ngModel: '='
-      }
+      },
+      controller: ['$scope', function($scope) {
+        $scope.hint = $scope.placeholder;
+        $scope.hideHint = function() {
+          $scope.hint = '';
+        };
+        $scope.restoreHint = function() {
+          if (!$scope.ngModel) {
+            $scope.hint = $scope.placeholder;
+          }
+        };
+      }]
     };
   })
 ;

@@ -1,4 +1,5 @@
 <div class="form-group has-feedback">
-  <input type="text" class="form-control" ng-model="ngModel" placeholder="{{placeholder}}"/>
+  <input type="text" class="form-control" placeholder="{{hint}}"
+         ng-model="ngModel" ng-blur="restoreHint()" ng-focus="hideHint()"/>
   <small class="glyphicon glyphicon-search form-control-feedback"></small>
 </div>

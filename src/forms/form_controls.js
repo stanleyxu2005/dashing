@@ -206,22 +206,18 @@ angular.module('dashing.forms.form_control', [
               if (Array.isArray(files) && files.length) {
                 scope.value = files[0];
                 scope.filename = files[0].name;
-              } else {
-                scope.value = null;
-                scope.filename = '';
               }
             });
             scope.openUpload = function() {
-              if (!scope.files) {
-                var spans = elem.find('span');
-                if (spans.length > 2) {
-                  var uploadButton = spans[spans.length - 2];
-                  uploadButton.click();
-                }
+              var spans = elem.find('span');
+              if (spans.length > 2) {
+                var uploadButton = spans[spans.length - 2];
+                uploadButton.click();
               }
             };
             scope.clearSelection = function() {
-              scope.files = null;
+              scope.value = null;
+              scope.filename = '';
             };
             break;
 

@@ -4,18 +4,19 @@ https://github.com/stanleyxu2005/dashing
 The file only contains the major change history. For full change history, please check the commit log.
 
 ## 0.4.7
-* Improvement (#63): Hide placeholder text when search box is focused
+* Improvement (#63): Hide placeholder text when search box is focused.
+* Improvement (#64): When file picker has a selection, click on the input box should show the file browse dialog again.
 
 ## 0.4.6
-* Feature (#62): Create a confirmation dialog service
-* Improvement (#60): Hide table header when no records in table (not in search mode)
-* Improvement (#61): Sort data point values in chart's tooltip by name
+* Feature (#62): Create a confirmation dialog service.
+* Improvement (#60): Hide table header when no records in table (not in search mode).
+* Improvement (#61): Sort data point values in chart's tooltip by name.
 
 ## 0.4.5
-* Bugfix (#57): Date picker was not rendered correctly for Firefox
-* Bugfix (#55): Date time picker control was not aligned on small screen
-* Bugfix (#59): Library breaks with angular 1.4.9
-* Updated example build script (angular 1.4.9 has conflict with attribute required="true")
+* Bugfix (#57): Date picker was not rendered correctly for Firefox.
+* Bugfix (#55): Date time picker control was not aligned on small screen.
+* Bugfix (#59): Library breaks with angular 1.4.9.
+* Updated example build script (angular 1.4.9 has conflict with attribute required="true").
 
 ## 0.4.4
 * Improvment (#54): Tooltip of table caption will be right to the caption.

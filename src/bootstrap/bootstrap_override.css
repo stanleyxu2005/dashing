@@ -158,10 +158,10 @@ html, body {
   padding-bottom: 8px;
 }
 
-/* Tune bootstrap-tooltip look and feel (2 rules) */
+/* Tune bootstrap-tooltip look and feel */
 .tooltip-inner {
   max-width: none;
-  padding: 5px 10px 5px;
+  padding: 8px 10px 8px 10px;
 }
 
 /* Avoid modal title (usually h4) bottom remain large empty area */

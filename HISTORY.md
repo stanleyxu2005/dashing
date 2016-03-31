@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.8
+* Improvement (#65): Add a notification dialog service.
+
 ## 0.4.7
 * Improvement (#63): Hide placeholder text when search box is focused.
 * Improvement (#64): When file picker has a selection, click on the input box should show the file browse dialog again.

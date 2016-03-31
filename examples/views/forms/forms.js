@@ -37,7 +37,7 @@ angular.module('examples')
 
     $scope.reset = function() {
       $dialogs.confirm('Do you want to reset to default?', function() {
-        console.info('Reset');
+        $dialogs.notice('All fields have been reset. <span style="color:green">Very good</span>', 'Good');
       });
     }
   }])

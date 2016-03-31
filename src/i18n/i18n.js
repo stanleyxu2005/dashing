@@ -11,6 +11,8 @@ angular.module('dashing')
     paginationSummary: 'Showing {{ stRange.from }}-{{ stRange.to }} of {{ totalItemCount }} records',
     confirmationDialogTitle: 'Confirmation',
     confirmationYesButtonText: 'Yes',
-    confirmationNoButtonText: 'No, Thanks'
+    confirmationNoButtonText: 'No, Thanks',
+    notificationDialogTitle: 'Notification',
+    closeButtonText: 'Close'
   })
 ;

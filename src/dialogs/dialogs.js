@@ -24,6 +24,8 @@ angular.module('dashing.dialogs', [
         backdrop: 'static',
         controller: ['$scope', function($scope) {
           $scope.text = options.text;
+          var plainContent = options.content.replace(/<[^>]+>/gm, '');
+          $scope.size = plainContent.length <= 60 ? 'modal-sm' : '';
           $scope.close = function(modalValue) {
             $scope.$emit(modalCloseEventName, {modalValue: modalValue});
             $scope.$hide();
@@ -31,9 +33,11 @@ angular.module('dashing.dialogs', [
         }]
       }, options));
 
-      dialog.$scope.$on(modalCloseEventName, function(_, values) {
-        onClose(values.modalValue);
-      });
+      if (angular.isFunction(onClose)) {
+        dialog.$scope.$on(modalCloseEventName, function(_, values) {
+          onClose(values.modalValue);
+        });
+      }
       return dialog;
     }
 
@@ -54,6 +58,17 @@ angular.module('dashing.dialogs', [
           }
         };
         createModalDialog(options, handleCloseFn);
+      },
+      notice: function(text, title) {
+        var options = {
+          templateUrl: 'dialogs/notification.html',
+          title: title || i18n.notificationDialogTitle,
+          text: {
+            closeButton: i18n.closeButtonText
+          },
+          content: text
+        };
+        createModalDialog(options);
       }
     };
   }])

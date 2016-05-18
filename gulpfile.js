@@ -43,7 +43,7 @@ var plugin = {
   fs: require('fs'),
   header_footer: require('gulp-headerfooter'),
   js_prettify: require('gulp-js-prettify'),
-  minify_css: require('gulp-minify-css'),
+  minify_css: require('gulp-clean-css'),
   minify_html: require('gulp-htmlmin'),
   minify_js: require('gulp-uglify'),
   rename: require('gulp-rename'),
@@ -82,6 +82,7 @@ gulp.task('concat-temp-css', [
   'concat-dashing-css', 'strip-select2-css', 'strip-select2-bootstrap-css'], function() {
   return gulp.src(temp_css_files)
     .pipe(plugin.concat(files.output.css))
+    .pipe(plugin.replace(/\/\*#\s*sourceMappingURL=.*\.map\s*\*\//g, ''))
     .pipe(gulp.dest(output_dir));
 });
 
@@ -131,6 +132,7 @@ gulp.task('concat-js', ['pack-angular-templates'], function() {
   var result = gulp.src(files.source.js)
     .pipe(plugin.sort()) // `gulp.src()` does not guarantee file orders
     .pipe(plugin.concat(files.output.js))
+    .pipe(plugin.replace(/\/\*#\s*sourceMappingURL=.*\.map\s*\*\//g, ''))
     .pipe(plugin.header_footer.header([
       plugin.fs.readFileSync('src/module.js'), '',
       plugin.fs.readFileSync(files.temp.angular_templates), ''].join('\n')))

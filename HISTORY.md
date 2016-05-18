@@ -5,6 +5,7 @@ The file only contains the major change history. For full change history, please
 
 ## 0.4.8
 * Improvement (#65): Add a notification dialog service.
+* Bugfix (#66): Be node v6 friendly.
 
 ## 0.4.7
 * Improvement (#63): Hide placeholder text when search box is focused.

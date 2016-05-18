@@ -21,7 +21,7 @@
   "devDependencies": {
     "gulp": "latest",
     "gulp-concat": "latest",
-    "gulp-minify-css": "latest",
+    "gulp-clean-css": "latest",
     "gulp-rename": "latest",
     "gulp-sourcemaps": "latest"
   },

@@ -7,9 +7,10 @@
 var gulp = require('gulp');
 var plugin = {
   concat: require('gulp-concat'),
-  minify_css: require('gulp-minify-css'),
+  minify_css: require('gulp-clean-css'),
   minify_js: require('gulp-uglify'),
   rename: require('gulp-rename'),
+  replace: require('gulp-replace'),
   source_maps: require('gulp-sourcemaps')
 };
 
@@ -46,6 +47,7 @@ gulp.task('deps-js', function() {
     'node_modules/moment/moment.js',
     'node_modules/underscore/underscore.js'])
     .pipe(plugin.concat('vendors.js'))
+    .pipe(plugin.replace(/\/\*#\s*sourceMappingURL=.*\.map\s*\*\//g, ''))
     .pipe(gulp.dest('vendors'));
 });
 
@@ -68,6 +70,7 @@ gulp.task('deps-css', ['deps-fonts'], function() {
     'node_modules/angular-motion/dist/angular-motion.css',
     'node_modules/ui-select/dist/select.css'])
     .pipe(plugin.concat('vendors.css'))
+    .pipe(plugin.replace(/\/\*#\s*sourceMappingURL=.*\.map\s*\*\//g, ''))
     .pipe(gulp.dest('vendors'));
 });
 

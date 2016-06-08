@@ -10,6 +10,7 @@
     <div ng-switch-when="choices">
       <div class="{{controlStyleClass}}">
         <ui-select theme="select2" class="form-control"
+                   ng-disabled="$parent.readOnly"
                    ng-model="$parent.$parent.value"
                    search-enabled="allowSearchInChoices">
           <ui-select-match placeholder="{{placeholder}}"
@@ -31,6 +32,7 @@
       <div class="{{controlStyleClass}} checkbox">
         <label>
           <input type="checkbox" ng-checked="$parent.value"
+                 ng-disabled="$parent.readOnly"
                  ng-click="$parent.value = !$parent.value"/>
           <span ng-bind="text"></span>
         </label>
@@ -42,6 +44,7 @@
         <label class="checkbox-inline"
                ng-repeat="choice in choices track by $index">
           <input type="checkbox" ng-checked="$parent.value[$index]"
+                 ng-disabled="$parent.readOnly"
                  ng-click="$parent.value[$index] = !$parent.value[$index]"/>
           <span ng-bind="choice"></span>
         </label>
@@ -54,6 +57,7 @@
           <div ng-repeat="choice in choices track by $index"
                class="btn-group">
             <button type="button" class="btn {{buttonStyleClass}} btn-default"
+                    ng-disabled="$parent.readOnly"
                     ng-class="{'btn-primary': choice.value == value}"
                     ng-bind="choice.text" value="{{choice.value}}"
                     ng-click="toggle(choice.value)"></button>
@@ -67,6 +71,7 @@
            ng-class="{'has-error': !pristine && invalid}">
         <input type="number" class="form-control input-sm"
                ng-attr-min="{{min}}" ng-attr-max="{{max}}"
+               ng-readonly="$parent.readOnly"
                ng-model="$parent.value"/>
       </div>
     </div>
@@ -75,6 +80,7 @@
       <div class="{{dateControlStyleClass}} has-feedback"
            ng-class="{'has-error': dateInputInvalid}">
         <input class="form-control input-sm"
+               ng-disabled="$parent.readOnly"
                type="text" size="10" placeholder="YYYY-MM-DD"
                data-date-format="yyyy-MM-dd" ng-model="$parent.dateValue" date-type="string"
                ng-click="fillDefaultDate()" autoclose="true" use-native="true"
@@ -86,6 +92,7 @@
            ng-style="{'padding-left': timeControlLeftMargin, 'margin-top': timeControlTopMargin}"
            ng-class="{'has-error': timeInputInvalid}">
         <input class="form-control input-sm"
+               ng-disabled="$parent.readOnly"
                type="text" size="8" placeholder="HH:mm:ss"
                data-time-format="HH:mm:ss" ng-model="$parent.timeValue" time-type="string"
                hour-step="1" minute-step="1" second-step="1" data-length="3"
@@ -118,10 +125,12 @@
         <div ng-class="{'has-error': !pristine && invalid}">
           <div ng-class="{'input-group': choicesMenu}">
             <input type="text" class="form-control input-sm"
+                   ng-readonly="$parent.readOnly"
                    ng-model="$parent.value"/>
             <div ng-if="choicesMenu"
                  class="input-group-btn">
               <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                      ng-disabled="$parent.readOnly"
                       bs-dropdown="choicesMenu" placement="auto bottom-left" html="true">
                 <span class="{{choiceIconStyleClass}} clickable"></span>
                 <span ng-if="!hideMenuCaret"

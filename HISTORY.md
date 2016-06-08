@@ -3,6 +3,9 @@ https://github.com/stanleyxu2005/dashing
 
 The file only contains the major change history. For full change history, please check the commit log.
 
+## 0.4.9
+* Improvement (#67): Support readonly form control.
+
 ## 0.4.8
 * Improvement (#65): Add a notification dialog service.
 * Bugfix (#66): Be node v6 friendly.

@@ -105,6 +105,7 @@ angular.module('dashing.forms.form_control', [
         scope.controlStyleClass = attrs.controlStyleClass || 'col-sm-9';
         scope.choiceIconStyleClass = attrs.choiceIconStyleClass || 'glyphicon glyphicon-menu-hamburger';
         scope.label = attrs.label; // don't put to scope section, we might change it before rendering
+        scope.readOnly = attrs.hasOwnProperty('readonly') && attrs.readonly !== false;
         scope.renderAs = attrs.type;
         scope.pristine = true;
         scope.invalid = attrs.required;

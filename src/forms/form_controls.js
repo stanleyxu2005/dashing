@@ -151,6 +151,7 @@ angular.module('dashing.forms.form_control', [
             break;
 
           case 'integer':
+          case 'number':
             scope.min = attrs.min;
             scope.max = attrs.max;
             scope.validateFn = function(value) {

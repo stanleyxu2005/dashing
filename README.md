@@ -4,6 +4,9 @@
 
 Making fancy dashboard can never be so easy, ever! Dashing is a complementary UI library of Bootstrap 3, assembled by Angular 1.x. Dashing provides professional charts, table features and more. You just need to bind your data source with the widgets and done.
 
+## NOTICE
+After having 2 year experience in frontend, I have tried quite a lot of new stuff. I might upgrade Bootstrap 3 with Bootstrap 4 (or UIKit) and replace Echarts with @antvis/G2. I don't have a concrete time line for the change. 
+
 ## Resources
 
 * Show Case: [Example Gallery](http://mmjd.com/dashing/examples) | [Gearpump Dashboard](https://github.com/gearpump/gearpump)
@@ -12,7 +15,7 @@ Making fancy dashboard can never be so easy, ever! Dashing is a complementary UI
 
 ## How to Contribute
 
-The project is created by [Qian Xu](http://mmjd.com/). You can raise issues or submit PRs at [GitHub](https://github.com/stanleyxu2005/dashing). Contributions to the dashing library are very welcome!
+The project is created by [Qian Xu](http://linkedin.com/pub/qian-xu/4/62a/70b/). You can raise issues or submit PRs at [GitHub](https://github.com/stanleyxu2005/dashing). Contributions to the dashing library are very welcome!
 
 To build the project from source code:
 

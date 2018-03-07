@@ -28,7 +28,7 @@
     "gulp-replace": "latest",
     "gulp-sort": "latest",
     "gulp-sourcemaps": "latest",
-    "gulp-strip-comments": "1.0.1",
+    "gulp-strip-comments": "2.5.2",
     "gulp-uglify": "latest"
   },
   "bugs": {

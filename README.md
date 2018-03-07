@@ -1,5 +1,7 @@
 ## [Dashing](https://github.com/stanleyxu2005/dashing) - Something beautiful, inside and out
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/stanleyxu2005/dashing.svg)](https://greenkeeper.io/)
+
 [![npm version](https://badge.fury.io/js/dashing.svg)](http://badge.fury.io/js/dashing) 
 
 Making fancy dashboard can never be so easy, ever! Dashing is a complementary UI library of Bootstrap 3, assembled by Angular 1.x. Dashing provides professional charts, table features and more. You just need to bind your data source with the widgets and done.
